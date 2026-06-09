@@ -30,8 +30,8 @@
     "stamps": {
       "tl": "† Neo Bochka",
       "tr": "† 165 BPM",
-      "bl": "33.4°S · 70.6°W",
-      "br": "Santiago · CL"
+      "bl": "33.45°S · 70.73°W",
+      "br": "Lo Prado · Santiago"
     },
     "cta": {
       "label": "Listen to tracks",
@@ -45,7 +45,7 @@
       "type": "marquee",
       "lanes": [
         "NEO BOCHKA † БОЧКА † HYPNOTIC † HARD TECHNO † 165 BPM † TECTONIC PRESSURE † PROLONGED HYPNOSIS † DARK PROPULSION † DISTORTED TEXTURES",
-        "SANTIAGO † CHILEAN UNDERGROUND † RADIKALS † HÖLLENRAUM † VËRRÜCKT † REQUIEM † CLUB 808 † METALURGIA † 33.4°S 70.6°W"
+        "LO PRADO † SANTIAGO † CHILEAN UNDERGROUND † RADIKALS † HÖLLENRAUM † VËRRÜCKT † REQUIEM † CLUB 808 † METALURGIA † 33.45°S 70.73°W"
       ]
     },
     {
@@ -62,7 +62,7 @@
         "title": "† Artist Dossier",
         "rows": [
           { "key": "Origin",    "value": "Chile" },
-          { "key": "Base",      "value": "Santiago" },
+          { "key": "Base",      "value": "Lo Prado, Santiago" },
           { "key": "Sound",     "value": "Techno · Neo Bochka · Hypnotic" },
           { "key": "BPM",       "value": "150–170" },
           { "key": "Crews",     "value": "Radikals · Blackout · Hollenraum · Circuito Integrado · 909 Freakz · Teknokratas" },
