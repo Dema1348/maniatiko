@@ -40,9 +40,20 @@ tensión mental + física, motivo †).
 **Tipos**: Space Grotesk (display/body) + Space Mono (mono)
 
 **Efectos**:
-- **Bochka Pulse**: línea de 2px bajo el nav que late a **165 BPM** (period 0.3636s) en accent. Heartbeat global de la página = "constant propulsion" de la bio. 165 BPM corresponde al tempo real de Maniatiko (dentro del rango Bochka 150-185).
+- **Bochka Pulse**: línea de 2px bajo el nav que late a **165 BPM** (period 0.3636s) en accent. Heartbeat global de la página = "constant propulsion" de la bio.
+- **TV Static**: canvas full-viewport (`#tvStatic`) con noise random a ~15fps, opacity 6%, mix-blend screen, z-index 9997. Decay analógico industrial.
 - **Scanlines** permanentes en overlay (opacity 0.7, mix-blend overlay).
+- **Grain overlay** SVG estático al 3.5% opacity, z-index 9999.
 - **Glitch animation** en hover sobre `.hero-title`, `.section-title` y `.setlist-row .setlist-num` (chromatic aberration entre rojo y cyan `#00d9ff`).
+
+**Traducciones de tensión sónica por sección** (visuales, no audio):
+- **Marquee**: incluye palabras Cyrillic (БОЧКА, ТЕМНОТА, ПРЕССУРА) para autenticidad rusa Bochka.
+- **Origin**: tension gauge — barra vertical accent al lado de cada chapter creciendo en grosor + glow (I=fina, II=media, III=full). Build visual de la bio.
+- **Live**: countdown live "Next ritual in Xd · HH:MM:SS" arriba de los rituals, actualizado cada segundo. Tensión real-time.
+- **Productions**: hover sobre row → ampRatio de la wave interpola 0.42 → 0.72 (visual "louder").
+- **Aftermath**: image animation `memoryDecay` (filter blur/contrast pulsando 14s loop) + anecdote con text-shadow desplazado = ghost memory.
+- **Reverb**: text-shadow stack en quotes con offsets crecientes y opacity decreciente = reverberación visual.
+- **Press Kit**: 4 cards (Bio · Photo · Video · **Tech Rider**). Tech Rider es la spec sheet industrial.
 
 ## Diseño por sección (cada una transmite la bio)
 Cada sección traduce un concepto de la bio en lenguaje visual. Orden actual del sitio:

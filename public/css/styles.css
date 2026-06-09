@@ -62,6 +62,18 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* TV static — canvas con ruido animado a ~15fps */
+.tv-static {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9997;
+  opacity: 0.06;
+  mix-blend-mode: screen;
+  width: 100%;
+  height: 100%;
+}
+
 /* ============================================================
    Nav
    ============================================================ */
@@ -322,6 +334,47 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .card-body {
   font-size: 0.95rem;
+  color: var(--text-dim);
+}
+
+/* ============================================================
+   Next ritual countdown — bloque live al próximo gig
+   "T-MINUS" tensión real-time arriba de los rituals.
+   ============================================================ */
+.next-ritual {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--accent);
+  background: rgba(var(--accent-rgb), 0.04);
+  box-shadow: 0 0 24px rgba(var(--accent-rgb), 0.12);
+}
+.next-ritual-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.next-ritual-timer {
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  flex: 1;
+  min-width: 200px;
+}
+.next-ritual-target {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   color: var(--text-dim);
 }
 
@@ -672,11 +725,19 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   height: 100%;
   object-fit: cover;
   filter: grayscale(1) brightness(0.55) contrast(1.25);
+  animation: memoryDecay 14s ease-in-out infinite;
   transition: filter 0.5s, transform 0.6s var(--ease-out);
 }
 .memory:hover .memory-image {
   filter: grayscale(0.7) brightness(0.7) contrast(1.15);
   transform: scale(1.02);
+  animation-play-state: paused;
+}
+/* Distorsión muy sutil en loop: la memoria pulsa entre nítida y borrosa */
+@keyframes memoryDecay {
+  0%, 100% { filter: grayscale(1) brightness(0.55) contrast(1.25); }
+  35%      { filter: grayscale(1) brightness(0.48) contrast(1.4) blur(0.6px); }
+  65%      { filter: grayscale(1) brightness(0.62) contrast(1.15); }
 }
 .memory-image--empty {
   background:
@@ -747,6 +808,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   border-left: 1px solid var(--accent);
   padding-left: 1.25rem;
   margin-top: 0.5rem;
+  /* Ghost text: ecos desplazados con baja opacidad = memoria que persiste */
+  text-shadow:
+    2px 2px 0 rgba(232, 232, 232, 0.06),
+    4px 4px 0 rgba(232, 232, 232, 0.03);
 }
 
 @media (max-width: 720px) {
@@ -848,16 +913,31 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .chapter--right {
   margin-left: clamp(0px, 12vw, 140px);
 }
+/* Tension gauge: barra vertical creciendo en grosor + glow por capítulo */
 .chapter::before {
   content: "";
   position: absolute;
-  left: calc(-2.5rem - 4px);
-  top: 0.85rem;
-  width: 7px;
-  height: 7px;
+  left: calc(-2.5rem - 1px);
+  top: 0;
+  bottom: 0;
+  width: 2px;
   background: var(--accent);
-  border-radius: 50%;
-  box-shadow: 0 0 12px var(--accent-glow);
+  opacity: 0.4;
+  box-shadow: 0 0 6px rgba(var(--accent-rgb), 0.3);
+  transition: opacity 0.4s, box-shadow 0.4s;
+}
+.chapter:nth-of-type(2)::before {
+  width: 3px;
+  opacity: 0.65;
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.45);
+  left: calc(-2.5rem - 1.5px);
+}
+.chapter:nth-of-type(3)::before,
+.chapter:last-of-type::before {
+  width: 4px;
+  opacity: 1;
+  box-shadow: 0 0 16px var(--accent-glow), 0 0 4px var(--accent);
+  left: calc(-2.5rem - 2px);
 }
 .chapter-num {
   font-family: var(--font-display);
@@ -984,12 +1064,67 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 /* ============================================================
+   Reverb (Voices) — quotes con text-shadow eco
+   Stack de sombras desplazadas con opacidad descendente
+   = testimonios reverberando visualmente.
+   ============================================================ */
+.reverb {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+.reverb-card {
+  padding: 1.85rem 1.65rem;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.reverb-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 22px rgba(var(--accent-rgb), 0.15);
+}
+.reverb-quote {
+  font-family: var(--font-body);
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: var(--text);
+  font-style: italic;
+  margin: 0;
+  text-shadow:
+    1px 0 0 rgba(var(--accent-rgb), 0.18),
+    3px 0 0 rgba(var(--accent-rgb), 0.10),
+    6px 0 0 rgba(var(--accent-rgb), 0.05),
+    10px 0 0 rgba(var(--accent-rgb), 0.025);
+  transition: text-shadow 0.4s;
+}
+.reverb-card:hover .reverb-quote {
+  text-shadow:
+    2px 0 0 rgba(var(--accent-rgb), 0.32),
+    5px 0 0 rgba(var(--accent-rgb), 0.18),
+    10px 0 0 rgba(var(--accent-rgb), 0.10),
+    16px 0 0 rgba(var(--accent-rgb), 0.05);
+}
+.reverb-source {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* ============================================================
    Press Kit — 3 cards de assets descargables
    ============================================================ */
 .presskit {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+@media (max-width: 1024px) {
+  .presskit { grid-template-columns: repeat(2, 1fr); }
 }
 .presskit-card {
   display: flex;

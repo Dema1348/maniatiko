@@ -25,11 +25,86 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   animateHeroIn();
   initReveals();
+  initTvStatic();
+  initNextRitualCountdown();
 
   if (document.querySelector(".setlist-wave")) {
     initSetlistWaves(data.mixes || []);
   }
 });
+
+// --------------------------------------------------------------
+// Countdown al próximo ritual — live updating cada segundo
+// --------------------------------------------------------------
+function initNextRitualCountdown() {
+  const el = document.getElementById("nextRitualTimer");
+  if (!el) return;
+  const wrap = el.closest(".next-ritual");
+  const target = wrap?.dataset.target;
+  if (!target) return;
+
+  const parts = target.split(".").map(Number);
+  if (parts.length !== 3) return;
+  const [mm, dd, yyyy] = parts;
+  // Gig empieza a las 23:59 del día. Usamos esa hora como target.
+  const targetTime = new Date(yyyy, mm - 1, dd, 23, 59, 59).getTime();
+
+  function update() {
+    const diff = targetTime - Date.now();
+    if (diff <= 0) {
+      el.textContent = "Now invoking";
+      return;
+    }
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+    const pad = (n) => String(n).padStart(2, "0");
+    el.textContent = `${days}d · ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+  }
+  update();
+  setInterval(update, 1000);
+}
+
+// --------------------------------------------------------------
+// TV static overlay — canvas con noise random a baja FPS
+// --------------------------------------------------------------
+function initTvStatic() {
+  const canvas = document.getElementById("tvStatic");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+
+  // Render a la mitad de resolución para performance (luego CSS lo estira)
+  let w = 0, h = 0;
+  function resize() {
+    w = Math.floor(window.innerWidth / 2);
+    h = Math.floor(window.innerHeight / 2);
+    canvas.width = w;
+    canvas.height = h;
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  let last = 0;
+  function tick(t) {
+    if (t - last > 70) {
+      // Generar buffer aleatorio en escala de grises
+      const img = ctx.createImageData(w, h);
+      const data = img.data;
+      for (let i = 0; i < data.length; i += 4) {
+        const v = (Math.random() * 255) | 0;
+        data[i] = v;
+        data[i + 1] = v;
+        data[i + 2] = v;
+        data[i + 3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+      last = t;
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
 
 async function loadData() {
   try {
@@ -289,6 +364,9 @@ function initSetlistWaves(items) {
     return Math.abs(h);
   };
 
+  const AMP_BASE = 0.42;
+  const AMP_HOVER = 0.72;
+
   const renderers = Array.from(canvases)
     .map((canvas) => {
       const idx = parseInt(canvas.dataset.waveIndex, 10);
@@ -298,7 +376,8 @@ function initSetlistWaves(items) {
       const h = hash(item.title || `track-${idx}`);
       const wave = {
         freq: 0.018 + (h % 80) / 7000,
-        ampRatio: 0.42,
+        ampRatio: AMP_BASE,
+        targetAmp: AMP_BASE,
         speed: 0.008 + (h % 40) / 6000,
         offset: ((h % 360) * Math.PI) / 180,
         phase: 0,
@@ -313,7 +392,7 @@ function initSetlistWaves(items) {
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
       resize();
-      return { canvas, ctx, wave, row, state, resize };
+      return { canvas, ctx, wave, row, state, resize, ampHover: AMP_HOVER, ampBase: AMP_BASE };
     })
     .filter(Boolean);
 
@@ -335,6 +414,9 @@ function initSetlistWaves(items) {
       r.wave.phase += r.wave.speed;
 
       const active = r.row.classList.contains("is-active");
+      // Smooth amplitude interpolation hacia hover state
+      r.wave.targetAmp = active ? r.ampHover : r.ampBase;
+      r.wave.ampRatio += (r.wave.targetAmp - r.wave.ampRatio) * 0.12;
       r.ctx.beginPath();
       if (active) {
         r.ctx.strokeStyle = `rgba(${accentRgb}, 0.95)`;
@@ -403,6 +485,18 @@ function renderGigs(items) {
   // Past: orden descendente por fecha (más reciente primero)
   past.sort((a, b) => gigDateValue(b.date) - gigDateValue(a.date));
 
+  // Countdown al gig más cercano (futuro)
+  const nextGig = upcoming
+    .slice()
+    .sort((a, b) => gigDateValue(a.date) - gigDateValue(b.date))[0];
+  const countdownHtml = nextGig
+    ? `<div class="next-ritual" data-reveal data-target="${nextGig.date}">
+         <span class="next-ritual-label">† Next ritual in</span>
+         <span class="next-ritual-timer" id="nextRitualTimer">—</span>
+         <span class="next-ritual-target">${escapeHtml(nextGig.venue || "")}</span>
+       </div>`
+    : "";
+
   const ritualsHtml = upcoming.length
     ? `<div class="rituals" data-reveal>
         ${upcoming
@@ -454,7 +548,7 @@ function renderGigs(items) {
       </div>`
     : "";
 
-  return ritualsHtml + archiveHtml;
+  return countdownHtml + ritualsHtml + archiveHtml;
 }
 
 function gigDateValue(str) {
@@ -610,13 +704,13 @@ function renderPresskit(items) {
 function renderPress(items) {
   if (!items.length) return "";
   return `
-    <div class="grid" data-reveal>
+    <div class="reverb" data-reveal>
       ${items
         .map(
           (p) => `
-        <blockquote class="card">
-          <p class="card-body">"${escapeHtml(p.quote || "")}"</p>
-          <div class="card-meta">— ${escapeHtml(p.source || "")}</div>
+        <blockquote class="reverb-card">
+          <p class="reverb-quote">"${escapeHtml(p.quote || "")}"</p>
+          <div class="reverb-source">— ${escapeHtml(p.source || "")}</div>
         </blockquote>`
         )
         .join("")}
