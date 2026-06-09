@@ -26,9 +26,9 @@
 
   "hero": {
     "title": "Maniatiko",
-    "phrase": "DJ † Producer † Industrial † Hard Kicks",
+    "phrase": "DJ † Producer † Techno † Neo Bochka † Hypnotic",
     "stamps": {
-      "tl": "† Techno",
+      "tl": "† Neo Bochka",
       "tr": "† 165 BPM",
       "bl": "33.4°S · 70.6°W",
       "br": "Santiago · CL"
@@ -63,11 +63,12 @@
         "rows": [
           { "key": "Origin",    "value": "Chile" },
           { "key": "Base",      "value": "Santiago" },
-          { "key": "Sound",     "value": "Hard · Industrial · Hypnotic Techno" },
+          { "key": "Sound",     "value": "Techno · Neo Bochka · Hypnotic" },
+          { "key": "BPM",       "value": "150–170" },
           { "key": "Crews",     "value": "Radikals · Blackout · Hollenraum · Circuito Integrado · 909 Freakz · Teknokratas" },
           { "key": "Stage w/",  "value": "Aldes · Kask4r · 19.85 · Mary B · Likikon · Bonek · Lurtz" },
-          { "key": "Platforms", "value": "SoundCloud · Instagram · TikTok · Facebook" },
-          { "key": "Booking",   "value": "—" }
+          { "key": "Platforms", "value": "Bandcamp · Spotify · SoundCloud · YouTube · Instagram · TikTok · Facebook" },
+          { "key": "Booking",   "value": "maniatikodj.bussines@gmail.com" }
         ]
       }
     },
@@ -109,63 +110,27 @@
   ],
 
   "socials": [
-    { "label": "Instagram",  "url": "https://www.instagram.com/maniatiko.dj" },
+    { "label": "Bandcamp",   "url": "https://maniatiko1.bandcamp.com" },
+    { "label": "Spotify",    "url": "https://open.spotify.com/intl-es/artist/50KNp3KIPhqS0AVe8BKUbG" },
     { "label": "SoundCloud", "url": "https://soundcloud.com/maniatikx" },
+    { "label": "YouTube",    "url": "https://www.youtube.com/@maniatikx" },
+    { "label": "Instagram",  "url": "https://www.instagram.com/maniatiko.dj" },
     { "label": "TikTok",     "url": "https://www.tiktok.com/@maniatiko.dj" },
     { "label": "Facebook",   "url": "https://www.facebook.com/profile.php?id=61590419833191" }
   ],
 
   "gigs": [
-    {
-      "date": "06.14.2026",
-      "city": "Santiago, CL",
-      "venue": "Blackout × Radikals Techno",
-      "lineup": ["Maniatiko", "Aldes", "Kask4r", "Mary B"],
-      "tickets": "https://ticketiza.cl/"
-    },
-    {
-      "date": "06.28.2026",
-      "city": "Santiago, CL",
-      "venue": "Hollenraum vol. VII",
-      "lineup": ["Maniatiko", "19.85", "Likikon"],
-      "tickets": "https://ticketiza.cl/"
-    },
-    {
-      "date": "07.12.2026",
-      "city": "Valparaíso, CL",
-      "venue": "Circuito Integrado × 909 Freakz",
-      "lineup": ["Maniatiko B2B Bonek", "Lurtz"]
-    },
-    {
-      "date": "03.15.2026",
-      "city": "Santiago, CL",
-      "venue": "Stupef × Radikals",
-      "lineup": ["Maniatiko"]
-    },
-    {
-      "date": "02.08.2026",
-      "city": "Santiago, CL",
-      "venue": "Black Blood",
-      "lineup": ["Maniatiko"]
-    },
-    {
-      "date": "12.21.2025",
-      "city": "Santiago, CL",
-      "venue": "909 Freakz",
-      "lineup": ["Maniatiko"]
-    },
-    {
-      "date": "11.02.2025",
-      "city": "Santiago, CL",
-      "venue": "Teknokratas",
-      "lineup": ["Maniatiko"]
-    },
-    {
-      "date": "09.14.2025",
-      "city": "Santiago, CL",
-      "venue": "Hollenraum II",
-      "lineup": ["Maniatiko"]
-    }
+    { "date": "06.20.2026", "city": "Santiago, CL", "venue": "Club 808" },
+    { "date": "05.29.2026", "city": "Santiago, CL", "venue": "Requiem × Vërrückt" },
+    { "date": "05.16.2026", "city": "Santiago, CL", "venue": "Verminous" },
+    { "date": "05.08.2026", "city": "Santiago, CL", "venue": "Galpón Technokikazo" },
+    { "date": "03.28.2026", "city": "Santiago, CL", "venue": "Vërrückt · F2F Armoniko" },
+    { "date": "03.27.2026", "city": "Santiago, CL", "venue": "Metalurgia Tekno" },
+    { "date": "03.01.2026", "city": "Santiago, CL", "venue": "Club Roxbury" },
+    { "date": "02.28.2026", "city": "Santiago, CL", "venue": "Nicole Lukys · Radikals Techno warmup" },
+    { "date": "01.02.2026", "city": "Santiago, CL", "venue": "Höllenraum × Inmortal Techno" },
+    { "date": "11.08.2025", "city": "Santiago, CL", "venue": "Pater Noster" },
+    { "date": "11.01.2025", "city": "Santiago, CL", "venue": "Lobotonik · Radikals Techno" }
   ],
 
   "mixes": [
@@ -302,6 +267,10 @@
 
   "footer": {
     "epitaph": "† The ritual doesn't end. It only changes form †",
+    "booking": {
+      "label": "Booking Enquiries",
+      "email": "maniatikodj.bussines@gmail.com"
+    },
     "credit": {
       "label": "@_dema1348",
       "href": "https://www.instagram.com/_dema1348/",

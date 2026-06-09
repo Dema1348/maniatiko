@@ -69,7 +69,7 @@ tensión mental + física, motivo †).
 ## Diseño por sección (cada una transmite la bio)
 Cada sección traduce un concepto de la bio en lenguaje visual. Orden actual del sitio:
 
-1. **Hero** — backdrop con triple radial gradient rojo desvanecido (profundidad atmosférica) + 4 stamps en las esquinas: TL `† Techno` (genre tag), TR `† 165 BPM` (pulsa sincronizado con el Bochka, period 0.3636s), BL coordenadas `33.4°S · 70.6°W`, BR `Santiago · CL`. Title `Maniatiko` con char-split: cada letra es un span animado en GSAP (rise + rotateX + stagger). Phrase `DJ † Producer † Industrial † Hard Kicks` en mono 700 grande. CTA `Listen to tracks` → `#mixes`.
+1. **Hero** — backdrop con triple radial gradient rojo desvanecido + 4 stamps: TL `† Neo Bochka` (su subgénero declarado), TR `† 165 BPM` (pulsa sincronizado con el Bochka), BL coordenadas `33.4°S · 70.6°W`, BR `Santiago · CL`. Title `Maniatiko` en Elms Sans light + tracking amplio (ver Identidad visual). Phrase `DJ † Producer † Techno † Neo Bochka † Hypnotic` (géneros oficiales del artista). CTA `Listen to tracks` → `#mixes`.
 2. **Marquee** (divider) — 2 lanes scrolleando en direcciones opuestas con palabras del mundo de Maniatiko (Bochka Pressure, Hypnotic, Tectonic, Hard Kicks + crews chilenos). Loop infinito = "constant propulsion". Sin section wrapper.
 3. **I · Origin** — capítulos numerados I/II/III con alineación alternada izq/der + línea vertical izquierda con dots de accent. Sección biográfica (no manifiesto declarativo — la bio narra de dónde viene y cómo construye su sonido). Después de los chapters: **Artist Dossier** — tabla key/value con Origin · Base · Sound · Crews · Stage w/ · Platforms · Booking. Estructura editorial pro.
 4. **II · Live** — split automático por fecha actual:
@@ -79,6 +79,7 @@ Cada sección traduce un concepto de la bio en lenguaje visual. Orden actual del
 6. **IV · Aftermath** — filas editoriales alternadas (izq/der). Cada entrada: foto B&W tratada con corner badge de fecha + chapter num + venue + city + anecdote italic con border-left de accent. "What remained" después de cada set.
 7. **V · Reverb** — 3 cards con quotes con text-shadow stack creando reverberación visual + source en mono. "What lingers" — lo que se dijo y sigue resonando.
 8. **VI · Press Kit** — 4 cards descargables (Bio TXT · Press Photo · Promo Video · Tech Rider) con CTA Download. URLs `#` por ahora.
+9. **Footer** — `Booking Enquiries` bloque accent prominente con email `maniatikodj.bussines@gmail.com` (mailto) sobre los socials. CTA principal de contratación.
 
 > La sección Crews fue removida — la info (crews chilenos + DJs B2B) ya está en el Artist Dossier de Origin. Los arrays `crews[]` y `lineup[]` permanecen en data.json por si se necesita reactivar la sección (renderer `roster` sigue definido).
 10. **Footer** — brand grande, epitafio `† The ritual doesn't end. It only changes form †`, socials (IG, SC, TikTok, Facebook), copyright dinámico y credit `Made with love by @_dema1348` → `https://www.instagram.com/_dema1348/`.
@@ -119,7 +120,7 @@ Todo el contenido vive en `public/data.json`. Para editar/agregar, solo se modif
   - `source`: nombre de array top-level del JSON (ej. `"gigs"`, `"mixes"`) — el render busca los items ahí
   - `items`: alternativa, items inline (usado por `chapters`: array de strings con cada párrafo)
   - `left` / `right` (solo para `roster`): `{ label, source }` — define las 2 columnas (collectives + shared stage)
-- **socials[]** — `{ label, url }` — links del footer
+- **socials[]** — `{ label, url }` — links del footer. Orden: plataformas de música primero (Bandcamp, Spotify, SoundCloud, YouTube), luego redes sociales (Instagram, TikTok, Facebook).
 - **gigs[]** — `{ date (MM.DD.YYYY), city, venue, lineup[], tickets? }`. JS particiona en upcoming/past por fecha actual.
 - **mixes[]** — `{ platform, title, description, url }`. Usado por Tracks PRO (canvas + setlist).
 - **tracks[]**, **gallery[]** — actualmente vacías (legado por si se necesitan a futuro).
@@ -128,7 +129,9 @@ Todo el contenido vive en `public/data.json`. Para editar/agregar, solo se modif
 - **lineup[]** — `{ name }`. DJs con los que ha compartido escenario.
 - **press[]** — `{ quote, source }`.
 - **presskit[]** — `{ kind, title, description, cta, url }`. URLs placeholder `#` hasta tener assets reales.
-- **footer** — `{ epitaph, credit: { label, href, prefix } }`. `prefix` permite personalizar el texto antes del nombre (default "Made by", actual "Made with love by").
+- **footer** — `{ epitaph, booking: { label, email }, credit: { label, href, prefix } }`.
+  - `booking` se renderiza como bloque destacado con border accent en el footer (mailto link). Si se omite no aparece.
+  - `credit.prefix` personaliza el texto antes del nombre (default "Made by", actual "Made with love by").
 
 ### Flujo de render (main.js)
 1. `fetch("data.json")` al `DOMContentLoaded`
@@ -147,11 +150,10 @@ Todo el contenido vive en `public/data.json`. Para editar/agregar, solo se modif
 ## Estado actual
 - Scaffold completo con 10 piezas (hero + marquee + 7 secciones + footer)
 - Identidad visual cerrada: rojo `#f20100` + Bochka pulse 140bpm + glitch en hover + scanlines permanentes + motivo †
-- **Datos reales**: handles sociales (IG, SC, TikTok, Facebook), 6 tracks reales con URLs SoundCloud, bio en inglés desde el bio largo del dev, crews chilenos reales, lineup real de DJs B2B, dossier completo
+- **Datos reales del cuestionario (2026-06-09)**: 7 plataformas (Bandcamp, Spotify, SoundCloud, YouTube, IG, TikTok, Facebook), email de booking `maniatikodj.bussines@gmail.com`, género oficial "Techno · Neo Bochka · Hypnotic", 11 gigs reales (10 past + 1 upcoming: Club 808 el 20 Jun 2026), 6 tracks SoundCloud con URLs reales, 3 fotos en `public/img/` para Aftermath, bio narrativo completo
 - **Mock que falta reemplazar**:
-  - Gigs (3 futuros + 5 pasados — usan crews/venues reales pero fechas inventadas)
-  - Memories (3 entradas con anecdotes poéticas genéricas + picsum placeholders)
-  - Press quotes (3 quotes mock)
+  - Memories anecdotes (texto poético genérico, las fotos sí son reales)
+  - Press quotes (3 quotes mock — esperan reviews reales)
   - Press Kit URLs (todos `#`, esperan Drive links reales)
   - `img/og-image.jpg` (1200x630) y favicon definitivo
 

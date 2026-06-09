@@ -1257,6 +1257,41 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   color: var(--text-dim);
 }
 .footer-epitaph:empty { display: none; }
+
+.footer-booking {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem 2rem;
+  border: 1px solid var(--accent);
+  background: rgba(var(--accent-rgb), 0.04);
+  box-shadow: 0 0 28px rgba(var(--accent-rgb), 0.12);
+  margin: 1rem 0 0.5rem;
+}
+.footer-booking:empty { display: none; }
+.footer-booking-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.footer-booking-email {
+  font-family: var(--font-mono);
+  font-size: clamp(0.95rem, 2vw, 1.2rem);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--text);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.25s, color 0.25s;
+}
+.footer-booking-email:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
 .footer-links {
   display: flex;
   flex-wrap: wrap;

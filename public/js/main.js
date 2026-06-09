@@ -744,6 +744,15 @@ function renderFooter(data) {
     document.getElementById("footerEpitaph").textContent = footer.epitaph;
   }
 
+  const $booking = document.getElementById("footerBooking");
+  if ($booking && footer.booking && footer.booking.email) {
+    const label = footer.booking.label || "Booking";
+    $booking.innerHTML = `
+      <span class="footer-booking-label">† ${escapeHtml(label)}</span>
+      <a class="footer-booking-email" href="mailto:${footer.booking.email}">${escapeHtml(footer.booking.email)}</a>
+    `;
+  }
+
   const $links = document.getElementById("footerLinks");
   if ($links) {
     $links.innerHTML = socials
