@@ -1,0 +1,312 @@
+{
+  "site": {
+    "name": "Maniatiko",
+    "tagline": "Hypnotic Industrial Techno",
+    "description": "Maniatiko — hypnotic industrial techno producer and DJ from Santiago, Chile.",
+    "url": "https://maniatiko-dj.web.app/",
+    "locale": "en_US",
+    "ogImage": "img/og-image.jpg",
+    "themeColor": "#050505"
+  },
+
+  "analytics": {
+    "enabled": false,
+    "firebase": {
+      "apiKey": "",
+      "authDomain": "",
+      "projectId": "maniatiko-dj",
+      "storageBucket": "",
+      "messagingSenderId": "",
+      "appId": "",
+      "measurementId": ""
+    }
+  },
+
+  "nav": [],
+
+  "hero": {
+    "title": "Maniatiko",
+    "phrase": "DJ † Producer † Industrial † Hard Kicks",
+    "stamps": {
+      "tl": "† Techno",
+      "tr": "† 165 BPM",
+      "bl": "33.4°S · 70.6°W",
+      "br": "Santiago · CL"
+    },
+    "cta": {
+      "label": "Listen to tracks",
+      "href": "#mixes"
+    }
+  },
+
+  "sections": [
+    {
+      "id": "marquee",
+      "type": "marquee",
+      "lanes": [
+        "BOCHKA PRESSURE † HYPNOTIC † TECTONIC † HARD KICKS † INDUSTRIAL † DARK PROPULSION † DISTORTED TEXTURES † PROLONGED HYPNOSIS † RITUAL TERRITORY",
+        "RADIKALS † BLACKOUT † HOLLENRAUM † CIRCUITO INTEGRADO † 909 FREAKZ † TEKNOKRATAS † SANTIAGO † CHILE † UNDERGROUND"
+      ]
+    },
+    {
+      "id": "bio",
+      "type": "chapters",
+      "title": "Origin",
+      "subtitle": "Architecture of mental tension",
+      "items": [
+        "Producer and DJ born in Santiago, Chile, focused on developing his own vision within industrial techno. His work emerges from a deeply personal quest — built upon his experiences, ear, artistic maturity and inner growth — shaping a new sonic language: a collision between Bochka pressure, hypnotic grooves, tectonic energy and a constant, dark, immersive and destructive propulsion in its impact.",
+        "His music is built upon an architecture of mental tension, physical intensity and emotional memory. Each production stems from his own lived experiences, processed and transfigured into sonic matter: distorted textures, abrasive percussion, dense atmospheres and repetitive structures that lead to prolonged hypnosis — making you feel like you're part of his story.",
+        "Within the Chilean underground scene he has become a recurring figure, sharing stages with Aldes, Kask4r, 19.85, Mary B, Likikon, Bonek and Lurtz. His presence reflects an expanding identity, marked by intense sonic exploration — both mental and physical — where darkness functions not only as aesthetic but as emotional, bodily and ritualistic territory."
+      ],
+      "dossier": {
+        "title": "† Artist Dossier",
+        "rows": [
+          { "key": "Origin",    "value": "Chile" },
+          { "key": "Base",      "value": "Santiago" },
+          { "key": "Sound",     "value": "Hard · Industrial · Hypnotic Techno" },
+          { "key": "Crews",     "value": "Radikals · Blackout · Hollenraum · Circuito Integrado · 909 Freakz · Teknokratas" },
+          { "key": "Stage w/",  "value": "Aldes · Kask4r · 19.85 · Mary B · Likikon · Bonek · Lurtz" },
+          { "key": "Platforms", "value": "SoundCloud · Instagram · TikTok · Facebook" },
+          { "key": "Booking",   "value": "—" }
+        ]
+      }
+    },
+    {
+      "id": "gigs",
+      "type": "gigs",
+      "title": "Live",
+      "subtitle": "Where the ritual continues",
+      "source": "gigs"
+    },
+    {
+      "id": "mixes",
+      "type": "mixes",
+      "title": "Productions",
+      "subtitle": "Originals · SoundCloud",
+      "source": "mixes"
+    },
+    {
+      "id": "memories",
+      "type": "memories",
+      "title": "Aftermath",
+      "subtitle": "What remained",
+      "source": "memories"
+    },
+    {
+      "id": "crews",
+      "type": "roster",
+      "title": "Crews",
+      "subtitle": "Underground family",
+      "left":  { "label": "Collectives",  "source": "crews"  },
+      "right": { "label": "Shared Stage", "source": "lineup" }
+    },
+    {
+      "id": "press",
+      "type": "press",
+      "title": "Reverb",
+      "subtitle": "What lingers",
+      "source": "press"
+    },
+    {
+      "id": "presskit",
+      "type": "presskit",
+      "title": "Press Kit",
+      "subtitle": "Assets & dossier for press, promoters and editorial",
+      "source": "presskit"
+    }
+  ],
+
+  "socials": [
+    { "label": "Instagram",  "url": "https://www.instagram.com/maniatiko.dj" },
+    { "label": "SoundCloud", "url": "https://soundcloud.com/maniatikx" },
+    { "label": "TikTok",     "url": "https://www.tiktok.com/@maniatiko.dj" },
+    { "label": "Facebook",   "url": "https://www.facebook.com/profile.php?id=61590419833191" }
+  ],
+
+  "gigs": [
+    {
+      "date": "06.14.2026",
+      "city": "Santiago, CL",
+      "venue": "Blackout × Radikals Techno",
+      "lineup": ["Maniatiko", "Aldes", "Kask4r", "Mary B"],
+      "tickets": "https://ticketiza.cl/"
+    },
+    {
+      "date": "06.28.2026",
+      "city": "Santiago, CL",
+      "venue": "Hollenraum vol. VII",
+      "lineup": ["Maniatiko", "19.85", "Likikon"],
+      "tickets": "https://ticketiza.cl/"
+    },
+    {
+      "date": "07.12.2026",
+      "city": "Valparaíso, CL",
+      "venue": "Circuito Integrado × 909 Freakz",
+      "lineup": ["Maniatiko B2B Bonek", "Lurtz"]
+    },
+    {
+      "date": "03.15.2026",
+      "city": "Santiago, CL",
+      "venue": "Stupef × Radikals",
+      "lineup": ["Maniatiko"]
+    },
+    {
+      "date": "02.08.2026",
+      "city": "Santiago, CL",
+      "venue": "Black Blood",
+      "lineup": ["Maniatiko"]
+    },
+    {
+      "date": "12.21.2025",
+      "city": "Santiago, CL",
+      "venue": "909 Freakz",
+      "lineup": ["Maniatiko"]
+    },
+    {
+      "date": "11.02.2025",
+      "city": "Santiago, CL",
+      "venue": "Teknokratas",
+      "lineup": ["Maniatiko"]
+    },
+    {
+      "date": "09.14.2025",
+      "city": "Santiago, CL",
+      "venue": "Hollenraum II",
+      "lineup": ["Maniatiko"]
+    }
+  ],
+
+  "mixes": [
+    {
+      "platform": "SoundCloud · Original",
+      "title": "MANTRA",
+      "description": "Prolonged hypnosis. Bochka pressure as repeated mantra.",
+      "url": "https://soundcloud.com/maniatikx/mantra"
+    },
+    {
+      "platform": "SoundCloud · Original",
+      "title": "SINFONIA DEL MAL ETERNO",
+      "description": "Distortion, abrasive percussion, dense atmosphere.",
+      "url": "https://soundcloud.com/maniatikx/symphony-of-eternal-evil"
+    },
+    {
+      "platform": "SoundCloud · Original",
+      "title": "LAMENTOS",
+      "description": "Emotional memory transfigured into sonic matter.",
+      "url": "https://soundcloud.com/maniatikx/maniatiko-lamentos"
+    },
+    {
+      "platform": "SoundCloud · Original",
+      "title": "ALMA DISTORSIONADA",
+      "description": "Distorted textures. Repetitive structure that drags you in.",
+      "url": "https://soundcloud.com/maniatikx/46fd1481-88a7-45e1-8dec-eaece79798c1"
+    },
+    {
+      "platform": "SoundCloud · Original",
+      "title": "LA MELODÍA DE LA DESESPERACIÓN",
+      "description": "Mental tension as territory. Constant propulsion.",
+      "url": "https://soundcloud.com/maniatikx/6b8454c8-a636-4e0a-a8ff-4fb13ee44cf2"
+    },
+    {
+      "platform": "SoundCloud · Original",
+      "title": "VIOLENCIA INTRAFAMILIAR",
+      "description": "Physical intensity. Hard kicks. No contemplation.",
+      "url": "https://soundcloud.com/maniatikx/7c928bc8-230a-426c-9542-cdde60682f31"
+    }
+  ],
+
+  "tracks": [],
+
+  "gallery": [],
+
+  "memories": [
+    {
+      "date": "—",
+      "venue": "BLACKOUT × RADIKALS",
+      "city": "Santiago, CL",
+      "anecdote": "Sunrise found us still pushing. The kick wouldn't stop.",
+      "image": "https://picsum.photos/seed/mem-1/1200/800"
+    },
+    {
+      "date": "—",
+      "venue": "HOLLENRAUM",
+      "city": "Santiago, CL",
+      "anecdote": "The room held its breath until the drop. Then nothing was the same.",
+      "image": "https://picsum.photos/seed/mem-2/1200/800"
+    },
+    {
+      "date": "—",
+      "venue": "CIRCUITO INTEGRADO",
+      "city": "Valparaíso, CL",
+      "anecdote": "They asked for one more hour. We gave them three.",
+      "image": "https://picsum.photos/seed/mem-3/1200/800"
+    }
+  ],
+
+  "crews": [
+    { "name": "Radikals Techno",     "link": "https://instagram.com/radikalstechno" },
+    { "name": "Blackout",            "link": "" },
+    { "name": "Circuito Integrado",  "link": "" },
+    { "name": "909 Freakz",          "link": "" },
+    { "name": "Hollenraum",          "link": "" },
+    { "name": "Teknokratas",         "link": "https://www.instagram.com/teknokratascl" }
+  ],
+
+  "lineup": [
+    { "name": "Aldes" },
+    { "name": "Kask4r" },
+    { "name": "19.85" },
+    { "name": "Mary B" },
+    { "name": "Likikon" },
+    { "name": "Bonek" },
+    { "name": "Lurtz" }
+  ],
+
+  "press": [
+    {
+      "quote": "Constant, dark, immersive propulsion. He doesn't play: he pushes.",
+      "source": "Underground CL"
+    },
+    {
+      "quote": "Bochka pressure pushed to the limit. Prolonged hypnosis as physical territory.",
+      "source": "Hollenraum"
+    },
+    {
+      "quote": "Part of the new generation redrawing Chilean techno.",
+      "source": "Radikals Sessions"
+    }
+  ],
+
+  "presskit": [
+    {
+      "kind": "Text Document",
+      "title": "Artist Biography",
+      "description": "Full press bio in plain text. Ready for event listings, festival programs and editorial.",
+      "cta": "Download .TXT",
+      "url": "#"
+    },
+    {
+      "kind": "Image Asset",
+      "title": "Press Photo",
+      "description": "High-resolution press photograph in B&W. Minimum 300 DPI for print reproduction.",
+      "cta": "Download Photos",
+      "url": "#"
+    },
+    {
+      "kind": "Video Asset",
+      "title": "Promo Video",
+      "description": "DJ set footage and artist reel. Available via YouTube channel or direct request.",
+      "cta": "Download Video",
+      "url": "#"
+    }
+  ],
+
+  "footer": {
+    "epitaph": "† The ritual doesn't end. It only changes form †",
+    "credit": {
+      "label": "@_dema1348",
+      "href": "https://www.instagram.com/_dema1348/",
+      "prefix": "Made with love by"
+    }
+  }
+}

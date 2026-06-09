@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Firebase cache
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Editor
+.vscode/
+.idea/
+
+# Env / secrets
+.env
+.env.local
+*.local
+
+# Node (por si en el futuro se agrega)
+node_modules/
+npm-debug.log
+yarn-error.log

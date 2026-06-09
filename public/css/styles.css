@@ -1,0 +1,1268 @@
+/* ============================================================
+   maniatiko.dj — Hypnotic Neon Decay
+   Identidad visual cerrada: magenta neón + glitch medio sobre negro.
+   ============================================================ */
+:root {
+  --bg: #050505;
+  --bg-elevated: #0a0a0a;
+  --bg-card: #0d0d0d;
+  --text: #e8e8e8;
+  --text-dim: rgba(232, 232, 232, 0.72);
+  --text-faint: rgba(232, 232, 232, 0.42);
+
+  --accent: #f20100;
+  --accent-rgb: 242, 1, 0;
+  --accent-glow: rgba(242, 1, 0, 0.5);
+
+  --border: rgba(232, 232, 232, 0.08);
+  --border-hover: rgba(232, 232, 232, 0.22);
+
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body:    'Space Grotesk', system-ui, sans-serif;
+  --font-mono:    'Space Mono', ui-monospace, monospace;
+
+  --nav-h: 64px;
+  --container: 1200px;
+  --radius: 0;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  font-weight: 400;
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, svg, video { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+
+/* ============================================================
+   Grain overlay
+   ============================================================ */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============================================================
+   Nav
+   ============================================================ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+  transition: background 0.3s var(--ease-out), backdrop-filter 0.3s var(--ease-out);
+}
+.nav.is-scrolled {
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+.nav-links {
+  display: flex;
+  gap: clamp(1rem, 2vw, 1.75rem);
+}
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--accent); }
+
+.nav-toggle {
+  display: none;
+  width: 32px; height: 32px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+.nav-toggle span {
+  display: block;
+  width: 22px; height: 1px;
+  background: var(--text);
+  transition: transform 0.3s var(--ease-out), opacity 0.2s;
+}
+.nav-toggle.is-open span:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+.nav-toggle.is-open span:nth-child(2) { opacity: 0; }
+.nav-toggle.is-open span:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+
+/* ============================================================
+   Hero — atmospheric backdrop + 4 corner stamps + char-split title
+   ============================================================ */
+.hero {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--nav-h) 1.5rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Backdrop — radial glow rojo difuminado detrás del título */
+.hero-backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 48%, rgba(var(--accent-rgb), 0.22), transparent 70%),
+    radial-gradient(ellipse 90% 80% at 50% 100%, rgba(var(--accent-rgb), 0.08), transparent 70%),
+    radial-gradient(circle at 50% 50%, rgba(232, 232, 232, 0.025), transparent 65%);
+}
+.hero-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 100% 70% at 50% 50%, transparent 40%, rgba(0,0,0,0.6) 100%);
+}
+
+/* Corner stamps — tech spec sheet aesthetic */
+.hero-stamps {
+  position: absolute;
+  inset: clamp(5rem, 10vw, 7rem) clamp(1.5rem, 5vw, 3rem) clamp(3rem, 6vw, 4rem);
+  pointer-events: none;
+  z-index: 1;
+}
+.hero-stamp {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+.hero-stamp:empty { display: none; }
+.hero-stamp--tl { top: 0; left: 0; }
+.hero-stamp--tr { top: 0; right: 0; color: var(--accent); animation: bpmPulse 0.3636s ease-out infinite; }
+.hero-stamp--bl { bottom: 0; left: 0; }
+.hero-stamp--br { bottom: 0; right: 0; }
+
+@keyframes bpmPulse {
+  0%   { opacity: 1; text-shadow: 0 0 10px var(--accent-glow); }
+  100% { opacity: 0.5; text-shadow: none; }
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 1000px;
+  position: relative;
+  z-index: 2;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3.5rem, 14vw, 12rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+}
+.hero-char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+.hero-phrase {
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text);
+  max-width: 700px;
+}
+.hero-cta {
+  margin-top: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1.75rem;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: background 0.2s, box-shadow 0.25s, color 0.2s;
+}
+.hero-cta:hover {
+  background: rgba(var(--accent-rgb), 0.08);
+  box-shadow: 0 0 24px var(--accent-glow);
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.scroll-line {
+  width: 1px;
+  height: 48px;
+  background: linear-gradient(to bottom, transparent, var(--accent));
+  animation: scrollPulse 2.4s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%, 100% { transform: scaleY(1); opacity: 0.6; }
+  50%      { transform: scaleY(1.3); opacity: 1; }
+}
+
+/* ============================================================
+   Section base
+   ============================================================ */
+.section {
+  padding: clamp(3rem, 7vw, 5.5rem) clamp(1.5rem, 5vw, 4rem);
+  max-width: var(--container);
+  margin: 0 auto;
+  position: relative;
+}
+.section-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 0.75rem;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.section-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 2.25rem;
+}
+
+/* ============================================================
+   Generic card grid (gigs / mixes / tracks / crews)
+   ============================================================ */
+.grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: border-color 0.25s, transform 0.25s var(--ease-out);
+}
+.card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 18px rgba(var(--accent-rgb), 0.12);
+  transform: translateY(-2px);
+}
+.card-meta {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.card-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+}
+.card-body {
+  font-size: 0.95rem;
+  color: var(--text-dim);
+}
+
+/* ============================================================
+   Rituals (Upcoming Shows) — full-width blocks con fecha ancla
+   ============================================================ */
+.rituals {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border);
+}
+.ritual {
+  display: grid;
+  grid-template-columns: 180px 60px 1fr auto;
+  gap: 2.5rem;
+  align-items: center;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.25s;
+}
+.ritual:hover { background: rgba(var(--accent-rgb), 0.04); }
+.ritual--past { opacity: 0.5; }
+.ritual--past:hover { opacity: 0.7; }
+
+.ritual-date {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 0.9;
+}
+.ritual-day {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3.5rem, 7vw, 5rem);
+  letter-spacing: -0.05em;
+  color: var(--accent);
+}
+.ritual-month {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  color: var(--text);
+  margin-top: 0.5rem;
+}
+.ritual-year {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  color: var(--text-faint);
+  margin-top: 0.25rem;
+}
+
+.ritual-chapter {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.35rem;
+  letter-spacing: 0.18em;
+  color: var(--text-faint);
+}
+
+.ritual-venue {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.ritual-city {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.ritual-lineup {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+  margin-top: 0.6rem;
+}
+
+.ritual-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+.ritual-status {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+.ritual--past .ritual-status {
+  border-color: var(--border);
+  color: var(--text-faint);
+}
+.ritual-tickets {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  transition: color 0.25s;
+}
+.ritual-tickets:hover { color: var(--accent); }
+
+@media (max-width: 720px) {
+  .ritual {
+    grid-template-columns: 120px 1fr;
+    gap: 1.25rem;
+    padding: 2rem 0;
+  }
+  .ritual-chapter { display: none; }
+  .ritual-action {
+    grid-column: 1 / -1;
+    align-items: flex-start;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+  }
+  .ritual-day { font-size: 3rem; }
+}
+
+/* ============================================================
+   Archive table — gigs pasados como tabla densa
+   ============================================================ */
+.archive {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.archive-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+}
+.archive-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+}
+.archive-table thead th {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  text-align: left;
+  padding: 0.85rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.archive-table tbody tr {
+  transition: background 0.2s;
+}
+.archive-table tbody tr:hover {
+  background: rgba(var(--accent-rgb), 0.04);
+}
+.archive-table tbody td {
+  padding: 1.1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+  vertical-align: top;
+}
+.archive-table tbody tr:hover .archive-venue { color: var(--accent); }
+.archive-date {
+  white-space: nowrap;
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+}
+.archive-venue {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text);
+  text-transform: uppercase;
+  transition: color 0.25s;
+}
+.archive-city {
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+@media (max-width: 720px) {
+  .archive-table thead { display: none; }
+  .archive-table tbody td {
+    display: block;
+    padding: 0.4rem 0;
+    border-bottom: none;
+  }
+  .archive-table tbody tr {
+    display: block;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+/* ============================================================
+   Setlist (Tracks) — numbered full-width rows
+   ============================================================ */
+.setlist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--border);
+}
+.setlist-row {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  gap: 2rem;
+  align-items: center;
+  padding: 1.75rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.25s;
+}
+.setlist-row:hover {
+  background: rgba(var(--accent-rgb), 0.04);
+}
+.setlist-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 3.5rem;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--text-faint);
+  transition: color 0.3s, text-shadow 0.3s;
+}
+.setlist-row:hover .setlist-num {
+  color: var(--accent);
+  text-shadow: -2px 0 var(--accent), 2px 0 rgba(0, 217, 255, 0.45);
+}
+.setlist-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+.setlist-meta { display: flex; flex-direction: column; }
+.setlist-desc {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.setlist-action {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  white-space: nowrap;
+  transition: color 0.25s;
+}
+.setlist-action:hover { color: var(--accent); }
+
+@media (max-width: 720px) {
+  .setlist-row {
+    grid-template-columns: 70px 1fr;
+    gap: 1rem;
+    padding: 1.25rem 0;
+  }
+  .setlist-num { font-size: 2.25rem; }
+  .setlist-action {
+    grid-column: 1 / -1;
+    padding-left: 80px;
+    margin-top: -0.5rem;
+  }
+}
+
+/* ============================================================
+   Tracks PRO — cada row tiene su wave inline (canvas propio).
+   La wave es la "firma sonora" del track: freq/amp/speed/offset
+   derivados por hash del título. Hover sobre el row ilumina la wave.
+   ============================================================ */
+.setlist-wave {
+  display: block;
+  width: 100%;
+  height: 32px;
+  margin-top: 0.65rem;
+  opacity: 0.55;
+  transition: opacity 0.35s;
+}
+.setlist-row:hover .setlist-wave,
+.setlist-row.is-active .setlist-wave {
+  opacity: 1;
+}
+.setlist-row.is-active .setlist-num {
+  color: var(--accent);
+  text-shadow: -2px 0 var(--accent), 2px 0 rgba(0, 217, 255, 0.45);
+}
+.setlist-row.is-active {
+  background: rgba(var(--accent-rgb), 0.04);
+}
+
+/* ============================================================
+   Memories — editorial alternating rows
+   Cada memoria: visual (foto o placeholder) + venue + city + anecdote.
+   Alterna izq/der para crear ritmo editorial.
+   ============================================================ */
+.memories {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 5vw, 3.5rem);
+}
+.memory {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: center;
+}
+.memory--right {
+  direction: rtl;
+}
+.memory--right > * {
+  direction: ltr;
+}
+
+.memory-visual {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--bg-card);
+}
+.memory-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) brightness(0.55) contrast(1.25);
+  transition: filter 0.5s, transform 0.6s var(--ease-out);
+}
+.memory:hover .memory-image {
+  filter: grayscale(0.7) brightness(0.7) contrast(1.15);
+  transform: scale(1.02);
+}
+.memory-image--empty {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(var(--accent-rgb), 0.08), transparent 60%),
+    linear-gradient(135deg, #0a0a0a, #1a0303);
+}
+.memory-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.55));
+}
+.memory-badge {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  color: var(--accent);
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--accent);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+}
+.memory-chapter {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.15rem;
+  letter-spacing: 0.18em;
+  color: var(--text);
+  opacity: 0.7;
+}
+
+.memory-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.memory-venue {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+.memory-city {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.memory-anecdote {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text-dim);
+  font-style: italic;
+  border-left: 1px solid var(--accent);
+  padding-left: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 720px) {
+  .memory {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .memory--right { direction: ltr; }
+}
+
+/* Gallery grid */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.5rem;
+}
+.gallery-item {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--bg-card);
+}
+.gallery-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: grayscale(0.4) brightness(0.85);
+  transition: filter 0.4s, transform 0.4s var(--ease-out);
+}
+.gallery-item:hover img {
+  filter: grayscale(0) brightness(1);
+  transform: scale(1.03);
+}
+
+/* Crews (logos o nombres en texto) */
+.crews-track {
+  display: flex;
+  gap: 2.5rem 3rem;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.crew-logo {
+  height: 80px;
+  filter: grayscale(1) brightness(0.85);
+  opacity: 0.7;
+  transition: opacity 0.25s, filter 0.25s;
+}
+.crew-logo:hover { opacity: 1; filter: grayscale(0) brightness(1); }
+.crew-name {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  padding: 0.75rem 1.25rem;
+  transition: color 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+.crew-link:hover .crew-name {
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.18);
+}
+
+/* Section text (manifiesto / bio) */
+.section-text {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text-dim);
+}
+.section-text p { margin: 0; }
+
+/* ============================================================
+   Chapters (Manifesto) — numbered ritual structure
+   ============================================================ */
+.chapters {
+  position: relative;
+  max-width: 920px;
+  margin: 0 auto;
+  padding-left: 2.5rem;
+  border-left: 1px solid var(--border);
+}
+.chapter {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  margin-bottom: 4rem;
+  position: relative;
+}
+.chapter:last-child { margin-bottom: 0; }
+.chapter--right {
+  margin-left: clamp(0px, 12vw, 140px);
+}
+.chapter::before {
+  content: "";
+  position: absolute;
+  left: calc(-2.5rem - 4px);
+  top: 0.85rem;
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+.chapter-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.85rem;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  line-height: 1;
+}
+.chapter-text {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--text-dim);
+}
+@media (max-width: 720px) {
+  .chapters { padding-left: 1.5rem; }
+  .chapter { grid-template-columns: 60px 1fr; gap: 1rem; margin-bottom: 3rem; }
+  .chapter--right { margin-left: 0; }
+  .chapter::before { left: calc(-1.5rem - 4px); }
+}
+
+/* ============================================================
+   Artist Dossier — key/value editorial table
+   ============================================================ */
+.dossier {
+  max-width: 920px;
+  margin: 3rem auto 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.dossier-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 2rem;
+}
+.dossier-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+}
+.dossier-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 1.5rem;
+  align-items: baseline;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.dossier-row:last-child { border-bottom: none; }
+.dossier-key {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin: 0;
+}
+.dossier-value {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.55;
+}
+@media (max-width: 720px) {
+  .dossier-row { grid-template-columns: 1fr; gap: 0.3rem; }
+}
+
+/* ============================================================
+   Roster (Crews + Lineup) — two columns: Collectives + Shared Stage
+   ============================================================ */
+.roster {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 6vw, 5rem);
+}
+.roster-col { display: flex; flex-direction: column; }
+.roster-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border);
+}
+.roster-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+}
+.roster-name {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 0.85rem 1.1rem;
+  border: 1px solid var(--border);
+  transition: color 0.25s, border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+.roster-link:hover .roster-name {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.04);
+  box-shadow: 0 0 18px rgba(var(--accent-rgb), 0.2);
+}
+@media (max-width: 720px) {
+  .roster { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+
+/* ============================================================
+   Press Kit — 3 cards de assets descargables
+   ============================================================ */
+.presskit {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.presskit-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 2rem 1.75rem;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s var(--ease-out);
+}
+.presskit-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 22px rgba(var(--accent-rgb), 0.18);
+  transform: translateY(-2px);
+}
+.presskit-kind {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.presskit-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+.presskit-desc {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-dim);
+  flex: 1;
+}
+.presskit-cta {
+  align-self: flex-start;
+  margin-top: 0.75rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--border-hover);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text);
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
+}
+.presskit-cta:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.06);
+}
+@media (max-width: 720px) {
+  .presskit { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   Lightbox
+   ============================================================ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.lightbox.is-open { display: flex; }
+.lightbox-close {
+  position: absolute;
+  top: 1.5rem; right: 1.5rem;
+  font-size: 2rem;
+  color: var(--text);
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+}
+.lightbox-content { max-width: 90vw; max-height: 90vh; }
+.lightbox-content img,
+.lightbox-content iframe { max-width: 90vw; max-height: 90vh; }
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 4rem 1.5rem 2rem;
+  text-align: center;
+}
+.footer-inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+.footer-brand {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 5vw, 3rem);
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+.footer-epitaph {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.footer-epitaph:empty { display: none; }
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+.footer-links a {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--accent); }
+.footer-bottom {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.footer-credit a { border-bottom: 1px solid var(--border); }
+
+/* GSAP reveal hooks */
+[data-reveal] { opacity: 0; transform: translateY(24px); }
+
+/* ============================================================
+   Marquee — divider tipográfico entre secciones.
+   2+ lanes scrolleando en direcciones opuestas, infinito.
+   ============================================================ */
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  padding: 1.75rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+.marquee-lane {
+  display: flex;
+  width: max-content;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.marquee-lane + .marquee-lane { margin-top: 0.5rem; }
+.marquee-lane--left  .marquee-track { animation: marqueeLeft 50s linear infinite; }
+.marquee-lane--right .marquee-track { animation: marqueeRight 65s linear infinite; }
+.marquee-lane--right { color: var(--accent); opacity: 0.55; }
+.marquee-lane--left  { color: var(--text-dim); }
+.marquee-track {
+  display: flex;
+  gap: 2rem;
+  will-change: transform;
+}
+.marquee-track > span { padding-right: 2rem; }
+
+@keyframes marqueeLeft {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes marqueeRight {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+/* ============================================================
+   Bochka Pulse — heartbeat global a 140 BPM
+   Línea de 2px bajo el nav que late en accent permanente.
+   "Constant propulsion" de la bio convertida en pulso visual.
+   ============================================================ */
+.bochka-pulse {
+  position: fixed;
+  top: var(--nav-h);
+  left: 0; right: 0;
+  height: 2px;
+  pointer-events: none;
+  z-index: 99;
+  background: var(--accent);
+  animation: bochkaPulse 0.3636s ease-out infinite;
+  transform-origin: center;
+}
+@keyframes bochkaPulse {
+  0%   { opacity: 1; box-shadow: 0 0 14px var(--accent-glow), 0 0 4px var(--accent); transform: scaleY(2); }
+  100% { opacity: 0.12; box-shadow: none; transform: scaleY(1); }
+}
+
+/* ============================================================
+   Scanlines + glitch en hover de títulos
+   ============================================================ */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    rgba(232, 232, 232, 0.04) 2px,
+    rgba(232, 232, 232, 0.04) 3px
+  );
+  mix-blend-mode: overlay;
+  opacity: 0.7;
+}
+
+.hero-title,
+.section-title {
+  position: relative;
+  cursor: default;
+}
+.hero-title:hover,
+.section-title:hover {
+  animation: glitchHover 0.45s steps(2) infinite;
+}
+
+@keyframes glitchHover {
+  0%   { transform: translate(0, 0); text-shadow: -2px 0 var(--accent), 2px 0 #00d9ff; }
+  25%  { transform: translate(-1px, 1px); text-shadow: 2px 0 var(--accent), -2px 0 #00d9ff; }
+  50%  { transform: translate(1px, -1px); text-shadow: -1px 0 var(--accent), 1px 0 #00d9ff; }
+  75%  { transform: translate(-1px, -1px); text-shadow: 1px 0 var(--accent), -1px 0 #00d9ff; }
+  100% { transform: translate(0, 0); text-shadow: -2px 0 var(--accent), 2px 0 #00d9ff; }
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 720px) {
+  .nav-toggle { display: flex; }
+  .nav-links {
+    position: fixed;
+    top: var(--nav-h);
+    right: 0;
+    width: min(80vw, 320px);
+    height: calc(100vh - var(--nav-h));
+    background: rgba(10, 10, 10, 0.96);
+    backdrop-filter: blur(12px);
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2rem;
+    transform: translateX(100%);
+    transition: transform 0.35s var(--ease-out);
+  }
+  .nav-links.is-open { transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

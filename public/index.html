@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Maniatiko — Hypnotic Industrial Techno</title>
+  <meta name="description" content="Maniatiko — hypnotic industrial techno producer and DJ from Santiago, Chile.">
+  <meta name="theme-color" content="#050505">
+  <link rel="canonical" href="https://maniatiko-dj.web.app/">
+
+  <!-- Open Graph -->
+  <meta property="og:title"       content="Maniatiko — Hypnotic Industrial Techno">
+  <meta property="og:description" content="Hypnotic industrial techno producer and DJ from Santiago, Chile.">
+  <meta property="og:image"       content="https://maniatiko-dj.web.app/img/og-image.jpg">
+  <meta property="og:url"         content="https://maniatiko-dj.web.app/">
+  <meta property="og:type"        content="website">
+  <meta property="og:locale"      content="en_US">
+  <meta property="og:site_name"   content="Maniatiko">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="Maniatiko — Hypnotic Industrial Techno">
+  <meta name="twitter:description" content="Hypnotic industrial techno producer and DJ from Santiago, Chile.">
+  <meta name="twitter:image"       content="https://maniatiko-dj.web.app/img/og-image.jpg">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+  <!-- Fonts (placeholder, redefinir cuando se cierre la identidad visual) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Atmospheric overlays -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="bochka-pulse" aria-hidden="true"></div>
+
+  <!-- Nav (renderizado por JS desde data.nav) -->
+  <nav class="nav" id="nav">
+    <a href="#hero" class="nav-logo" id="navLogo">Maniatiko</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks"></div>
+  </nav>
+
+  <!-- Hero (renderizado por JS desde data.hero) -->
+  <section id="hero" class="hero">
+    <div class="hero-backdrop" aria-hidden="true"></div>
+    <div class="hero-stamps" aria-hidden="true">
+      <span class="hero-stamp hero-stamp--tl" id="heroStampTL"></span>
+      <span class="hero-stamp hero-stamp--tr" id="heroStampTR"></span>
+      <span class="hero-stamp hero-stamp--bl" id="heroStampBL"></span>
+      <span class="hero-stamp hero-stamp--br" id="heroStampBR"></span>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title" id="heroTitle">Maniatiko</h1>
+      <p class="hero-phrase" id="heroPhrase">DJ · Producer</p>
+      <a href="#" class="hero-cta" id="heroCta" hidden></a>
+    </div>
+    <div class="scroll-hint" aria-hidden="true">
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Secciones dinámicas (renderizadas por JS desde data.sections) -->
+  <main id="sectionsRoot"></main>
+
+  <!-- Lightbox (galería) -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">&times;</button>
+    <div class="lightbox-content" id="lightboxContent"></div>
+  </div>
+
+  <!-- Footer (renderizado por JS) -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand" id="footerBrand">Maniatiko</div>
+      <p class="footer-epitaph" id="footerEpitaph"></p>
+      <div class="footer-links" id="footerLinks"></div>
+      <div class="footer-bottom">
+        <p>&copy; <span id="year"></span> <span id="footerName">Maniatiko</span>.</p>
+        <p class="footer-credit" id="footerCredit"></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

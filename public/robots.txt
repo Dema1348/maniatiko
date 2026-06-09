@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://maniatiko-dj.web.app/sitemap.xml
