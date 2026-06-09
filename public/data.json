@@ -217,21 +217,21 @@
       "venue": "BLACKOUT × RADIKALS",
       "city": "Santiago, CL",
       "anecdote": "Sunrise found us still pushing. The kick wouldn't stop.",
-      "image": "https://picsum.photos/seed/mem-1/1200/800"
+      "image": "img/dj1.jpg"
     },
     {
       "date": "—",
       "venue": "HOLLENRAUM",
       "city": "Santiago, CL",
       "anecdote": "The room held its breath until the drop. Then nothing was the same.",
-      "image": "https://picsum.photos/seed/mem-2/1200/800"
+      "image": "img/dj2.jpeg"
     },
     {
       "date": "—",
       "venue": "CIRCUITO INTEGRADO",
       "city": "Valparaíso, CL",
       "anecdote": "They asked for one more hour. We gave them three.",
-      "image": "https://picsum.photos/seed/mem-3/1200/800"
+      "image": "img/dj3.jpeg"
     }
   ],
 
