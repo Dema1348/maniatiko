@@ -17,6 +17,7 @@
   --border: rgba(232, 232, 232, 0.08);
   --border-hover: rgba(232, 232, 232, 0.22);
 
+  --font-logo:    'Elms Sans', 'Space Grotesk', system-ui, sans-serif;
   --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-body:    'Space Grotesk', system-ui, sans-serif;
   --font-mono:    'Space Mono', ui-monospace, monospace;
@@ -95,10 +96,11 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   border-bottom: 1px solid var(--border);
 }
 .nav-logo {
-  font-family: var(--font-display);
-  font-weight: 800;
+  font-family: var(--font-logo);
+  font-weight: 300;
   font-size: 1.1rem;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 .nav-links {
   display: flex;
@@ -203,16 +205,30 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   z-index: 2;
 }
 .hero-title {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: clamp(3.5rem, 14vw, 12rem);
-  line-height: 0.95;
-  letter-spacing: -0.04em;
+  font-family: var(--font-logo);
+  font-weight: 200;
+  font-size: clamp(1.75rem, 10vw, 8.5rem);
+  line-height: 1.05;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
+  /* Nunca romper la palabra en el hero — debe quedar en una sola línea */
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  .hero-title {
+    letter-spacing: 0.14em;
+  }
 }
 .hero-char {
   display: inline-block;
   will-change: transform, opacity;
+  transition: text-shadow 0.4s, color 0.4s;
+}
+/* Hover: cada char recibe halo radial accent (sin offsets que rompan strokes finas) */
+.hero-title:hover .hero-char {
+  text-shadow:
+    0 0 28px rgba(var(--accent-rgb), 0.55),
+    0 0 12px rgba(var(--accent-rgb), 0.35);
 }
 .hero-phrase {
   font-family: var(--font-mono);
@@ -1227,10 +1243,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   align-items: center;
 }
 .footer-brand {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: clamp(1.75rem, 5vw, 3rem);
-  letter-spacing: -0.03em;
+  font-family: var(--font-logo);
+  font-weight: 300;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 .footer-epitaph {
@@ -1360,7 +1376,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   position: relative;
   cursor: default;
 }
-.hero-title:hover,
+/* hero-title queda sin glitch: las strokes finas de Elms Sans se romperían
+   con chromatic aberration. Solo aplica a section titles (Space Grotesk pesado). */
 .section-title:hover {
   animation: glitchHover 0.45s steps(2) infinite;
 }

@@ -225,6 +225,17 @@ function animateHeroIn() {
     stagger: 0.06,
     ease: "power3.out",
     delay: 0.15,
+    onComplete: () => {
+      // Ambient hypnotic wave: cascade de subtle rise/opacity en loop infinito.
+      // Es la traducción visual de la "prolonged hypnosis" + propulsion del Bochka.
+      gsap.to(".hero-char", {
+        y: -5,
+        opacity: 0.85,
+        duration: 1.45,
+        ease: "sine.inOut",
+        stagger: { each: 0.08, repeat: -1, yoyo: true },
+      });
+    },
   });
   gsap.from(".hero-phrase, .hero-cta:not([hidden]), .hero-stamp", {
     opacity: 0,

@@ -37,7 +37,18 @@ tensión mental + física, motivo †).
 - `--text`   `#e8e8e8` hueso
 - `--accent` `#f20100` rojo puro
 
-**Tipos**: Space Grotesk (display/body) + Space Mono (mono)
+**Tipos**:
+- **Logo** (`--font-logo`): **Elms Sans** (variable, axes wght 100-900 + ital). Usado **light + tracked wide** para feel editorial/refinado (matchea el archivo de referencia `logo-demo.png`):
+  - hero-title: weight 200 (ExtraLight), letter-spacing 0.22em
+  - nav-logo: weight 300 (Light), letter-spacing 0.18em
+  - footer-brand: weight 300, letter-spacing 0.2em
+  - **Sin chromatic glitch en hero-title** — las strokes finas no soportan aberración. En vez de eso, dos efectos:
+    - **Ambient hypnotic wave**: GSAP loop infinito post-entrada que pulsa `y: -5px` y `opacity: 0.85` en cascada por char (stagger 0.08s, duración 1.45s, sine.inOut, yoyo). Hipnosis + propulsion en lenguaje visual.
+    - **Hover halo accent**: cada `.hero-char` recibe text-shadow radial accent (sin offsets, solo glow) para no romper las strokes.
+  - El chromatic glitch sigue activo en `.section-title` (Space Grotesk pesado).
+- **Display** (`--font-display`): Space Grotesk — section titles, card titles, ritual venues, setlist titles, etc.
+- **Body** (`--font-body`): Space Grotesk — texto general
+- **Mono** (`--font-mono`): Space Mono — labels, metas, BPM, fechas, stamps, dossier
 
 **Efectos**:
 - **Bochka Pulse**: línea de 2px bajo el nav que late a **165 BPM** (period 0.3636s) en accent. Heartbeat global de la página = "constant propulsion" de la bio.
