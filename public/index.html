@@ -29,13 +29,14 @@
   <!-- Fonts (placeholder, redefinir cuando se cierre la identidad visual) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Elms+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
   <!-- Atmospheric overlays -->
+  <canvas class="tv-static" id="tvStatic" aria-hidden="true"></canvas>
   <div class="grain-overlay" aria-hidden="true"></div>
   <div class="scanlines" aria-hidden="true"></div>
   <div class="bochka-pulse" aria-hidden="true"></div>
@@ -82,6 +83,7 @@
     <div class="footer-inner">
       <div class="footer-brand" id="footerBrand">Maniatiko</div>
       <p class="footer-epitaph" id="footerEpitaph"></p>
+      <div class="footer-booking" id="footerBooking"></div>
       <div class="footer-links" id="footerLinks"></div>
       <div class="footer-bottom">
         <p>&copy; <span id="year"></span> <span id="footerName">Maniatiko</span>.</p>
