@@ -93,14 +93,6 @@
       "source": "memories"
     },
     {
-      "id": "crews",
-      "type": "roster",
-      "title": "Crews",
-      "subtitle": "Underground family",
-      "left":  { "label": "Collectives",  "source": "crews"  },
-      "right": { "label": "Shared Stage", "source": "lineup" }
-    },
-    {
       "id": "press",
       "type": "press",
       "title": "Reverb",

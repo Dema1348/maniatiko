@@ -66,9 +66,10 @@ Cada sección traduce un concepto de la bio en lenguaje visual. Orden actual del
    - **Archive** como tabla densa: Date | Venue | City. Hover row ilumina venue en accent.
 5. **III · Productions** — setlist numerado (01, 02, 03...). **Cada row tiene su propia wave inline** (canvas pequeño dentro del row, debajo del título y descripción). La wave es la "firma sonora" del track: freq/amp/speed/offset derivados por hash del título. Hover sobre el row ilumina la wave (opacity 0.55 → 1) y aplica chromatic glitch al número. Cada producción lleva su huella visual única.
 6. **IV · Aftermath** — filas editoriales alternadas (izq/der). Cada entrada: foto B&W tratada con corner badge de fecha + chapter num + venue + city + anecdote italic con border-left de accent. "What remained" después de cada set.
-7. **V · Crews** — section type `roster` con 2 columnas — `Collectives` (crews chilenos) + `Shared Stage` (DJs con los que ha tocado: Aldes, Kask4r, 19.85, Mary B, Likikon, Bonek, Lurtz) — "expanding identity".
-8. **VI · Reverb** — 3 cards con quotes en italic + source. "What lingers" — lo que se dijo y sigue resonando.
-9. **VII · Press Kit** — 3 cards descargables (Bio TXT · Press Photo · Promo Video) con CTA Download. URLs `#` por ahora, se reemplazan con Drive links cuando haya assets.
+7. **V · Reverb** — 3 cards con quotes con text-shadow stack creando reverberación visual + source en mono. "What lingers" — lo que se dijo y sigue resonando.
+8. **VI · Press Kit** — 4 cards descargables (Bio TXT · Press Photo · Promo Video · Tech Rider) con CTA Download. URLs `#` por ahora.
+
+> La sección Crews fue removida — la info (crews chilenos + DJs B2B) ya está en el Artist Dossier de Origin. Los arrays `crews[]` y `lineup[]` permanecen en data.json por si se necesita reactivar la sección (renderer `roster` sigue definido).
 10. **Footer** — brand grande, epitafio `† The ritual doesn't end. It only changes form †`, socials (IG, SC, TikTok, Facebook), copyright dinámico y credit `Made with love by @_dema1348` → `https://www.instagram.com/_dema1348/`.
 
 **Inspiraciones explícitas** (adaptadas, no copiadas — paleta y tipos propios):
