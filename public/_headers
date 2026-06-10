@@ -1,0 +1,7 @@
+# Netlify-only header file (Firebase Hosting ignora este archivo).
+# El sitio Netlify es solo backend de Identity + Git Gateway para el CMS.
+# Bloqueamos su indexación en Google para evitar duplicate content
+# con el sitio real en maniatiko.cl (que sirve Firebase).
+
+/*
+  X-Robots-Tag: noindex, nofollow
