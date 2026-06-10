@@ -1,0 +1,31 @@
+# Deploy automático a Firebase Hosting cuando alguien hace merge a main.
+# Esto incluye los commits que genera Decap CMS desde /admin/.
+#
+# Setup necesario:
+#   1. En Firebase Console → Project Settings → Service accounts → Generate new
+#      private key → guardar el JSON
+#   2. En GitHub: Settings → Secrets and variables → Actions → New secret
+#      Name: FIREBASE_SERVICE_ACCOUNT_MANIATIKO_DJ
+#      Value: contenido completo del JSON descargado
+#   3. Listo. Cada push a main dispara este workflow.
+
+name: Deploy to Firebase Hosting on merge
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MANIATIKO_DJ }}
+          channelId: live
+          projectId: maniatiko-dj

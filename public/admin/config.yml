@@ -1,0 +1,266 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Archivos de imagen subidos desde el CMS van a public/img/
+media_folder: "public/img"
+public_folder: "/img"
+
+# URLs visibles en el dashboard del CMS
+site_url: https://maniatiko.cl
+display_url: https://maniatiko.cl
+logo_url: https://maniatiko.cl/img/og-share.jpg
+
+# Modo de publicación: simple = cambios pasan directo a main (más rápido)
+# editorial_workflow sería con drafts/review, requiere más setup
+publish_mode: simple
+
+# Mensaje custom para los commits que genera el CMS
+commit_messages:
+  create: "CMS: agregar {{collection}} `{{slug}}`"
+  update: "CMS: actualizar {{collection}} `{{slug}}`"
+  delete: "CMS: eliminar {{collection}} `{{slug}}`"
+  uploadMedia: "CMS: subir media `{{path}}`"
+  deleteMedia: "CMS: borrar media `{{path}}`"
+
+# Colecciones — todas operan sobre el mismo data.json
+collections:
+  - name: site
+    label: "Sitio"
+    description: "Información general del sitio: nombre, descripción, hero, footer, redes sociales."
+    files:
+      - file: "public/data.json"
+        name: "site_general"
+        label: "Configuración general del sitio"
+        fields:
+          - label: "Site"
+            name: "site"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Nombre", name: "name", widget: "string" }
+              - { label: "Tagline corta", name: "tagline", widget: "string" }
+              - { label: "Descripción (meta)", name: "description", widget: "text", hint: "Aparece en Google y en redes sociales al compartir" }
+              - { label: "URL del sitio", name: "url", widget: "string", default: "https://maniatiko.cl/" }
+              - { label: "Locale", name: "locale", widget: "string", default: "en_US" }
+              - { label: "OG image (preview en redes)", name: "ogImage", widget: "string", default: "img/og-share.jpg", hint: "Path relativo. La imagen ideal es 1200×630px" }
+              - { label: "Theme color", name: "themeColor", widget: "string", default: "#050505" }
+
+          - label: "Hero (header del sitio)"
+            name: "hero"
+            widget: "object"
+            collapsed: false
+            fields:
+              - { label: "Título principal", name: "title", widget: "string", default: "Maniatiko" }
+              - { label: "Rol / sub-línea", name: "role", widget: "string", default: "Producer & DJ" }
+              - { label: "BPM (número)", name: "bpm", widget: "number", value_type: "int", min: 1, max: 999, default: 170 }
+              - label: "Botón Engage"
+                name: "engage"
+                widget: "object"
+                fields:
+                  - { label: "Texto cuando está apagado", name: "labelOff", widget: "string", default: "Engage ritual" }
+                  - { label: "Texto cuando está activo", name: "labelOn", widget: "string", default: "Disengage" }
+
+          - label: "Redes sociales (orden = orden en footer)"
+            name: "socials"
+            widget: "list"
+            collapsed: false
+            summary: "{{label}}"
+            fields:
+              - { label: "Plataforma", name: "label", widget: "string", hint: "Bandcamp, Spotify, SoundCloud, YouTube, Instagram, TikTok, Facebook…" }
+              - { label: "URL", name: "url", widget: "string" }
+
+          - label: "Footer"
+            name: "footer"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Epitafio (frase final)", name: "epitaph", widget: "string", required: false }
+              - label: "Credit"
+                name: "credit"
+                widget: "object"
+                required: false
+                fields:
+                  - { label: "Texto del crédito", name: "label", widget: "string" }
+                  - { label: "Link del crédito", name: "href", widget: "string" }
+                  - { label: "Prefijo (ej. 'Made by')", name: "prefix", widget: "string" }
+
+          # Campos avanzados (escondidos por default — no tocar a menos que sepas)
+          - label: "Nav (avanzado, vacío = auto)"
+            name: "nav"
+            widget: "list"
+            required: false
+            collapsed: true
+            hint: "Dejá vacío para que el menú se genere automáticamente desde las secciones"
+            fields:
+              - { label: "Label", name: "label", widget: "string" }
+              - { label: "Href", name: "href", widget: "string" }
+
+          - label: "Analytics Firebase (NO TOCAR — generado automáticamente)"
+            name: "analytics"
+            widget: "object"
+            collapsed: true
+            required: false
+            fields:
+              - { label: "Activo", name: "enabled", widget: "boolean", default: true }
+              - label: "Config"
+                name: "firebase"
+                widget: "object"
+                fields:
+                  - { label: "API Key", name: "apiKey", widget: "string", required: false }
+                  - { label: "Auth Domain", name: "authDomain", widget: "string", required: false }
+                  - { label: "Project ID", name: "projectId", widget: "string", required: false }
+                  - { label: "Storage Bucket", name: "storageBucket", widget: "string", required: false }
+                  - { label: "Messaging Sender ID", name: "messagingSenderId", widget: "string", required: false }
+                  - { label: "App ID", name: "appId", widget: "string", required: false }
+                  - { label: "Measurement ID", name: "measurementId", widget: "string", required: false }
+
+          - label: "Secciones (avanzado — orden y tipos de bloques del sitio)"
+            name: "sections"
+            widget: "list"
+            collapsed: true
+            hint: "No tocar a menos que sepas lo que hacés. Esto define la estructura de bloques de la página."
+            fields:
+              - { label: "ID", name: "id", widget: "string" }
+              - { label: "Tipo", name: "type", widget: "string", hint: "marquee | chapters | gigs | mixes | memories | press | featured | presskit | booking-card" }
+              - { label: "Título", name: "title", widget: "string", required: false }
+              - { label: "Subtítulo", name: "subtitle", widget: "string", required: false }
+              - { label: "Source (nombre de la colección en data.json)", name: "source", widget: "string", required: false }
+              - { label: "Items (para chapters: array de párrafos)", name: "items", widget: "list", field: { label: "Párrafo", name: "item", widget: "text" }, required: false }
+              - { label: "Lanes (para marquee)", name: "lanes", widget: "list", field: { label: "Mantra", name: "lane", widget: "string" }, required: false }
+              - label: "Dossier (para chapters)"
+                name: "dossier"
+                widget: "object"
+                required: false
+                fields:
+                  - { label: "Título", name: "title", widget: "string", required: false }
+                  - label: "Rows (key/value)"
+                    name: "rows"
+                    widget: "list"
+                    required: false
+                    fields:
+                      - { label: "Clave", name: "key", widget: "string" }
+                      - { label: "Valor", name: "value", widget: "string" }
+              - label: "Card (para booking-card)"
+                name: "card"
+                widget: "object"
+                required: false
+                fields:
+                  - { label: "Intro", name: "intro", widget: "string", required: false }
+                  - { label: "Email destino", name: "email", widget: "string", required: false }
+                  - { label: "Label del email", name: "emailLabel", widget: "string", required: false }
+                  - { label: "Subject del email", name: "emailSubject", widget: "string", required: false }
+                  - { label: "Brief items", name: "brief", widget: "list", field: { label: "Item", name: "item", widget: "string" }, required: false }
+                  - label: "Alt (DM Instagram)"
+                    name: "alt"
+                    widget: "object"
+                    required: false
+                    fields:
+                      - { label: "Label", name: "label", widget: "string", required: false }
+                      - { label: "Handle", name: "handle", widget: "string", required: false }
+                      - { label: "URL", name: "url", widget: "string", required: false }
+
+          # === Colecciones top-level del data.json ===
+          - label: "Gigs (fechas en vivo)"
+            name: "gigs"
+            widget: "list"
+            collapsed: false
+            summary: "{{date}} — {{venue}}"
+            fields:
+              - { label: "Fecha", name: "date", widget: "string", hint: "Formato US: MM.DD.AAAA — ej. 06.20.2026", pattern: ['^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$', 'Formato esperado: MM.DD.AAAA'] }
+              - { label: "Ciudad", name: "city", widget: "string", default: "Santiago, CL" }
+              - { label: "Venue", name: "venue", widget: "string" }
+              - { label: "Lineup", name: "lineup", widget: "list", field: { label: "Nombre", name: "name", widget: "string" }, required: false }
+              - { label: "Link de tickets", name: "tickets", widget: "string", required: false }
+
+          - label: "Tracks (Productions / SoundCloud)"
+            name: "mixes"
+            widget: "list"
+            collapsed: false
+            summary: "{{title}}"
+            fields:
+              - { label: "Plataforma", name: "platform", widget: "string", default: "SoundCloud · Original" }
+              - { label: "Título", name: "title", widget: "string" }
+              - { label: "Descripción corta", name: "description", widget: "text" }
+              - { label: "URL del track en SoundCloud", name: "url", widget: "string" }
+
+          - label: "Memorias (Aftermath — set + foto + anécdota)"
+            name: "memories"
+            widget: "list"
+            collapsed: false
+            summary: "{{venue}}"
+            fields:
+              - { label: "Fecha", name: "date", widget: "string", required: false, default: "—" }
+              - { label: "Venue", name: "venue", widget: "string" }
+              - { label: "Ciudad", name: "city", widget: "string" }
+              - { label: "Anécdota", name: "anecdote", widget: "text" }
+              - { label: "Foto", name: "image", widget: "image", required: false }
+
+          - label: "Press (Reverb — quotes)"
+            name: "press"
+            widget: "list"
+            collapsed: false
+            summary: "{{source}}"
+            fields:
+              - { label: "Quote", name: "quote", widget: "text" }
+              - { label: "Fuente", name: "source", widget: "string" }
+
+          - label: "Hosted by (venues/crews que lo hostearon)"
+            name: "featured"
+            widget: "list"
+            collapsed: false
+            summary: "{{name}}"
+            fields:
+              - { label: "Nombre", name: "name", widget: "string" }
+              - { label: "Link (opcional)", name: "link", widget: "string", required: false }
+
+          - label: "Press Kit (cards descargables)"
+            name: "presskit"
+            widget: "list"
+            collapsed: true
+            summary: "{{title}}"
+            fields:
+              - { label: "Tipo", name: "kind", widget: "string", hint: "Text Document / Image Asset / Video Asset / Technical Document" }
+              - { label: "Título", name: "title", widget: "string" }
+              - { label: "Descripción", name: "description", widget: "text" }
+              - { label: "Texto del CTA", name: "cta", widget: "string" }
+              - { label: "URL de descarga", name: "url", widget: "string", default: "#" }
+
+          - label: "Crews (legado, opcional)"
+            name: "crews"
+            widget: "list"
+            collapsed: true
+            required: false
+            fields:
+              - { label: "Nombre", name: "name", widget: "string" }
+              - { label: "Link", name: "link", widget: "string", required: false }
+              - { label: "Logo", name: "logo", widget: "image", required: false }
+
+          - label: "Lineup (DJs con quienes compartió escenario)"
+            name: "lineup"
+            widget: "list"
+            collapsed: true
+            required: false
+            fields:
+              - { label: "Nombre", name: "name", widget: "string" }
+
+          - label: "Tracks (legado, vacío)"
+            name: "tracks"
+            widget: "list"
+            collapsed: true
+            required: false
+            fields:
+              - { label: "Año", name: "year", widget: "string", required: false }
+              - { label: "Título", name: "title", widget: "string" }
+              - { label: "Label", name: "label", widget: "string", required: false }
+              - { label: "URL", name: "url", widget: "string", required: false }
+
+          - label: "Gallery (legado, vacío)"
+            name: "gallery"
+            widget: "list"
+            collapsed: true
+            required: false
+            fields:
+              - { label: "Imagen", name: "image", widget: "image" }
+              - { label: "Alt", name: "alt", widget: "string", required: false }
+              - { label: "Video URL", name: "video", widget: "string", required: false }
