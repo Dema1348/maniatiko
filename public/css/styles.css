@@ -1608,18 +1608,20 @@ body.ritual-engaged .tv-static { opacity: 0.1; }
 .marquee-lane + .marquee-lane {
   margin-top: 0.5rem;
 }
+/* Mantra: velocidades lentas para feel hipnótico (no festival marquee) */
 .marquee-lane--left .marquee-track {
-  animation: marqueeLeft 50s linear infinite;
+  animation: marqueeLeft 90s linear infinite;
 }
 .marquee-lane--right .marquee-track {
-  animation: marqueeRight 65s linear infinite;
-}
-.marquee-lane--right {
-  color: var(--accent);
-  opacity: 0.55;
+  animation: marqueeRight 110s linear infinite;
 }
 .marquee-lane--left {
   color: var(--text-dim);
+  opacity: 0.75;
+}
+.marquee-lane--right {
+  color: var(--accent);
+  opacity: 0.45;
 }
 .marquee-track {
   display: flex;

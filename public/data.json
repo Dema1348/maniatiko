@@ -33,10 +33,7 @@
     {
       "id": "marquee",
       "type": "marquee",
-      "lanes": [
-        "NEO BOCHKA † БОЧКА † HYPNOTIC † HARD TECHNO † 170 BPM † TECTONIC PRESSURE † PROLONGED HYPNOSIS † DARK PROPULSION † DISTORTED TEXTURES",
-        "LO PRADO † SANTIAGO † CHILEAN UNDERGROUND † RADIKALS † HÖLLENRAUM † VËRRÜCKT † REQUIEM † CLUB 808 † METALURGIA † 33.45°S 70.73°W"
-      ]
+      "lanes": ["HYPNOTIC", "BOCHKA"]
     },
     {
       "id": "bio",

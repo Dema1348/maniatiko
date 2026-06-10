@@ -42,6 +42,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   initBookingForm();
   initMiniPlayer(data);
   initAudioReactive();
+  initMarqueeJolt();
+  initKickJolts();
   startHypnoticWaves();
 
   if (document.querySelector(".setlist-wave")) {
@@ -111,6 +113,93 @@ function insertHypnoticDividers() {
     </svg>`;
     root.insertBefore(divider, next);
   }
+}
+
+function initMarqueeJolt() {
+  // Cuando ritual engaged, cada kick empuja cada marquee-lane en su dirección
+  // de scroll. Sensación de "el bochka empuja el mantra".
+  document.addEventListener("ritual:kick", () => {
+    if (!document.body.classList.contains("ritual-engaged")) return;
+    if (typeof gsap === "undefined") return;
+    document.querySelectorAll(".marquee-lane").forEach((lane) => {
+      const dir = lane.classList.contains("marquee-lane--right") ? 1 : -1;
+      gsap.fromTo(
+        lane,
+        { x: 0 },
+        { x: dir * 7, duration: 0.08, ease: "power2.out", yoyo: true, repeat: 1 },
+      );
+    });
+  });
+}
+
+// Kick jolts globales — cada beat del bochka empuja elementos clave del sitio
+function initKickJolts() {
+  if (typeof gsap === "undefined") return;
+  document.addEventListener("ritual:kick", () => {
+    if (!document.body.classList.contains("ritual-engaged")) return;
+
+    // 1. Hero title MANIATIKO — cascade scale punch char-por-char
+    const heroChars = document.querySelectorAll(".hero-char");
+    if (heroChars.length) {
+      gsap.fromTo(
+        heroChars,
+        { scale: 1 },
+        {
+          scale: 1.06,
+          duration: 0.05,
+          ease: "power2.out",
+          stagger: 0.012,
+          yoyo: true,
+          repeat: 1,
+          overwrite: "auto",
+        },
+      );
+    }
+
+    // 2. Section titles — micro-shake X (todo el sitio vibra al kick)
+    document.querySelectorAll(".section-title").forEach((title) => {
+      gsap.fromTo(
+        title,
+        { x: 0 },
+        { x: 1.5, duration: 0.06, yoyo: true, repeat: 1, ease: "power2.out" },
+      );
+    });
+
+    // 3. Hypnotic dividers — scale-punch unísono (los 3 circles al unísono,
+    //    override del waterfall continuo CSS mientras dure el ritual)
+    document.querySelectorAll(".hypnotic-divider circle").forEach((c) => {
+      gsap.fromTo(
+        c,
+        { scale: 1.55 },
+        {
+          scale: 1,
+          duration: 0.18,
+          ease: "power2.out",
+          overwrite: "auto",
+          clearProps: "transform",
+        },
+      );
+    });
+
+    // 4. Ritual day numbers (números gigantes de gigs upcoming) — jolt Y
+    document.querySelectorAll(".ritual-day").forEach((day) => {
+      gsap.fromTo(
+        day,
+        { y: 0 },
+        { y: -3, duration: 0.07, yoyo: true, repeat: 1, ease: "power2.out" },
+      );
+    });
+
+    // 5. Booking CTA arrow → — vibra +5px X (más se acerca, más invita)
+    const arrow = document.querySelector(".booking-card-cta-arrow");
+    if (arrow) {
+      gsap.fromTo(
+        arrow,
+        { x: 0 },
+        { x: 5, duration: 0.08, yoyo: true, repeat: 1, ease: "power2.out" },
+      );
+    }
+  });
 }
 
 function initAudioReactive() {
@@ -961,15 +1050,18 @@ function renderSectionBody(type, items, sec, data) {
 function renderMarquee(sec) {
   const lanes = (sec.lanes || sec.items || []).filter(Boolean);
   if (!lanes.length) return "";
+  // Mantra: la palabra única se repite muchas veces con separador para que el loop
+  // sea seamless. La velocidad de cada lane está controlada por CSS.
+  const REPS = 20;
+  const SEP = "  ·  ";
   return `
     <div class="marquee" id="${sec.id || ""}" data-marquee aria-hidden="true">
       ${lanes
-        .map((text, i) => {
-          // Repetimos el contenido 2x para que el loop sea seamless
-          const dup = `${text} † ${text} † `;
+        .map((mantra, i) => {
+          const line = (String(mantra).trim() + SEP).repeat(REPS);
           return `
         <div class="marquee-lane marquee-lane--${i % 2 === 0 ? "left" : "right"}">
-          <div class="marquee-track"><span>${escapeHtml(dup)}</span><span>${escapeHtml(dup)}</span></div>
+          <div class="marquee-track"><span>${escapeHtml(line)}</span><span>${escapeHtml(line)}</span></div>
         </div>`;
         })
         .join("")}
