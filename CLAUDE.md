@@ -28,7 +28,7 @@ Todo el copy, labels, meta tags, alt text, navegación, descripciones y body con
 - **Firebase JS SDK 11.7.1** (CDN, module) — Analytics (`G-5CXDNBQMN6`)
 - Google Fonts — **Elms Sans** (logo, variable) + **Space Grotesk** (display/body) + **Space Mono** (mono)
 - Firebase Hosting (proyecto `maniatiko-dj`)
-- Deploy directo desde `public/` con `firebase deploy --only hosting`
+- **Deploy: NUNCA manual.** GitHub Actions despliega automáticamente a Firebase Hosting en cada `push` a `main`. El workflow está en `.github/workflows/firebase-hosting-merge.yml` y se autentica con el secret `FIREBASE_SERVICE_ACCOUNT_MANIATIKO_DJ` configurado en GitHub. **No corras `firebase deploy --only hosting` desde local** — eso desincroniza el estado del repo con producción y bypass-ea el historial de Git.
 
 ## Identidad visual — "Hypnotic Neon Decay"
 
@@ -197,6 +197,43 @@ Todo el contenido vive en `public/data.json`. Para editar/agregar, **solo se mod
 6. `initReveals()` (GSAP ScrollTrigger para todos los `[data-reveal]`)
 7. `initTvStatic()` + `initNextRitualCountdown()` + `initBookingForm()` + `initMiniPlayer(data)` + `initAudioReactive()` + `initMarqueeJolt()` + `initKickJolts()` + `startHypnoticWaves()` + `initSetlistWaves(data.mixes)`
 8. `hideBootLoader()` (espera al BOOT_MIN_DURATION 1100ms)
+
+## Pipeline de actualización (CMS + auto-deploy)
+
+El sitio se actualiza por **dos caminos** que terminan en lo mismo: `git push origin main` → GitHub Actions → `firebase deploy`. **Nunca corras `firebase deploy` manualmente.**
+
+### Camino 1 — vía CMS (recomendado para no-técnicos)
+
+El editor (Maniatiko o quien gestione el contenido) entra a `https://maniatiko.netlify.app/admin/`, hace login con Netlify Identity, edita los forms y publica. El flow:
+
+```
+Editor en /admin → publish
+  ↓ Decap CMS commitea al repo vía Git Gateway (Netlify Identity)
+  ↓ push a main detectado por GitHub Actions
+  ↓ workflow `firebase-hosting-merge.yml` ejecuta
+  ↓ firebase deploy automático
+  ↓ ~1 min después: cambio vivo en maniatiko.cl
+```
+
+### Camino 2 — vía código (developer)
+
+Editar los archivos local (`data.json`, `index.html`, etc.), `git commit`, `git push origin main`. Mismo workflow se ejecuta y deploya.
+
+### Infraestructura de auth y deploy
+
+- **GitHub repo**: `https://github.com/Dema1348/maniatiko` (single source of truth)
+- **GitHub Actions workflow**: `.github/workflows/firebase-hosting-merge.yml`
+- **Secret en GitHub**: `FIREBASE_SERVICE_ACCOUNT_MANIATIKO_DJ` (service account JSON del proyecto Firebase, con permisos de Hosting Admin)
+- **Netlify**: solo para auth del CMS — sitio mirror `maniatiko.netlify.app` con `_headers` que lo deja `noindex` para no competir con `maniatiko.cl` en SEO. Identity (invite only) + Git Gateway (escribe al repo GitHub en nombre del editor).
+- **Firebase Hosting**: el hosting real de `maniatiko.cl`. Recibe los deploys del Action.
+- **Cloudflare**: DNS authoritative para `maniatiko.cl` (nameservers `frank.ns.cloudflare.com` + `oaklyn.ns.cloudflare.com`). El A record apunta a Firebase con nube naranja (proxy/CDN delante).
+
+### Reglas de oro
+
+- ❌ **NO** correr `firebase deploy --only hosting` desde local — duplica deploys y deja el repo desincronizado de producción.
+- ❌ **NO** editar el sitio directamente desde Netlify dashboard — Netlify solo provee auth, no edita contenido.
+- ✅ Para verificar deploy: `https://github.com/Dema1348/maniatiko/actions` (los runs verdes son los exitosos).
+- ✅ Para rollback rápido: `git revert <sha>` + push → el workflow corre el revert y deploya el estado anterior.
 
 ## SEO — reglas vivas
 
