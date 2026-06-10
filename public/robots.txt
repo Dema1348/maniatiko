@@ -7,4 +7,4 @@ Allow: /
 # User-agent: ClaudeBot
 # Disallow: /
 
-Sitemap: https://maniatiko-dj.web.app/sitemap.xml
+Sitemap: https://maniatiko.cl/sitemap.xml
