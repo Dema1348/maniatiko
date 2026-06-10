@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://maniatiko-dj.web.app/</loc>
-    <changefreq>monthly</changefreq>
+    <lastmod>2026-06-10</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://maniatiko-dj.web.app/img/dj1.jpg</image:loc>
+      <image:title>Maniatiko performing live</image:title>
+      <image:caption>Hypnotic industrial techno DJ from Santiago, Chile</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://maniatiko-dj.web.app/img/dj2.jpeg</image:loc>
+      <image:title>Maniatiko — Höllenraum set</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://maniatiko-dj.web.app/img/dj3.jpeg</image:loc>
+      <image:title>Maniatiko — Circuito Integrado, Valparaíso</image:title>
+    </image:image>
   </url>
 </urlset>

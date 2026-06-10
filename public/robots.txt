@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
 
+# AI crawlers explicitly welcome (default) — uncomment to block specifically
+# User-agent: GPTBot
+# Disallow: /
+# User-agent: ClaudeBot
+# Disallow: /
+
 Sitemap: https://maniatiko-dj.web.app/sitemap.xml
