@@ -25,16 +25,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   applySite(data.site);
   renderNav(data);
-  renderHero(data.hero);
+  renderHero(data.hero, data.mixes);
   renderSections(data.sections, data);
   renderFooter(data);
 
+  initHypnoticTitles();
+  insertHypnoticDividers();
+
+  initHeroShader();
+  initRitualAudio();
+  initRitualDepthTracking();
   animateHeroIn();
   initReveals();
   initTvStatic();
   initNextRitualCountdown();
   initBookingForm();
   initMiniPlayer(data);
+  initAudioReactive();
+  startHypnoticWaves();
 
   if (document.querySelector(".setlist-wave")) {
     initSetlistWaves(data.mixes || []);
@@ -42,6 +50,105 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   hideBootLoader();
 });
+
+// --------------------------------------------------------------
+// Hypnotic global — char-split section titles, dividers entre secciones,
+// audio-reactive flash sobre elementos visibles del viewport.
+// --------------------------------------------------------------
+function initHypnoticTitles() {
+  document.querySelectorAll(".section-title").forEach((el) => {
+    if (el.dataset.hypnoticBound === "1") return;
+    el.dataset.hypnoticBound = "1";
+    const text = el.textContent.trim();
+    if (!text) return;
+    const chars = text
+      .split("")
+      .map((c) =>
+        c === " "
+          ? `<span class="hypnotic-char hypnotic-char--space">&nbsp;</span>`
+          : `<span class="hypnotic-char">${escapeHtml(c)}</span>`,
+      )
+      .join("");
+    el.innerHTML = chars;
+  });
+}
+
+function startHypnoticWaves() {
+  if (typeof gsap === "undefined") return;
+  // Delay para que los reveals iniciales terminen antes de empezar el wave loop.
+  setTimeout(() => {
+    document.querySelectorAll(".section-title").forEach((title) => {
+      const chars = title.querySelectorAll(".hypnotic-char");
+      if (!chars.length) return;
+      gsap.to(chars, {
+        y: -3,
+        opacity: 0.85,
+        duration: 1.45,
+        ease: "sine.inOut",
+        stagger: { each: 0.05, repeat: -1, yoyo: true },
+      });
+    });
+  }, 1600);
+}
+
+function insertHypnoticDividers() {
+  const root = document.getElementById("sectionsRoot");
+  if (!root) return;
+  const children = Array.from(root.children);
+  for (let i = 0; i < children.length - 1; i++) {
+    const cur = children[i];
+    const next = children[i + 1];
+    // Skip si alguno de los dos es marquee — ya hace su propio "divider"
+    if (cur.classList.contains("marquee") || next.classList.contains("marquee")) continue;
+
+    const divider = document.createElement("div");
+    divider.className = "hypnotic-divider";
+    divider.setAttribute("aria-hidden", "true");
+    divider.innerHTML = `<svg viewBox="0 0 60 12">
+      <circle cx="14" cy="6" r="2.6"/>
+      <circle cx="30" cy="6" r="2.6"/>
+      <circle cx="46" cy="6" r="2.6"/>
+    </svg>`;
+    root.insertBefore(divider, next);
+  }
+}
+
+function initAudioReactive() {
+  const SEL =
+    ".section-title, .epk-stat-num, .ritual-day, .setlist-num, .featured-chip, .dossier-key, .presskit-kind, .archive-venue";
+  const visible = new Set();
+
+  if (typeof IntersectionObserver !== "undefined") {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) visible.add(e.target);
+          else visible.delete(e.target);
+        });
+      },
+      { rootMargin: "20% 0% 20% 0%" },
+    );
+    // Observe matching elementos después de que las secciones se hayan renderizado
+    setTimeout(() => {
+      document.querySelectorAll(SEL).forEach((el) => io.observe(el));
+    }, 500);
+  } else {
+    // Fallback: trackeamos todo
+    setTimeout(() => {
+      document.querySelectorAll(SEL).forEach((el) => visible.add(el));
+    }, 500);
+  }
+
+  document.addEventListener("ritual:kick", () => {
+    if (!document.body.classList.contains("ritual-engaged")) return;
+    visible.forEach((el) => {
+      el.classList.remove("kick-flash");
+      // Forzar reflow para reiniciar la animación cuando ya tenía la clase
+      void el.offsetWidth;
+      el.classList.add("kick-flash");
+    });
+  });
+}
 
 // --------------------------------------------------------------
 // Boot loader — splash 1.1s con counter 150 → 170 BPM
@@ -466,17 +573,22 @@ function renderNav(data) {
 }
 
 // --------------------------------------------------------------
-// Hero
+// Hero — Ritual Engine
 // --------------------------------------------------------------
-function renderHero(hero) {
+let __ritualEngaged = false;
+let __ritualDepth = 0;
+let __ritualGain = null;
+let __shaderUniforms = null;
+
+function renderHero(hero, mixes) {
   if (!hero) return;
   const $title = document.getElementById("heroTitle");
-  const $phrase = document.getElementById("heroPhrase");
-  const $cta = document.getElementById("heroCta");
+  const $bpm = document.getElementById("heroBpm");
+  const $engageLabel = document.getElementById("heroEngageLabel");
+  const $engage = document.getElementById("heroEngage");
   const $logo = document.getElementById("navLogo");
 
   if (hero.title) {
-    // Char-split: cada letra es un span para animación de entrada
     const chars = hero.title
       .split("")
       .map((c) =>
@@ -488,34 +600,60 @@ function renderHero(hero) {
     $title.innerHTML = chars;
     if ($logo) $logo.textContent = hero.title;
   }
-  if (hero.phrase) $phrase.textContent = hero.phrase;
-
-  if (hero.cta && hero.cta.label && hero.cta.href) {
-    $cta.textContent = hero.cta.label;
-    $cta.setAttribute("href", hero.cta.href);
-    $cta.hidden = false;
+  if ($bpm && hero.bpm) $bpm.textContent = `${hero.bpm} BPM`;
+  if (hero.engage) {
+    if ($engageLabel) $engageLabel.textContent = hero.engage.labelOff || "Engage";
+    if ($engage) {
+      $engage.dataset.labelOff = hero.engage.labelOff || "Engage";
+      $engage.dataset.labelOn  = hero.engage.labelOn  || "Disengage";
+    }
   }
 
-  const stamps = hero.stamps || {};
-  ["tl", "tr", "bl", "br"].forEach((pos) => {
-    const el = document.getElementById("heroStamp" + pos.toUpperCase());
-    if (el) el.textContent = stamps[pos] || "";
-  });
+  // Ghost words: override manual con hero.ghostWords, o derivar de los tracks del artista
+  const ghosts =
+    Array.isArray(hero.ghostWords) && hero.ghostWords.length
+      ? hero.ghostWords
+      : (Array.isArray(mixes) ? mixes : []).map((m) => m.title).filter(Boolean);
+  initGhostWords(ghosts);
 }
 
-function animateHeroIn() {
+// Ghost words — fragmentos del catálogo (track titles) flotando con opacidad baja
+function initGhostWords(words) {
+  const root = document.getElementById("heroGhosts");
+  if (!root || !Array.isArray(words) || !words.length) return;
+  // Delays negativos → al cargar ya hay ghosts in-progress en distintos puntos del ciclo
+  const positions = [
+    { x: 6,  y: 16, delay: -1,  rotate: -3 },
+    { x: 64, y: 22, delay: -4,  rotate: 4  },
+    { x: 12, y: 70, delay: -6,  rotate: -2 },
+    { x: 62, y: 76, delay: -8,  rotate: 3  },
+    { x: 38, y: 6,  delay: -10, rotate: 0  },
+    { x: 4,  y: 46, delay: -2,  rotate: 2  },
+    { x: 70, y: 50, delay: -5,  rotate: -4 },
+    { x: 42, y: 88, delay: -7,  rotate: 1  },
+  ];
+  root.innerHTML = words
+    .slice(0, positions.length)
+    .map((w, i) => {
+      const p = positions[i];
+      return `<span class="hero-ghost"
+        style="left:${p.x}%; top:${p.y}%; transform: rotate(${p.rotate}deg); animation-delay: ${p.delay}s;">${escapeHtml(w)}</span>`;
+    })
+    .join("");
+}
+
+async function animateHeroIn() {
   if (typeof gsap === "undefined") return;
+  await new Promise((r) => setTimeout(r, 1250));
+
   gsap.from(".hero-char", {
     opacity: 0,
-    y: 60,
+    y: 40,
     rotateX: -25,
-    duration: 0.9,
+    duration: 0.85,
     stagger: 0.06,
     ease: "power3.out",
-    delay: 0.15,
     onComplete: () => {
-      // Ambient hypnotic wave: cascade de subtle rise/opacity en loop infinito.
-      // Es la traducción visual de la "prolonged hypnosis" + propulsion del Bochka.
       gsap.to(".hero-char", {
         y: -5,
         opacity: 0.85,
@@ -525,14 +663,232 @@ function animateHeroIn() {
       });
     },
   });
-  gsap.from(".hero-phrase, .hero-cta:not([hidden]), .hero-stamp", {
-    opacity: 0,
-    y: 12,
-    duration: 0.7,
-    stagger: 0.08,
-    ease: "power2.out",
-    delay: 0.65,
+  gsap.from(".hero-engage", { opacity: 0, y: 12, duration: 0.7, delay: 1.0, ease: "power2.out" });
+}
+
+// --------------------------------------------------------------
+// Hero shader — Three.js fragment compuesto (5 layers)
+// --------------------------------------------------------------
+function initHeroShader() {
+  const canvas = document.getElementById("heroShader");
+  if (!canvas || typeof THREE === "undefined") return;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+  const accentRgbStr =
+    getComputedStyle(document.documentElement)
+      .getPropertyValue("--accent-rgb")
+      .trim() || "242, 1, 0";
+  const [r, g, b] = accentRgbStr.split(",").map((s) => parseFloat(s) / 255);
+
+  __shaderUniforms = {
+    uTime: { value: 0 },
+    uResolution: { value: new THREE.Vector2(1, 1) },
+    uAccent: { value: new THREE.Vector3(r, g, b) },
+    uIntensity: { value: 0.0 }, // 0..1 — sube cuando el ritual está engaged
+  };
+
+  const material = new THREE.ShaderMaterial({
+    uniforms: __shaderUniforms,
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      precision highp float;
+      varying vec2 vUv;
+      uniform float uTime;
+      uniform vec2  uResolution;
+      uniform vec3  uAccent;
+      uniform float uIntensity;
+
+      #define BPM 170.0
+
+      // FBM noise para el layer tectonic — "placas geológicas" moviéndose lentas
+      float hash(vec2 p) {
+        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+      }
+      float vnoise(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        vec2 u = f * f * (3.0 - 2.0 * f);
+        return mix(mix(hash(i + vec2(0,0)), hash(i + vec2(1,0)), u.x),
+                   mix(hash(i + vec2(0,1)), hash(i + vec2(1,1)), u.x), u.y);
+      }
+      float fbm(vec2 p) {
+        float v = 0.0;
+        float a = 0.5;
+        for (int i = 0; i < 4; i++) {
+          v += a * vnoise(p);
+          p *= 2.0;
+          a *= 0.5;
+        }
+        return v;
+      }
+
+      void main() {
+        vec2 uv = vUv - 0.5;
+        uv.x *= uResolution.x / uResolution.y;
+        float dist = length(uv);
+
+        float beatTime  = uTime * BPM / 60.0;
+        float beatFract = fract(beatTime);
+
+        // Sub-bass: bloom radial que se expande con cada kick
+        float subBass = exp(-beatFract * 5.0) * smoothstep(0.7, 0.0, dist) * 0.5;
+
+        // Tectonic: FBM noise muy lento (placas geológicas)
+        vec2 nUv = uv * 1.6 + vec2(uTime * 0.014, uTime * 0.009);
+        float tectonic = fbm(nUv) * 0.14 * smoothstep(1.0, 0.0, dist);
+
+        // Sonar rings: 5 anillos concéntricos al BPM
+        float rings = 0.0;
+        for (int i = 0; i < 5; i++) {
+          float ringPhase = float(i) / 5.0;
+          float ringT = mod(beatTime + ringPhase, 1.0);
+          float ringRadius = ringT * 0.9;
+          float ringDist = abs(dist - ringRadius);
+          float ri = smoothstep(0.018, 0.0, ringDist) * (1.0 - ringT);
+          rings += ri;
+        }
+        rings *= 0.45;
+
+        // Kick flash al centro (sharp attack + exp decay)
+        float kick = exp(-beatFract * 9.0) * smoothstep(0.22, 0.0, dist) * 0.85;
+
+        // Off: pulso calmado (0.4). Engaged top: 1.3. Engaged deep: 1.75.
+        float boost = 0.4 + uIntensity * 0.9;
+        float vignette = 1.0 - smoothstep(0.48, 1.0, dist);
+
+        vec3 color = uAccent * (subBass + rings + kick + tectonic) * boost * vignette;
+        color += uAccent * 0.008;
+
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `,
   });
+
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+  scene.add(mesh);
+
+  function resize() {
+    const w = canvas.clientWidth || window.innerWidth;
+    const h = canvas.clientHeight || window.innerHeight;
+    renderer.setSize(w, h, false);
+    __shaderUniforms.uResolution.value.set(w, h);
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  const t0 = performance.now();
+  function tick() {
+    __shaderUniforms.uTime.value = (performance.now() - t0) / 1000;
+    // Lerp suave de uIntensity. Cuando engaged el target sube con la profundidad
+    // del scroll (0..1) → de 1.0 (top) a 1.5 (bottom). Cuando no engaged: 0.
+    const target = __ritualEngaged ? 1.0 + __ritualDepth * 0.5 : 0.0;
+    __shaderUniforms.uIntensity.value += (target - __shaderUniforms.uIntensity.value) * 0.06;
+    renderer.render(scene, camera);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// --------------------------------------------------------------
+// Ritual audio — Tone.js sintetiza un kick a 170 BPM (opt-in)
+// --------------------------------------------------------------
+function initRitualAudio() {
+  const $btn = document.getElementById("heroEngage");
+  const $label = document.getElementById("heroEngageLabel");
+  if (!$btn || typeof Tone === "undefined") return;
+
+  let kick = null;
+  let lp = null;
+  let loop = null;
+
+  $btn.addEventListener("click", async () => {
+    if (!__ritualEngaged) {
+      // Inicia contexto de audio (requiere user gesture — el click es válido)
+      if (Tone.context.state !== "running") {
+        await Tone.start();
+      }
+      if (!kick) {
+        kick = new Tone.MembraneSynth({
+          pitchDecay: 0.06,
+          octaves: 6,
+          oscillator: { type: "sine" },
+          envelope: {
+            attack: 0.001,
+            decay: 0.45,
+            sustain: 0.01,
+            release: 0.6,
+            attackCurve: "exponential",
+          },
+        });
+        lp = new Tone.Filter(420, "lowpass");
+        __ritualGain = new Tone.Gain(0.45);
+        kick.chain(lp, __ritualGain, Tone.Destination);
+
+        Tone.Transport.bpm.value = 170;
+        loop = new Tone.Loop((time) => {
+          kick.triggerAttackRelease("C1", "8n", time);
+          // Dispatch evento visual sincronizado con cada kick real
+          Tone.Draw.schedule(() => {
+            document.dispatchEvent(new CustomEvent("ritual:kick"));
+          }, time);
+        }, "4n");
+      }
+      Tone.Transport.start();
+      loop.start(0);
+      __ritualEngaged = true;
+      $btn.classList.add("is-engaged");
+      if ($label) $label.textContent = $btn.dataset.labelOn || "Disengage";
+      document.body.classList.add("ritual-engaged");
+      updateRitualDepth();
+    } else {
+      loop && loop.stop();
+      Tone.Transport.stop();
+      __ritualEngaged = false;
+      $btn.classList.remove("is-engaged");
+      if ($label) $label.textContent = $btn.dataset.labelOff || "Engage ritual";
+      document.body.classList.remove("ritual-engaged");
+      updateRitualDepth();
+    }
+  });
+}
+
+// --------------------------------------------------------------
+// Ritual depth — cuanto más scroll down, más intenso el ritual (solo si engaged).
+// Modula audio gain, shader intensity, y CSS var --ritual-depth (0..1).
+// --------------------------------------------------------------
+function updateRitualDepth() {
+  if (!__ritualEngaged) {
+    if (__ritualDepth !== 0) {
+      __ritualDepth = 0;
+      document.documentElement.style.setProperty("--ritual-depth", "0");
+      if (__ritualGain) __ritualGain.gain.rampTo(0.45, 0.35);
+    }
+    return;
+  }
+  const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  const depth = Math.min(1, Math.max(0, window.scrollY / max));
+  __ritualDepth = depth;
+  document.documentElement.style.setProperty("--ritual-depth", depth.toFixed(3));
+  if (__ritualGain) __ritualGain.gain.rampTo(0.45 + depth * 0.4, 0.25);
+}
+
+function initRitualDepthTracking() {
+  document.addEventListener("scroll", updateRitualDepth, { passive: true });
+  // Lenis usa su propio scroll stream — engancho también ahí si está activo
+  if (window.__lenis && typeof window.__lenis.on === "function") {
+    window.__lenis.on("scroll", updateRitualDepth);
+  }
 }
 
 // --------------------------------------------------------------

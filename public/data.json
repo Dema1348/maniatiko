@@ -23,12 +23,10 @@
   "nav": [],
   "hero": {
     "title": "Maniatiko",
-    "phrase": "DJ † Producer † Techno † Neo Bochka † Hypnotic",
-    "stamps": {
-      "tl": "† Neo Bochka",
-      "tr": "† 170 BPM",
-      "bl": "33.45°S · 70.73°W",
-      "br": "Lo Prado · Santiago"
+    "bpm": 170,
+    "engage": {
+      "labelOff": "Engage ritual",
+      "labelOn":  "Disengage"
     }
   },
   "sections": [

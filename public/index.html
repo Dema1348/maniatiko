@@ -94,20 +94,22 @@
       <div class="nav-links" id="navLinks"></div>
     </nav>
 
-    <!-- Hero (renderizado por JS desde data.hero) -->
+    <!-- Hero — Ritual Engine minimal: shader + ghosts + nombre + engage -->
     <section id="hero" class="hero">
-      <div class="hero-backdrop" aria-hidden="true"></div>
-      <div class="hero-stamps" aria-hidden="true">
-        <span class="hero-stamp hero-stamp--tl" id="heroStampTL"></span>
-        <span class="hero-stamp hero-stamp--tr" id="heroStampTR"></span>
-        <span class="hero-stamp hero-stamp--bl" id="heroStampBL"></span>
-        <span class="hero-stamp hero-stamp--br" id="heroStampBR"></span>
-      </div>
-      <div class="hero-content">
+      <canvas class="hero-shader" id="heroShader" aria-hidden="true"></canvas>
+      <div class="hero-veil" aria-hidden="true"></div>
+      <div class="hero-ghosts" id="heroGhosts" aria-hidden="true"></div>
+      <div class="hero-bpm" id="heroBpm">170 BPM</div>
+
+      <div class="hero-core">
         <h1 class="hero-title" id="heroTitle">Maniatiko</h1>
-        <p class="hero-phrase" id="heroPhrase">DJ · Producer</p>
-        <a href="#" class="hero-cta" id="heroCta" hidden></a>
+        <button class="hero-engage" id="heroEngage" type="button">
+          <span class="hero-engage-rule hero-engage-rule--top" aria-hidden="true"></span>
+          <span class="hero-engage-label" id="heroEngageLabel">Engage ritual</span>
+          <span class="hero-engage-rule hero-engage-rule--bottom" aria-hidden="true"></span>
+        </button>
       </div>
+
       <div class="scroll-hint" aria-hidden="true">
         <div class="scroll-line"></div>
       </div>
@@ -194,6 +196,12 @@
 
     <!-- Lenis smooth scroll -->
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
+
+    <!-- Three.js — hero shader WebGL (5 layers) -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+    <!-- Tone.js — kick sintético 170 BPM (opt-in via Engage button) -->
+    <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
 
     <!-- SoundCloud Widget API (mini-player) -->
     <script src="https://w.soundcloud.com/player/api.js"></script>
