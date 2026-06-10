@@ -1055,14 +1055,6 @@ function renderSectionBody(type, items, sec, data) {
       return renderGigs(items, data);
     case "mixes":
       return renderMixes(items);
-    case "tracks":
-      return renderTracks(items);
-    case "gallery":
-      return renderGallery(items);
-    case "crews":
-      return renderCrews(items);
-    case "roster":
-      return renderRoster(sec, data);
     case "press":
       return renderPress(items);
     case "featured":
@@ -1452,87 +1444,6 @@ function renderMixes(items) {
         )
         .join("")}
     </ol>
-  `;
-}
-
-function renderTracks(items) {
-  if (!items.length) return "";
-  return `
-    <div class="grid" data-reveal>
-      ${items
-        .map(
-          (t) => `
-        <article class="card">
-          <div class="card-meta">${escapeHtml(t.year || "")}</div>
-          <h3 class="card-title">${escapeHtml(t.title || "")}</h3>
-          ${t.label ? `<p class="card-body">${escapeHtml(t.label)}</p>` : ""}
-          ${t.url ? `<a class="hero-cta" href="${t.url}" target="_blank" rel="noopener">Reproducir</a>` : ""}
-        </article>`,
-        )
-        .join("")}
-    </div>
-  `;
-}
-
-function renderGallery(items) {
-  if (!items.length) return "";
-  return `
-    <div class="gallery-grid" data-reveal>
-      ${items
-        .map(
-          (g, i) => `
-        <button class="gallery-item" data-gallery-index="${i}" data-src="${g.image}" data-video="${g.video || ""}" aria-label="${escapeAttr(g.alt || "")}">
-          <img src="${g.image}" alt="${escapeAttr(g.alt || "")}" loading="lazy">
-        </button>`,
-        )
-        .join("")}
-    </div>
-  `;
-}
-
-function renderRoster(sec, data) {
-  const left = (sec.left && data[sec.left.source]) || [];
-  const right = (sec.right && data[sec.right.source]) || [];
-  const col = (label, items) => `
-    <div class="roster-col">
-      <h4 class="roster-label">${escapeHtml(label || "")}</h4>
-      <ul class="roster-list">
-        ${items
-          .map((x) => {
-            const name = `<span class="roster-name">${escapeHtml(x.name || "")}</span>`;
-            return `<li class="roster-item">${
-              x.link
-                ? `<a href="${x.link}" target="_blank" rel="noopener" class="roster-link">${name}</a>`
-                : name
-            }</li>`;
-          })
-          .join("")}
-      </ul>
-    </div>
-  `;
-  return `
-    <div class="roster" data-reveal>
-      ${col(sec.left && sec.left.label, left)}
-      ${col(sec.right && sec.right.label, right)}
-    </div>
-  `;
-}
-
-function renderCrews(items) {
-  if (!items.length) return "";
-  return `
-    <div class="crews-track" data-reveal>
-      ${items
-        .map((c) => {
-          const inner = c.logo
-            ? `<img class="crew-logo" src="${c.logo}" alt="${escapeAttr(c.name || "")}" loading="lazy">`
-            : `<span class="crew-name">${escapeHtml(c.name || "")}</span>`;
-          return c.link
-            ? `<a class="crew-link" href="${c.link}" target="_blank" rel="noopener">${inner}</a>`
-            : inner;
-        })
-        .join("")}
-    </div>
   `;
 }
 
