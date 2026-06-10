@@ -51,6 +51,17 @@
 
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
 
+    <!-- Si la URL trae un token de Netlify Identity (invite, recovery, confirmation)
+         redirigimos a /admin/ donde vive el widget que sabe procesarlos. -->
+    <script>
+      (function () {
+        var h = location.hash;
+        if (h && /^#(invite_token|recovery_token|confirmation_token|access_token)=/.test(h)) {
+          location.replace("/admin/" + h);
+        }
+      })();
+    </script>
+
     <!-- Structured data (Schema.org) — artist + tracks + upcoming gigs -->
     <script type="application/ld+json">
     {
