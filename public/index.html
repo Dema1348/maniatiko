@@ -47,6 +47,23 @@
 
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
 
+    <!-- Firebase Analytics -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-analytics.js";
+
+      const app = initializeApp({
+        apiKey: "AIzaSyDsPmr27S75Hiux1qssHHQNcNjgd8Rk0a4",
+        authDomain: "maniatiko-dj.firebaseapp.com",
+        projectId: "maniatiko-dj",
+        storageBucket: "maniatiko-dj.firebasestorage.app",
+        messagingSenderId: "152754205763",
+        appId: "1:152754205763:web:850a57001640658d8890f6",
+        measurementId: "G-5CXDNBQMN6"
+      });
+      const analytics = getAnalytics(app);
+    </script>
+
     <!-- Fonts (placeholder, redefinir cuando se cierre la identidad visual) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

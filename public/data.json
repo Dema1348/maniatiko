@@ -9,15 +9,15 @@
     "themeColor": "#050505"
   },
   "analytics": {
-    "enabled": false,
+    "enabled": true,
     "firebase": {
-      "apiKey": "",
-      "authDomain": "",
+      "apiKey": "AIzaSyDsPmr27S75Hiux1qssHHQNcNjgd8Rk0a4",
+      "authDomain": "maniatiko-dj.firebaseapp.com",
       "projectId": "maniatiko-dj",
-      "storageBucket": "",
-      "messagingSenderId": "",
-      "appId": "",
-      "measurementId": ""
+      "storageBucket": "maniatiko-dj.firebasestorage.app",
+      "messagingSenderId": "152754205763",
+      "appId": "1:152754205763:web:850a57001640658d8890f6",
+      "measurementId": "G-5CXDNBQMN6"
     }
   },
   "nav": [],
