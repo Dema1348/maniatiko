@@ -156,6 +156,24 @@ function initKickJolts() {
       );
     }
 
+    // 1b. Hero role (PRODUCER & DJ) — cascade scale punch en cada char
+    const roleChars = document.querySelectorAll(".hero-role-char");
+    if (roleChars.length) {
+      gsap.fromTo(
+        roleChars,
+        { scale: 1 },
+        {
+          scale: 1.1,
+          duration: 0.05,
+          ease: "power2.out",
+          stagger: 0.015,
+          yoyo: true,
+          repeat: 1,
+          overwrite: "auto",
+        },
+      );
+    }
+
     // 2. Section titles — micro-shake X (todo el sitio vibra al kick)
     document.querySelectorAll(".section-title").forEach((title) => {
       gsap.fromTo(
@@ -672,6 +690,7 @@ let __shaderUniforms = null;
 function renderHero(hero, mixes) {
   if (!hero) return;
   const $title = document.getElementById("heroTitle");
+  const $role = document.getElementById("heroRole");
   const $bpm = document.getElementById("heroBpm");
   const $engageLabel = document.getElementById("heroEngageLabel");
   const $engage = document.getElementById("heroEngage");
@@ -688,6 +707,18 @@ function renderHero(hero, mixes) {
       .join("");
     $title.innerHTML = chars;
     if ($logo) $logo.textContent = hero.title;
+  }
+  if ($role && hero.role) {
+    // Char-split también en el role — habilita el cascade scale punch al kick
+    const chars = hero.role
+      .split("")
+      .map((c) =>
+        c === " "
+          ? `<span class="hero-role-char hero-role-char--space">&nbsp;</span>`
+          : `<span class="hero-role-char">${escapeHtml(c)}</span>`,
+      )
+      .join("");
+    $role.innerHTML = chars;
   }
   if ($bpm && hero.bpm) $bpm.textContent = `${hero.bpm} BPM`;
   if (hero.engage) {
