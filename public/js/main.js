@@ -10,12 +10,18 @@ const DATA_URL = "data.json";
 // Boot
 // --------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", async () => {
+  initBootLoader();
+  initLenis();
+  initCustomCursor();
   initYear();
   initNav();
   initLightbox();
 
   const data = await loadData();
-  if (!data) return;
+  if (!data) {
+    hideBootLoader();
+    return;
+  }
 
   applySite(data.site);
   renderNav(data);
@@ -27,11 +33,292 @@ document.addEventListener("DOMContentLoaded", async () => {
   initReveals();
   initTvStatic();
   initNextRitualCountdown();
+  initBookingForm();
+  initMiniPlayer(data);
 
   if (document.querySelector(".setlist-wave")) {
     initSetlistWaves(data.mixes || []);
   }
+
+  hideBootLoader();
 });
+
+// --------------------------------------------------------------
+// Boot loader — splash 1.1s con counter 150 → 170 BPM
+// --------------------------------------------------------------
+let __bootLoaderStart = 0;
+const BOOT_MIN_DURATION = 1100;
+
+function initBootLoader() {
+  const loader = document.getElementById("bootLoader");
+  if (!loader) return;
+
+  __bootLoaderStart = performance.now();
+
+  const num = document.getElementById("bootLoaderNum");
+  const fill = document.getElementById("bootLoaderFill");
+  if (fill) requestAnimationFrame(() => (fill.style.width = "100%"));
+
+  if (num) {
+    const startN = 140;
+    const endN = 170;
+    function step(now) {
+      const t = Math.min((now - __bootLoaderStart) / BOOT_MIN_DURATION, 1);
+      num.textContent = Math.round(startN + (endN - startN) * t);
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+}
+
+function hideBootLoader() {
+  const loader = document.getElementById("bootLoader");
+  if (!loader || loader.classList.contains("is-hidden")) return;
+  const elapsed = performance.now() - __bootLoaderStart;
+  const wait = Math.max(0, BOOT_MIN_DURATION - elapsed);
+  setTimeout(() => {
+    loader.classList.add("is-hidden");
+    setTimeout(() => loader.remove(), 600);
+  }, wait);
+}
+
+// --------------------------------------------------------------
+// Lenis smooth scroll — sincronizado con GSAP ticker
+// --------------------------------------------------------------
+function initLenis() {
+  if (typeof Lenis === "undefined") return;
+  const lenis = new Lenis({
+    duration: 1.15,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    smoothTouch: false,
+  });
+  window.__lenis = lenis;
+
+  if (typeof gsap !== "undefined") {
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+  } else {
+    (function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    })(0);
+  }
+
+  // Anchor links pasan por Lenis para mantener el feel suave
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const href = a.getAttribute("href");
+    if (!href || href === "#" || href.length < 2) return;
+    const target = document.querySelector(href);
+    if (!target) return;
+    e.preventDefault();
+    lenis.scrollTo(target, { offset: -64 });
+  });
+}
+
+// --------------------------------------------------------------
+// Custom cursor — dot + ring 170 BPM (solo desktop con mouse fino)
+// --------------------------------------------------------------
+function initCustomCursor() {
+  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  const root = document.getElementById("cursorRoot");
+  if (!root) return;
+
+  let tx = window.innerWidth / 2,
+    ty = window.innerHeight / 2;
+  let cx = tx,
+    cy = ty;
+
+  document.addEventListener("mousemove", (e) => {
+    tx = e.clientX;
+    ty = e.clientY;
+  });
+
+  (function tick() {
+    cx += (tx - cx) * 0.22;
+    cy += (ty - cy) * 0.22;
+    root.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+    requestAnimationFrame(tick);
+  })();
+
+  const HOVER_SEL =
+    "a, button, [data-track-index], .setlist-row, .ritual, .archive-table tbody tr, .crew-link, .roster-link, .memory, .presskit-card, .reverb-card, .featured-chip, input, textarea, .mini-player-bar";
+  document.addEventListener("mouseover", (e) => {
+    if (e.target.closest && e.target.closest(HOVER_SEL))
+      root.classList.add("is-hover");
+  });
+  document.addEventListener("mouseout", (e) => {
+    if (e.target.closest && e.target.closest(HOVER_SEL))
+      root.classList.remove("is-hover");
+  });
+}
+
+// --------------------------------------------------------------
+// Mini-player — SoundCloud Widget API + sticky bar
+// Bridge entre setlist play buttons y el iframe oculto.
+// --------------------------------------------------------------
+function initMiniPlayer(data) {
+  const player = document.getElementById("miniPlayer");
+  const iframe = document.getElementById("scWidget");
+  if (!player || !iframe || typeof SC === "undefined") return;
+
+  const tracks = data.mixes || [];
+  if (!tracks.length) return;
+
+  // Pre-load el iframe con el primer track (sin autoplay) — el Widget API
+  // necesita un src válido para bindear; luego usamos widget.load() para cambiar.
+  const initSrc = `https://w.soundcloud.com/player/?url=${encodeURIComponent(
+    tracks[0].url,
+  )}&auto_play=false&visual=false&show_artwork=false&show_comments=false&show_playcount=false&show_user=false&hide_related=true`;
+  if (!iframe.src) iframe.src = initSrc;
+
+  const widget = SC.Widget(iframe);
+
+  const $title = document.getElementById("miniPlayerTitle");
+  const $time = document.getElementById("miniPlayerTime");
+  const $prog = document.getElementById("miniPlayerProgress");
+  const $tog = document.getElementById("miniPlayerToggle");
+  const $clo = document.getElementById("miniPlayerClose");
+  const $bar = player.querySelector(".mini-player-bar");
+
+  let currentRow = null;
+  let isPlaying = false;
+  let duration = 0;
+
+  const fmt = (ms) => {
+    const s = Math.max(0, Math.floor(ms / 1000));
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  };
+
+  widget.bind(SC.Widget.Events.READY, () => {
+    widget.bind(SC.Widget.Events.PLAY_PROGRESS, (e) => {
+      $prog.style.width = `${(e.relativePosition || 0) * 100}%`;
+      $time.textContent = fmt(e.currentPosition || 0);
+    });
+    widget.bind(SC.Widget.Events.PLAY, () => {
+      isPlaying = true;
+      player.classList.add("is-playing");
+      currentRow && currentRow.classList.add("is-playing");
+      widget.getDuration((d) => (duration = d || 0));
+    });
+    widget.bind(SC.Widget.Events.PAUSE, () => {
+      isPlaying = false;
+      player.classList.remove("is-playing");
+      currentRow && currentRow.classList.remove("is-playing");
+    });
+    widget.bind(SC.Widget.Events.FINISH, () => {
+      isPlaying = false;
+      player.classList.remove("is-playing");
+      currentRow && currentRow.classList.remove("is-playing");
+    });
+  });
+
+  function open() {
+    player.classList.add("is-open");
+    document.body.classList.add("has-miniplayer");
+    player.setAttribute("aria-hidden", "false");
+  }
+  function closeMP() {
+    widget.pause();
+    player.classList.remove("is-open", "is-playing");
+    document.body.classList.remove("has-miniplayer");
+    player.setAttribute("aria-hidden", "true");
+    currentRow && currentRow.classList.remove("is-playing");
+    currentRow = null;
+    isPlaying = false;
+  }
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".setlist-play");
+    if (!btn) return;
+    e.preventDefault();
+    const row = btn.closest(".setlist-row");
+    if (!row) return;
+    const idx = parseInt(row.dataset.trackIndex, 10);
+    const track = tracks[idx];
+    if (!track || !track.url) return;
+
+    if (currentRow === row) {
+      isPlaying ? widget.pause() : widget.play();
+      return;
+    }
+    currentRow && currentRow.classList.remove("is-playing");
+    currentRow = row;
+    $title.textContent = track.title || "—";
+    $prog.style.width = "0%";
+    $time.textContent = "0:00";
+    open();
+    widget.load(track.url, {
+      auto_play: true,
+      visual: false,
+      show_artwork: false,
+      show_comments: false,
+      show_playcount: false,
+      show_user: false,
+      hide_related: true,
+    });
+  });
+
+  $tog.addEventListener("click", () =>
+    isPlaying ? widget.pause() : widget.play(),
+  );
+  $clo.addEventListener("click", closeMP);
+
+  $bar.addEventListener("click", (e) => {
+    const rect = $bar.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    widget.getDuration((d) => {
+      duration = d || duration;
+      if (duration) widget.seekTo(duration * pct);
+    });
+  });
+}
+
+// --------------------------------------------------------------
+// Booking form — captura submit, abre mailto estructurado
+// --------------------------------------------------------------
+function initBookingForm() {
+  const form = document.getElementById("bookingForm");
+  if (!form) return;
+  const status = document.getElementById("bookingStatus");
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    for (const el of form.querySelectorAll("[required]")) {
+      if (!el.value.trim()) {
+        const label = form.querySelector(`label[for="${el.id}"]`);
+        status.textContent = `† ${label ? label.textContent : el.name} is required.`;
+        status.classList.remove("is-ok");
+        el.focus();
+        return;
+      }
+    }
+
+    const fd = new FormData(form);
+    const to = form.dataset.to;
+    const prefix = form.dataset.subject || "[BOOKING]";
+    const subject =
+      `${prefix} ${fd.get("event") || ""} · ${fd.get("city") || ""} · ${fd.get("date") || ""}`.trim();
+    const body = [
+      `Name: ${fd.get("name") || ""}`,
+      `Email: ${fd.get("email") || ""}`,
+      `Event / Venue: ${fd.get("event") || ""}`,
+      `Date: ${fd.get("date") || ""}`,
+      `City: ${fd.get("city") || ""}`,
+      `Offer: ${fd.get("offer") || "—"}`,
+      ``,
+      `Brief:`,
+      fd.get("message") || "—",
+    ].join("\n");
+
+    window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    status.textContent = "† Opening your email client…";
+    status.classList.add("is-ok");
+  });
+}
 
 // --------------------------------------------------------------
 // Countdown al próximo ritual — live updating cada segundo
@@ -75,7 +362,8 @@ function initTvStatic() {
   const ctx = canvas.getContext("2d");
 
   // Render a la mitad de resolución para performance (luego CSS lo estira)
-  let w = 0, h = 0;
+  let w = 0,
+    h = 0;
   function resize() {
     w = Math.floor(window.innerWidth / 2);
     h = Math.floor(window.innerHeight / 2);
@@ -194,7 +482,7 @@ function renderHero(hero) {
       .map((c) =>
         c === " "
           ? `<span class="hero-char hero-char--space">&nbsp;</span>`
-          : `<span class="hero-char">${escapeHtml(c)}</span>`
+          : `<span class="hero-char">${escapeHtml(c)}</span>`,
       )
       .join("");
     $title.innerHTML = chars;
@@ -288,7 +576,7 @@ function renderSectionBody(type, items, sec, data) {
     case "memories":
       return renderMemories(items);
     case "gigs":
-      return renderGigs(items);
+      return renderGigs(items, data);
     case "mixes":
       return renderMixes(items);
     case "tracks":
@@ -301,8 +589,14 @@ function renderSectionBody(type, items, sec, data) {
       return renderRoster(sec, data);
     case "press":
       return renderPress(items);
+    case "featured":
+      return renderFeatured(items);
     case "presskit":
       return renderPresskit(items);
+    case "booking":
+      return renderBooking(sec);
+    case "booking-card":
+      return renderBookingCard(sec);
     default:
       return `<pre data-reveal>${escapeHtml(JSON.stringify(items, null, 2))}</pre>`;
   }
@@ -349,7 +643,7 @@ function renderMemories(items) {
             ${m.city ? `<p class="memory-city">${escapeHtml(m.city)}</p>` : ""}
             ${m.anecdote ? `<p class="memory-anecdote">"${escapeHtml(m.anecdote)}"</p>` : ""}
           </div>
-        </article>`
+        </article>`,
         )
         .join("")}
     </div>
@@ -375,8 +669,10 @@ function initSetlistWaves(items) {
     return Math.abs(h);
   };
 
-  const AMP_BASE = 0.42;
-  const AMP_HOVER = 0.72;
+  // ampRatio = porcentaje de la mitad-altura disponible (con 1px de margen).
+  // Así la onda nunca se sale del canvas, sin importar la altura.
+  const AMP_BASE = 0.68;
+  const AMP_HOVER = 0.96;
 
   const renderers = Array.from(canvases)
     .map((canvas) => {
@@ -403,9 +699,28 @@ function initSetlistWaves(items) {
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
       resize();
-      return { canvas, ctx, wave, row, state, resize, ampHover: AMP_HOVER, ampBase: AMP_BASE };
+      // ResizeObserver: el layout puede cambiar después del init (fonts, grid shrink,
+      // hide/show mini-player). Cada canvas se re-mide cuando su row cambia de ancho.
+      if (typeof ResizeObserver !== "undefined" && row) {
+        const ro = new ResizeObserver(() => resize());
+        ro.observe(row);
+      }
+      return {
+        canvas,
+        ctx,
+        wave,
+        row,
+        state,
+        resize,
+        ampHover: AMP_HOVER,
+        ampBase: AMP_BASE,
+      };
     })
     .filter(Boolean);
+
+  // Re-medir al frame siguiente — fuerza un measure post-layout en caso de
+  // que el primer resize() haya corrido antes de que el grid finalizara.
+  requestAnimationFrame(() => renderers.forEach((r) => r.resize()));
 
   window.addEventListener("resize", () => renderers.forEach((r) => r.resize()));
 
@@ -441,9 +756,11 @@ function initSetlistWaves(items) {
       }
 
       const cy = height / 2;
-      const amp = height * r.wave.ampRatio;
+      const maxAmp = Math.max(0, height / 2 - 1);
+      const amp = maxAmp * r.wave.ampRatio;
       for (let x = 0; x <= width; x += 2) {
-        const y = cy + Math.sin(x * r.wave.freq + r.wave.phase + r.wave.offset) * amp;
+        const y =
+          cy + Math.sin(x * r.wave.freq + r.wave.phase + r.wave.offset) * amp;
         if (x === 0) r.ctx.moveTo(x, y);
         else r.ctx.lineTo(x, y);
       }
@@ -464,13 +781,14 @@ function renderChapters(items, dossier) {
         <article class="chapter chapter--${i % 2 === 0 ? "left" : "right"}">
           <span class="chapter-num">${roman(i + 1)}</span>
           <p class="chapter-text">${escapeHtml(text)}</p>
-        </article>`
+        </article>`,
           )
           .join("")}
       </div>`
     : "";
-  const dossierHtml = dossier && dossier.rows
-    ? `<div class="dossier" data-reveal>
+  const dossierHtml =
+    dossier && dossier.rows
+      ? `<div class="dossier" data-reveal>
          ${dossier.title ? `<h3 class="dossier-title">${escapeHtml(dossier.title)}</h3>` : ""}
          <dl class="dossier-list">
            ${dossier.rows
@@ -479,17 +797,44 @@ function renderChapters(items, dossier) {
              <div class="dossier-row">
                <dt class="dossier-key">${escapeHtml(r.key || "")}</dt>
                <dd class="dossier-value">${escapeHtml(r.value || "")}</dd>
-             </div>`
+             </div>`,
              )
              .join("")}
          </dl>
        </div>`
-    : "";
+      : "";
   return chaptersHtml + dossierHtml;
 }
 
-function renderGigs(items) {
+function renderEpkStats(data) {
+  const gigs = (data.gigs || []).length;
+  const tracks = (data.mixes || []).length;
+  const platforms = (data.socials || []).length;
+  const stats = [
+    { num: String(gigs).padStart(2, "0"), label: "Rituals played" },
+    { num: String(tracks).padStart(2, "0"), label: "Productions" },
+    { num: String(platforms).padStart(2, "0"), label: "Platforms" },
+    { num: "170", label: "BPM peak" },
+  ];
+  return `
+    <div class="epk-stats" data-reveal>
+      ${stats
+        .map(
+          (s) => `
+        <div class="epk-stat">
+          <span class="epk-stat-num">${escapeHtml(s.num)}</span>
+          <span class="epk-stat-label">${escapeHtml(s.label)}</span>
+        </div>`,
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+function renderGigs(items, data) {
   if (!items.length) return "";
+
+  const statsHtml = data ? renderEpkStats(data) : "";
 
   const upcoming = items.filter((g) => computeGigStatus(g.date) !== "past");
   const past = items.filter((g) => computeGigStatus(g.date) === "past");
@@ -559,7 +904,7 @@ function renderGigs(items) {
       </div>`
     : "";
 
-  return countdownHtml + ritualsHtml + archiveHtml;
+  return statsHtml + countdownHtml + ritualsHtml + archiveHtml;
 }
 
 function gigDateValue(str) {
@@ -571,7 +916,20 @@ function gigDateValue(str) {
 
 function parseGigDate(str) {
   // Formato esperado: "MM.DD.YYYY"
-  const months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  const months = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DEC",
+  ];
   const parts = (str || "").split(".");
   if (parts.length !== 3) return { day: str || "—", month: "", year: "" };
   const [mm, dd, yyyy] = parts;
@@ -592,20 +950,26 @@ function computeGigStatus(str) {
 
 function renderMixes(items) {
   if (!items.length) return "";
+  const playSvg = `
+    <svg class="setlist-play--play"  viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+    <svg class="setlist-play--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg>`;
   return `
     <ol class="setlist" data-reveal>
       ${items
         .map(
           (m, i) => `
         <li class="setlist-row" data-track-index="${i}">
-          <span class="setlist-num">${String(i + 1).padStart(2, "0")}</span>
+          <div class="setlist-num-wrap">
+            <button class="setlist-play" aria-label="Play ${escapeAttr(m.title || "")}">${playSvg}</button>
+            <span class="setlist-num">${String(i + 1).padStart(2, "0")}</span>
+          </div>
           <div class="setlist-meta">
             <h3 class="setlist-title">${escapeHtml(m.title || "")}</h3>
             ${m.description ? `<p class="setlist-desc">${escapeHtml(m.description)}</p>` : ""}
             <canvas class="setlist-wave" data-wave-index="${i}" aria-hidden="true"></canvas>
           </div>
-          ${m.url ? `<a class="setlist-action" href="${m.url}" target="_blank" rel="noopener">↗ Listen</a>` : ""}
-        </li>`
+          ${m.url ? `<a class="setlist-action" href="${m.url}" target="_blank" rel="noopener">↗ SoundCloud</a>` : ""}
+        </li>`,
         )
         .join("")}
     </ol>
@@ -624,7 +988,7 @@ function renderTracks(items) {
           <h3 class="card-title">${escapeHtml(t.title || "")}</h3>
           ${t.label ? `<p class="card-body">${escapeHtml(t.label)}</p>` : ""}
           ${t.url ? `<a class="hero-cta" href="${t.url}" target="_blank" rel="noopener">Reproducir</a>` : ""}
-        </article>`
+        </article>`,
         )
         .join("")}
     </div>
@@ -640,7 +1004,7 @@ function renderGallery(items) {
           (g, i) => `
         <button class="gallery-item" data-gallery-index="${i}" data-src="${g.image}" data-video="${g.video || ""}" aria-label="${escapeAttr(g.alt || "")}">
           <img src="${g.image}" alt="${escapeAttr(g.alt || "")}" loading="lazy">
-        </button>`
+        </button>`,
         )
         .join("")}
     </div>
@@ -648,7 +1012,7 @@ function renderGallery(items) {
 }
 
 function renderRoster(sec, data) {
-  const left  = (sec.left  && data[sec.left.source])  || [];
+  const left = (sec.left && data[sec.left.source]) || [];
   const right = (sec.right && data[sec.right.source]) || [];
   const col = (label, items) => `
     <div class="roster-col">
@@ -669,7 +1033,7 @@ function renderRoster(sec, data) {
   `;
   return `
     <div class="roster" data-reveal>
-      ${col(sec.left && sec.left.label,  left)}
+      ${col(sec.left && sec.left.label, left)}
       ${col(sec.right && sec.right.label, right)}
     </div>
   `;
@@ -705,7 +1069,7 @@ function renderPresskit(items) {
           <h3 class="presskit-title">${escapeHtml(it.title || "")}</h3>
           ${it.description ? `<p class="presskit-desc">${escapeHtml(it.description)}</p>` : ""}
           <a class="presskit-cta" href="${it.url || "#"}" ${it.url && it.url.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${escapeHtml(it.cta || "Download")} →</a>
-        </article>`
+        </article>`,
         )
         .join("")}
     </div>
@@ -722,9 +1086,104 @@ function renderPress(items) {
         <blockquote class="reverb-card">
           <p class="reverb-quote">"${escapeHtml(p.quote || "")}"</p>
           <div class="reverb-source">— ${escapeHtml(p.source || "")}</div>
-        </blockquote>`
+        </blockquote>`,
         )
         .join("")}
+    </div>
+  `;
+}
+
+function renderFeatured(items) {
+  if (!items.length) return "";
+  return `
+    <div class="featured" data-reveal>
+      ${items
+        .map((it) => {
+          if (it.link) {
+            return `<a class="featured-chip" href="${it.link}" target="_blank" rel="noopener">${escapeHtml(it.name)}</a>`;
+          }
+          return `<span class="featured-chip">${escapeHtml(it.name)}</span>`;
+        })
+        .join("")}
+    </div>
+  `;
+}
+
+function renderBookingCard(sec) {
+  const c = sec.card || {};
+  if (!c.email) return "";
+  const subj = encodeURIComponent(c.emailSubject || "[BOOKING]");
+  const briefItems = Array.isArray(c.brief) ? c.brief : [];
+  const briefHtml = briefItems.length
+    ? `<div class="booking-card-brief">
+         <span class="booking-card-brief-label">† Include in your brief</span>
+         <ol class="booking-card-brief-list">
+           ${briefItems
+             .map(
+               (it, i) =>
+                 `<li><span class="booking-card-brief-num">${String(i + 1).padStart(2, "0")}</span>${escapeHtml(it)}</li>`,
+             )
+             .join("")}
+         </ol>
+       </div>`
+    : "";
+  const altHtml =
+    c.alt && c.alt.url && c.alt.handle
+      ? `<div class="booking-card-alt">
+           <span class="booking-card-alt-label">${escapeHtml(c.alt.label || "Or DM")}</span>
+           <a href="${c.alt.url}" target="_blank" rel="noopener" class="booking-card-alt-link">${escapeHtml(c.alt.handle)} ↗</a>
+         </div>`
+      : "";
+
+  return `
+    <div class="booking-card" data-reveal>
+      ${c.intro ? `<p class="booking-card-intro">${escapeHtml(c.intro)}</p>` : ""}
+      <a class="booking-card-cta" href="mailto:${c.email}?subject=${subj}">
+        <span class="booking-card-cta-label">${escapeHtml(c.emailLabel || "† Direct booking")}</span>
+        <span class="booking-card-cta-email">${escapeHtml(c.email)}</span>
+        <span class="booking-card-cta-arrow">→</span>
+      </a>
+      ${briefHtml}
+      ${altHtml}
+    </div>
+  `;
+}
+
+function renderBooking(sec) {
+  const form = sec.form || {};
+  const fields = Array.isArray(form.fields) ? form.fields : [];
+  if (!fields.length) return "";
+  const intro = form.intro
+    ? `<p class="booking-intro" data-reveal>${escapeHtml(form.intro)}</p>`
+    : "";
+  const inputs = fields
+    .map((f) => {
+      const id = `bk-${f.name}`;
+      const required = f.required ? "required" : "";
+      const reqCls = f.required ? "booking-field--required" : "";
+      const fullCls = f.type === "textarea" ? "booking-field--full" : "";
+      const control =
+        f.type === "textarea"
+          ? `<textarea id="${id}" name="${escapeAttr(f.name)}" class="booking-textarea" ${required}></textarea>`
+          : `<input id="${id}" name="${escapeAttr(f.name)}" type="${escapeAttr(f.type || "text")}" class="booking-input" ${required}>`;
+      return `
+        <div class="booking-field ${reqCls} ${fullCls}">
+          <label class="booking-label" for="${id}">${escapeHtml(f.label || f.name)}</label>
+          ${control}
+        </div>`;
+    })
+    .join("");
+
+  return `
+    <div class="booking" data-reveal>
+      ${intro}
+      <form class="booking-form" id="bookingForm" novalidate
+            data-to="${escapeAttr(form.to || "")}"
+            data-subject="${escapeAttr(form.subjectPrefix || "[BOOKING]")}">
+        ${inputs}
+        <button type="submit" class="booking-submit">${escapeHtml(form.submit || "Send")} →</button>
+        <div class="booking-status" id="bookingStatus"></div>
+      </form>
     </div>
   `;
 }
@@ -758,7 +1217,7 @@ function renderFooter(data) {
     $links.innerHTML = socials
       .map(
         (s) =>
-          `<a href="${s.url}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`
+          `<a href="${s.url}" target="_blank" rel="noopener">${escapeHtml(s.label)}</a>`,
       )
       .join("");
   }
@@ -782,7 +1241,8 @@ function initYear() {
 // GSAP reveals
 // --------------------------------------------------------------
 function initReveals() {
-  if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
+  if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined")
+    return;
   gsap.registerPlugin(ScrollTrigger);
 
   gsap.utils.toArray("[data-reveal]").forEach((el) => {

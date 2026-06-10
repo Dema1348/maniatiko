@@ -3,14 +3,17 @@
 Landing page estática para el DJ **Maniatiko**. Estructura tipo template inspirada en `requiem-cl` (`/Users/edson/Desktop/requiem/requiem`): contenido dinámico desde `data.json`, render por JS, animaciones GSAP scroll, lightbox.
 
 ## Idioma — **EL SITIO ES EN INGLÉS**
+
 Todo el copy, labels, meta tags, alt text, navegación, descripciones y body content se escriben en inglés. La conversación entre dev y asistente sigue en español, pero **cualquier texto que termine en `public/` va en inglés**.
 
 **Configuración técnica:**
+
 - `<html lang="en">` en `index.html`
 - `site.locale: "en_US"` en `data.json`
 - `og:locale` y `twitter:*` también en inglés
 
 **Excepciones (se conservan en su idioma original):**
+
 - Nombres propios: Santiago, Chile, Valparaíso
 - Crews chilenos: Radikals Techno, Blackout, Circuito Integrado, 909 Freakz, Hollenraum, Teknokratas
 - Venues, ciudades, nombres de personas (DJs del lineup)
@@ -21,6 +24,7 @@ Todo el copy, labels, meta tags, alt text, navegación, descripciones y body con
 **Formato de fechas:** US (`MM.DD.YYYY`), no europeo.
 
 ## Stack
+
 - HTML5 / CSS3 / Vanilla JS (sin frameworks, sin build tools)
 - GSAP 3.12.7 + ScrollTrigger (CDN) — animaciones de entrada al scroll
 - Google Fonts — Space Grotesk (display/body) + Space Mono (mono)
@@ -28,16 +32,19 @@ Todo el copy, labels, meta tags, alt text, navegación, descripciones y body con
 - Deploy directo desde `public/`
 
 ## Identidad visual — "Hypnotic Neon Decay"
+
 Inspirada en la escuela hard/hypnotic techno (SPFDJ, 999999999, Polygonia, label HEX).
 Encaja con la bio de Maniatiko (Bochka pressure, hipnosis prolongada, ritualistic,
 tensión mental + física, motivo †).
 
 **Paleta fija** (no temable — decisión cerrada):
-- `--bg`     `#050505` negro profundo
-- `--text`   `#e8e8e8` hueso
+
+- `--bg` `#050505` negro profundo
+- `--text` `#e8e8e8` hueso
 - `--accent` `#f20100` rojo puro
 
 **Tipos**:
+
 - **Logo** (`--font-logo`): **Elms Sans** (variable, axes wght 100-900 + ital). Usado **light + tracked wide** para feel editorial/refinado (matchea el archivo de referencia `logo-demo.png`):
   - hero-title: weight 200 (ExtraLight), letter-spacing 0.22em
   - nav-logo: weight 300 (Light), letter-spacing 0.18em
@@ -51,13 +58,15 @@ tensión mental + física, motivo †).
 - **Mono** (`--font-mono`): Space Mono — labels, metas, BPM, fechas, stamps, dossier
 
 **Efectos**:
-- **Bochka Pulse**: línea de 2px bajo el nav que late a **165 BPM** (period 0.3636s) en accent. Heartbeat global de la página = "constant propulsion" de la bio.
+
+- **Bochka Pulse**: línea de 2px bajo el nav que late a **170 BPM** (period 0.3636s) en accent. Heartbeat global de la página = "constant propulsion" de la bio.
 - **TV Static**: canvas full-viewport (`#tvStatic`) con noise random a ~15fps, opacity 6%, mix-blend screen, z-index 9997. Decay analógico industrial.
 - **Scanlines** permanentes en overlay (opacity 0.7, mix-blend overlay).
 - **Grain overlay** SVG estático al 3.5% opacity, z-index 9999.
 - **Glitch animation** en hover sobre `.hero-title`, `.section-title` y `.setlist-row .setlist-num` (chromatic aberration entre rojo y cyan `#00d9ff`).
 
 **Traducciones de tensión sónica por sección** (visuales, no audio):
+
 - **Marquee**: incluye palabras Cyrillic (БОЧКА, ТЕМНОТА, ПРЕССУРА) para autenticidad rusa Bochka.
 - **Origin**: tension gauge — barra vertical accent al lado de cada chapter creciendo en grosor + glow (I=fina, II=media, III=full). Build visual de la bio.
 - **Live**: countdown live "Next ritual in Xd · HH:MM:SS" arriba de los rituals, actualizado cada segundo. Tensión real-time.
@@ -67,9 +76,10 @@ tensión mental + física, motivo †).
 - **Press Kit**: 4 cards (Bio · Photo · Video · **Tech Rider**). Tech Rider es la spec sheet industrial.
 
 ## Diseño por sección (cada una transmite la bio)
+
 Cada sección traduce un concepto de la bio en lenguaje visual. Orden actual del sitio:
 
-1. **Hero** — backdrop con triple radial gradient rojo desvanecido + 4 stamps: TL `† Neo Bochka` (su subgénero declarado), TR `† 165 BPM` (pulsa sincronizado con el Bochka), BL coordenadas `33.4°S · 70.6°W`, BR `Santiago · CL`. Title `Maniatiko` en Elms Sans light + tracking amplio (ver Identidad visual). Phrase `DJ † Producer † Techno † Neo Bochka † Hypnotic` (géneros oficiales del artista). CTA `Listen to tracks` → `#mixes`.
+1. **Hero** — backdrop con triple radial gradient rojo desvanecido + 4 stamps: TL `† Neo Bochka` (su subgénero declarado), TR `† 170 BPM` (pulsa sincronizado con el Bochka), BL coordenadas `33.4°S · 70.6°W`, BR `Santiago · CL`. Title `Maniatiko` en Elms Sans light + tracking amplio (ver Identidad visual). Phrase `DJ † Producer † Techno † Neo Bochka † Hypnotic` (géneros oficiales del artista). CTA `Listen to tracks` → `#mixes`.
 2. **Marquee** (divider) — 2 lanes scrolleando en direcciones opuestas con palabras del mundo de Maniatiko (Bochka Pressure, Hypnotic, Tectonic, Hard Kicks + crews chilenos). Loop infinito = "constant propulsion". Sin section wrapper.
 3. **I · Origin** — capítulos numerados I/II/III con alineación alternada izq/der + línea vertical izquierda con dots de accent. Sección biográfica (no manifiesto declarativo — la bio narra de dónde viene y cómo construye su sonido). Después de los chapters: **Artist Dossier** — tabla key/value con Origin · Base · Sound · Crews · Stage w/ · Platforms · Booking. Estructura editorial pro.
 4. **II · Live** — split automático por fecha actual:
@@ -81,10 +91,10 @@ Cada sección traduce un concepto de la bio en lenguaje visual. Orden actual del
 8. **VI · Press Kit** — 4 cards descargables (Bio TXT · Press Photo · Promo Video · Tech Rider) con CTA Download. URLs `#` por ahora.
 9. **Footer** — `Booking Enquiries` bloque accent prominente con email `maniatikodj.bussines@gmail.com` (mailto) sobre los socials. CTA principal de contratación.
 
-> La sección Crews fue removida — la info (crews chilenos + DJs B2B) ya está en el Artist Dossier de Origin. Los arrays `crews[]` y `lineup[]` permanecen en data.json por si se necesita reactivar la sección (renderer `roster` sigue definido).
-10. **Footer** — brand grande, epitafio `† The ritual doesn't end. It only changes form †`, socials (IG, SC, TikTok, Facebook), copyright dinámico y credit `Made with love by @_dema1348` → `https://www.instagram.com/_dema1348/`.
+> La sección Crews fue removida — la info (crews chilenos + DJs B2B) ya está en el Artist Dossier de Origin. Los arrays `crews[]` y `lineup[]` permanecen en data.json por si se necesita reactivar la sección (renderer `roster` sigue definido). 10. **Footer** — brand grande, epitafio `† The ritual doesn't end. It only changes form †`, socials (IG, SC, TikTok, Facebook), copyright dinámico y credit `Made with love by @_dema1348` → `https://www.instagram.com/_dema1348/`.
 
 **Inspiraciones explícitas** (adaptadas, no copiadas — paleta y tipos propios):
+
 - **De requiem-cl**: estructura general, chapters numerados, lightbox, GSAP ScrollTrigger reveals, motivo †.
 - **De dupouymusic.com**: Marquee, Artist Dossier, Archive table densa, Press Kit con 3 cards descargables.
 
@@ -92,6 +102,7 @@ Si en el futuro se quiere ajustar el accent, se cambia `--accent` y `--accent-rg
 en `:root` de `styles.css` — todo el sitio responde por CSS vars.
 
 ## Estructura
+
 ```
 public/
 ├── index.html          — shell HTML con nav, hero, <main id="sectionsRoot">, lightbox, footer
@@ -106,9 +117,11 @@ firebase.json           — rewrites a index.html + cache headers para assets
 ```
 
 ## Contenido dinámico (data.json)
+
 Todo el contenido vive en `public/data.json`. Para editar/agregar, solo se modifica este archivo.
 
 ### Estructura
+
 - **site** — `{ name, tagline, description, url, locale, ogImage, themeColor }`
 - **analytics** — `{ enabled, firebase: { ... } }` (placeholder, no inicializado todavía)
 - **nav[]** — `{ label, href }` — opcional. Si está **vacío `[]`** o ausente, el nav se **auto-deriva desde `sections`**: toma cada sección con `title` y `id`, salta las que tienen `hideFromNav: true` (y las que no tienen título, como `marquee`). Cuando se agrega una sección nueva, el nav se actualiza solo. Si querés un orden custom o etiquetas distintas, llená este array y se usa como override.
@@ -134,6 +147,7 @@ Todo el contenido vive en `public/data.json`. Para editar/agregar, solo se modif
   - `credit.prefix` personaliza el texto antes del nombre (default "Made by", actual "Made with love by").
 
 ### Flujo de render (main.js)
+
 1. `fetch("data.json")` al `DOMContentLoaded`
 2. `applySite()` — title, theme-color
 3. `renderNav()` — links a partir de `data.nav`
@@ -143,11 +157,13 @@ Todo el contenido vive en `public/data.json`. Para editar/agregar, solo se modif
 7. `initReveals()` — GSAP ScrollTrigger para todos los `[data-reveal]`
 
 ### Para agregar contenido
+
 1. Editar `public/data.json` (agregar items a las colecciones)
 2. Agregar imágenes en `public/img/`
 3. `firebase deploy --only hosting`
 
 ## Estado actual
+
 - Scaffold completo con 10 piezas (hero + marquee + 7 secciones + footer)
 - Identidad visual cerrada: rojo `#f20100` + Bochka pulse 140bpm + glitch en hover + scanlines permanentes + motivo †
 - **Datos reales del cuestionario (2026-06-09)**: 7 plataformas (Bandcamp, Spotify, SoundCloud, YouTube, IG, TikTok, Facebook), email de booking `maniatikodj.bussines@gmail.com`, género oficial "Techno · Neo Bochka · Hypnotic", 11 gigs reales (10 past + 1 upcoming: Club 808 el 20 Jun 2026), 6 tracks SoundCloud con URLs reales, 3 fotos en `public/img/` para Aftermath, bio narrativo completo
@@ -158,6 +174,7 @@ Todo el contenido vive en `public/data.json`. Para editar/agregar, solo se modif
   - `img/og-image.jpg` (1200x630) y favicon definitivo
 
 ## Pendientes
+
 - Reemplazar mock content cuando llegue contenido real
 - Crear `img/og-image.jpg` y favicon definitivo
 - Conectar Press Kit a Drive links reales (Bio TXT, fotos, video promo)
@@ -165,7 +182,9 @@ Todo el contenido vive en `public/data.json`. Para editar/agregar, solo se modif
 - Deploy: `firebase login` → `firebase deploy --only hosting`
 
 ## Ideas de requiem que NO se trajeron (decisión consciente)
+
 Por el nivel "esenciales" elegido, queda fuera por ahora (se puede sumar después si se quiere):
+
 - Preloader cinemático con variantes
 - Cursor personalizado (dot + ring)
 - Particles canvas reactivo al scroll (sistema por fases)

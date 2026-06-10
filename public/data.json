@@ -8,7 +8,6 @@
     "ogImage": "img/og-image.jpg",
     "themeColor": "#050505"
   },
-
   "analytics": {
     "enabled": false,
     "firebase": {
@@ -21,30 +20,23 @@
       "measurementId": ""
     }
   },
-
   "nav": [],
-
   "hero": {
     "title": "Maniatiko",
     "phrase": "DJ † Producer † Techno † Neo Bochka † Hypnotic",
     "stamps": {
       "tl": "† Neo Bochka",
-      "tr": "† 165 BPM",
+      "tr": "† 170 BPM",
       "bl": "33.45°S · 70.73°W",
       "br": "Lo Prado · Santiago"
-    },
-    "cta": {
-      "label": "Listen to tracks",
-      "href": "#mixes"
     }
   },
-
   "sections": [
     {
       "id": "marquee",
       "type": "marquee",
       "lanes": [
-        "NEO BOCHKA † БОЧКА † HYPNOTIC † HARD TECHNO † 165 BPM † TECTONIC PRESSURE † PROLONGED HYPNOSIS † DARK PROPULSION † DISTORTED TEXTURES",
+        "NEO BOCHKA † БОЧКА † HYPNOTIC † HARD TECHNO † 170 BPM † TECTONIC PRESSURE † PROLONGED HYPNOSIS † DARK PROPULSION † DISTORTED TEXTURES",
         "LO PRADO † SANTIAGO † CHILEAN UNDERGROUND † RADIKALS † HÖLLENRAUM † VËRRÜCKT † REQUIEM † CLUB 808 † METALURGIA † 33.45°S 70.73°W"
       ]
     },
@@ -61,14 +53,38 @@
       "dossier": {
         "title": "† Artist Dossier",
         "rows": [
-          { "key": "Origin",    "value": "Chile" },
-          { "key": "Base",      "value": "Lo Prado, Santiago" },
-          { "key": "Sound",     "value": "Techno · Neo Bochka · Hypnotic" },
-          { "key": "BPM",       "value": "150–170" },
-          { "key": "Crews",     "value": "Radikals · Blackout · Hollenraum · Circuito Integrado · 909 Freakz · Teknokratas" },
-          { "key": "Stage w/",  "value": "Aldes · Kask4r · 19.85 · Mary B · Likikon · Bonek · Lurtz" },
-          { "key": "Platforms", "value": "Bandcamp · Spotify · SoundCloud · YouTube · Instagram · TikTok · Facebook" },
-          { "key": "Booking",   "value": "maniatikodj.bussines@gmail.com" }
+          {
+            "key": "Origin",
+            "value": "Chile"
+          },
+          {
+            "key": "Base",
+            "value": "Lo Prado, Santiago"
+          },
+          {
+            "key": "Sound",
+            "value": "Techno · Neo Bochka · Hypnotic"
+          },
+          {
+            "key": "BPM",
+            "value": "150–170"
+          },
+          {
+            "key": "Crews",
+            "value": "Radikals · Blackout · Hollenraum · Circuito Integrado · 909 Freakz · Teknokratas"
+          },
+          {
+            "key": "Stage w/",
+            "value": "Aldes · Kask4r · 19.85 · Mary B · Likikon · Bonek · Lurtz"
+          },
+          {
+            "key": "Platforms",
+            "value": "Bandcamp · Spotify · SoundCloud · YouTube · Instagram · TikTok · Facebook"
+          },
+          {
+            "key": "Booking",
+            "value": "maniatikodj.bussines@gmail.com"
+          }
         ]
       }
     },
@@ -101,38 +117,132 @@
       "source": "press"
     },
     {
+      "id": "featured",
+      "type": "featured",
+      "title": "Hosted by",
+      "subtitle": "Crews, venues & collectives that have summoned the ritual",
+      "source": "featured"
+    },
+    {
       "id": "presskit",
       "type": "presskit",
       "title": "Press Kit",
       "subtitle": "Assets & dossier for press, promoters and editorial",
       "source": "presskit"
+    },
+    {
+      "id": "booking",
+      "type": "booking-card",
+      "title": "Booking",
+      "subtitle": "For event organisers, promoters & residencies",
+      "card": {
+        "intro": "Send the brief. Replies within 48h.",
+        "email": "maniatikodj.bussines@gmail.com",
+        "emailLabel": "† Direct booking",
+        "emailSubject": "[BOOKING] Event · Date · City",
+        "brief": [
+          "Event name / venue",
+          "Date & city",
+          "Expected capacity",
+          "Set length & slot",
+          "Fee / offer (USD)",
+          "Lineup & context"
+        ],
+        "alt": {
+          "label": "Or DM",
+          "handle": "@maniatiko.dj",
+          "url": "https://www.instagram.com/maniatiko.dj"
+        }
+      }
     }
   ],
-
   "socials": [
-    { "label": "Bandcamp",   "url": "https://maniatiko1.bandcamp.com" },
-    { "label": "Spotify",    "url": "https://open.spotify.com/intl-es/artist/50KNp3KIPhqS0AVe8BKUbG" },
-    { "label": "SoundCloud", "url": "https://soundcloud.com/maniatikx" },
-    { "label": "YouTube",    "url": "https://www.youtube.com/@maniatikx" },
-    { "label": "Instagram",  "url": "https://www.instagram.com/maniatiko.dj" },
-    { "label": "TikTok",     "url": "https://www.tiktok.com/@maniatiko.dj" },
-    { "label": "Facebook",   "url": "https://www.facebook.com/profile.php?id=61590419833191" }
+    {
+      "label": "Bandcamp",
+      "url": "https://maniatiko1.bandcamp.com"
+    },
+    {
+      "label": "Spotify",
+      "url": "https://open.spotify.com/intl-es/artist/50KNp3KIPhqS0AVe8BKUbG"
+    },
+    {
+      "label": "SoundCloud",
+      "url": "https://soundcloud.com/maniatikx"
+    },
+    {
+      "label": "YouTube",
+      "url": "https://www.youtube.com/@maniatikx"
+    },
+    {
+      "label": "Instagram",
+      "url": "https://www.instagram.com/maniatiko.dj"
+    },
+    {
+      "label": "TikTok",
+      "url": "https://www.tiktok.com/@maniatiko.dj"
+    },
+    {
+      "label": "Facebook",
+      "url": "https://www.facebook.com/profile.php?id=61590419833191"
+    }
   ],
-
   "gigs": [
-    { "date": "06.20.2026", "city": "Santiago, CL", "venue": "Club 808" },
-    { "date": "05.29.2026", "city": "Santiago, CL", "venue": "Requiem × Vërrückt" },
-    { "date": "05.16.2026", "city": "Santiago, CL", "venue": "Verminous" },
-    { "date": "05.08.2026", "city": "Santiago, CL", "venue": "Galpón Technokikazo" },
-    { "date": "03.28.2026", "city": "Santiago, CL", "venue": "Vërrückt · F2F Armoniko" },
-    { "date": "03.27.2026", "city": "Santiago, CL", "venue": "Metalurgia Tekno" },
-    { "date": "03.01.2026", "city": "Santiago, CL", "venue": "Club Roxbury" },
-    { "date": "02.28.2026", "city": "Santiago, CL", "venue": "Nicole Lukys · Radikals Techno warmup" },
-    { "date": "01.02.2026", "city": "Santiago, CL", "venue": "Höllenraum × Inmortal Techno" },
-    { "date": "11.08.2025", "city": "Santiago, CL", "venue": "Pater Noster" },
-    { "date": "11.01.2025", "city": "Santiago, CL", "venue": "Lobotonik · Radikals Techno" }
+    {
+      "date": "06.20.2026",
+      "city": "Santiago, CL",
+      "venue": "Club 808"
+    },
+    {
+      "date": "05.29.2026",
+      "city": "Santiago, CL",
+      "venue": "Requiem × Vërrückt"
+    },
+    {
+      "date": "05.16.2026",
+      "city": "Santiago, CL",
+      "venue": "Verminous"
+    },
+    {
+      "date": "05.08.2026",
+      "city": "Santiago, CL",
+      "venue": "Galpón Technokikazo"
+    },
+    {
+      "date": "03.28.2026",
+      "city": "Santiago, CL",
+      "venue": "Vërrückt · F2F Armoniko"
+    },
+    {
+      "date": "03.27.2026",
+      "city": "Santiago, CL",
+      "venue": "Metalurgia Tekno"
+    },
+    {
+      "date": "03.01.2026",
+      "city": "Santiago, CL",
+      "venue": "Club Roxbury"
+    },
+    {
+      "date": "02.28.2026",
+      "city": "Santiago, CL",
+      "venue": "Nicole Lukys · Radikals Techno warmup"
+    },
+    {
+      "date": "01.02.2026",
+      "city": "Santiago, CL",
+      "venue": "Höllenraum × Inmortal Techno"
+    },
+    {
+      "date": "11.08.2025",
+      "city": "Santiago, CL",
+      "venue": "Pater Noster"
+    },
+    {
+      "date": "11.01.2025",
+      "city": "Santiago, CL",
+      "venue": "Lobotonik · Radikals Techno"
+    }
   ],
-
   "mixes": [
     {
       "platform": "SoundCloud · Original",
@@ -171,11 +281,8 @@
       "url": "https://soundcloud.com/maniatikx/7c928bc8-230a-426c-9542-cdde60682f31"
     }
   ],
-
   "tracks": [],
-
   "gallery": [],
-
   "memories": [
     {
       "date": "—",
@@ -199,26 +306,55 @@
       "image": "img/dj3.jpeg"
     }
   ],
-
   "crews": [
-    { "name": "Radikals Techno",     "link": "https://instagram.com/radikalstechno" },
-    { "name": "Blackout",            "link": "" },
-    { "name": "Circuito Integrado",  "link": "" },
-    { "name": "909 Freakz",          "link": "" },
-    { "name": "Hollenraum",          "link": "" },
-    { "name": "Teknokratas",         "link": "https://www.instagram.com/teknokratascl" }
+    {
+      "name": "Radikals Techno",
+      "link": "https://instagram.com/radikalstechno"
+    },
+    {
+      "name": "Blackout",
+      "link": ""
+    },
+    {
+      "name": "Circuito Integrado",
+      "link": ""
+    },
+    {
+      "name": "909 Freakz",
+      "link": ""
+    },
+    {
+      "name": "Hollenraum",
+      "link": ""
+    },
+    {
+      "name": "Teknokratas",
+      "link": "https://www.instagram.com/teknokratascl"
+    }
   ],
-
   "lineup": [
-    { "name": "Aldes" },
-    { "name": "Kask4r" },
-    { "name": "19.85" },
-    { "name": "Mary B" },
-    { "name": "Likikon" },
-    { "name": "Bonek" },
-    { "name": "Lurtz" }
+    {
+      "name": "Aldes"
+    },
+    {
+      "name": "Kask4r"
+    },
+    {
+      "name": "19.85"
+    },
+    {
+      "name": "Mary B"
+    },
+    {
+      "name": "Likikon"
+    },
+    {
+      "name": "Bonek"
+    },
+    {
+      "name": "Lurtz"
+    }
   ],
-
   "press": [
     {
       "quote": "Constant, dark, immersive propulsion. He doesn't play: he pushes.",
@@ -233,7 +369,56 @@
       "source": "Radikals Sessions"
     }
   ],
-
+  "featured": [
+    {
+      "name": "Radikals Techno",
+      "link": "https://instagram.com/radikalstechno"
+    },
+    {
+      "name": "Höllenraum",
+      "link": ""
+    },
+    {
+      "name": "Vërrückt",
+      "link": ""
+    },
+    {
+      "name": "Requiem",
+      "link": ""
+    },
+    {
+      "name": "Club 808",
+      "link": ""
+    },
+    {
+      "name": "Metalurgia Tekno",
+      "link": ""
+    },
+    {
+      "name": "Pater Noster",
+      "link": ""
+    },
+    {
+      "name": "Inmortal Techno",
+      "link": ""
+    },
+    {
+      "name": "Teknokratas",
+      "link": "https://www.instagram.com/teknokratascl"
+    },
+    {
+      "name": "Galpón Technokikazo",
+      "link": ""
+    },
+    {
+      "name": "Verminous",
+      "link": ""
+    },
+    {
+      "name": "Club Roxbury",
+      "link": ""
+    }
+  ],
   "presskit": [
     {
       "kind": "Text Document",
@@ -264,13 +449,8 @@
       "url": "#"
     }
   ],
-
   "footer": {
     "epitaph": "† The ritual doesn't end. It only changes form †",
-    "booking": {
-      "label": "Booking Enquiries",
-      "email": "maniatikodj.bussines@gmail.com"
-    },
     "credit": {
       "label": "@_dema1348",
       "href": "https://www.instagram.com/_dema1348/",
