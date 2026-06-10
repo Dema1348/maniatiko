@@ -1,23 +1,17 @@
 # maniatiko.dj
 
-Landing page estática para el DJ **Maniatiko**. Estructura tipo template inspirada en `requiem-cl` (`/Users/edson/Desktop/requiem/requiem`): contenido dinámico desde `data.json`, render por JS, animaciones GSAP scroll, lightbox.
+Landing page estática para el DJ **Maniatiko**. Hosting en Firebase (`maniatiko-dj.web.app`). Inspirada en `requiem-cl` (`/Users/edson/Desktop/requiem/requiem`): contenido dinámico desde `data.json`, render por JS, animaciones GSAP scroll, lightbox. Evolucionó hacia un **Ritual Engine** con shader WebGL + audio sintético opt-in.
 
-## Idioma — **EL SITIO ES EN INGLÉS**
+## Idioma — EL SITIO ES EN INGLÉS
 
 Todo el copy, labels, meta tags, alt text, navegación, descripciones y body content se escriben en inglés. La conversación entre dev y asistente sigue en español, pero **cualquier texto que termine en `public/` va en inglés**.
-
-**Configuración técnica:**
-
-- `<html lang="en">` en `index.html`
-- `site.locale: "en_US"` en `data.json`
-- `og:locale` y `twitter:*` también en inglés
 
 **Excepciones (se conservan en su idioma original):**
 
 - Nombres propios: Santiago, Chile, Valparaíso
 - Crews chilenos: Radikals Techno, Blackout, Circuito Integrado, 909 Freakz, Hollenraum, Teknokratas
 - Venues, ciudades, nombres de personas (DJs del lineup)
-- Títulos reales de tracks en SoundCloud que están en español: MANTRA, VIOLENCIA INTRAFAMILIAR, ALMA DISTORSIONADA, SINFONIA DEL MAL ETERNO, LAMENTOS, LA MELODÍA DE LA DESESPERACIÓN
+- Títulos reales de tracks en SoundCloud (español): MANTRA, VIOLENCIA INTRAFAMILIAR, ALMA DISTORSIONADA, SINFONIA DEL MAL ETERNO, LAMENTOS, LA MELODÍA DE LA DESESPERACIÓN
 - Handles de redes sociales (`@maniatiko.dj`, `maniatikx`)
 - El motivo † (no es lenguaje, es recurso visual de marca)
 
@@ -26,171 +20,232 @@ Todo el copy, labels, meta tags, alt text, navegación, descripciones y body con
 ## Stack
 
 - HTML5 / CSS3 / Vanilla JS (sin frameworks, sin build tools)
-- GSAP 3.12.7 + ScrollTrigger (CDN) — animaciones de entrada al scroll
-- Google Fonts — Space Grotesk (display/body) + Space Mono (mono)
+- **GSAP 3.12.7 + ScrollTrigger** (CDN) — animaciones de entrada al scroll + ambient hypnotic waves + kick jolts
+- **Lenis 1.1.20** (CDN) — smooth scroll sincronizado al GSAP ticker
+- **Three.js 0.160.0** (CDN) — shader WebGL fragment del hero (rings + kick + tectonic noise sincronizado al BPM)
+- **Tone.js 14.8.49** (CDN) — sintetiza el kick bochka procedural (MembraneSynth) opt-in al click de "Engage ritual"
+- **SoundCloud Widget API** — mini-player sticky + audio inline en Productions
+- **Firebase JS SDK 11.7.1** (CDN, module) — Analytics (`G-5CXDNBQMN6`)
+- Google Fonts — **Elms Sans** (logo, variable) + **Space Grotesk** (display/body) + **Space Mono** (mono)
 - Firebase Hosting (proyecto `maniatiko-dj`)
-- Deploy directo desde `public/`
+- Deploy directo desde `public/` con `firebase deploy --only hosting`
 
 ## Identidad visual — "Hypnotic Neon Decay"
 
-Inspirada en la escuela hard/hypnotic techno (SPFDJ, 999999999, Polygonia, label HEX).
-Encaja con la bio de Maniatiko (Bochka pressure, hipnosis prolongada, ritualistic,
-tensión mental + física, motivo †).
+Inspirada en la escuela hard/hypnotic techno (SPFDJ, 999999999, Polygonia, label HEX). Encaja con la bio (Bochka pressure, hipnosis prolongada, ritualistic, tensión mental + física, motivo †).
 
-**Paleta fija** (no temable — decisión cerrada):
+**Paleta fija** (no temable):
 
 - `--bg` `#050505` negro profundo
 - `--text` `#e8e8e8` hueso
 - `--accent` `#f20100` rojo puro
+- `--accent-glow` `rgba(242, 1, 0, 0.5)`
 
-**Tipos**:
+**Tipos:**
 
-- **Logo** (`--font-logo`): **Elms Sans** (variable, axes wght 100-900 + ital). Usado **light + tracked wide** para feel editorial/refinado (matchea el archivo de referencia `logo-demo.png`):
-  - hero-title: weight 200 (ExtraLight), letter-spacing 0.22em
-  - nav-logo: weight 300 (Light), letter-spacing 0.18em
+- **Logo** (`--font-logo`): Elms Sans variable. Light + tracked wide:
+  - hero-title: weight 200, letter-spacing 0.22em (mobile 0.12em)
+  - nav-logo: weight 300, letter-spacing 0.18em
   - footer-brand: weight 300, letter-spacing 0.2em
-  - **Sin chromatic glitch en hero-title** — las strokes finas no soportan aberración. En vez de eso, dos efectos:
-    - **Ambient hypnotic wave**: GSAP loop infinito post-entrada que pulsa `y: -5px` y `opacity: 0.85` en cascada por char (stagger 0.08s, duración 1.45s, sine.inOut, yoyo). Hipnosis + propulsion en lenguaje visual.
-    - **Hover halo accent**: cada `.hero-char` recibe text-shadow radial accent (sin offsets, solo glow) para no romper las strokes.
-  - El chromatic glitch sigue activo en `.section-title` (Space Grotesk pesado).
-- **Display** (`--font-display`): Space Grotesk — section titles, card titles, ritual venues, setlist titles, etc.
-- **Body** (`--font-body`): Space Grotesk — texto general
-- **Mono** (`--font-mono`): Space Mono — labels, metas, BPM, fechas, stamps, dossier
+- **Display** (`--font-display`): Space Grotesk — section titles, card titles, ritual venues, setlist titles
+- **Body** (`--font-body`): Space Grotesk
+- **Mono** (`--font-mono`): Space Mono — labels, BPM, fechas, stamps, dossier, terminal feel
 
-**Efectos**:
+**BPM canónico: 170 BPM (período 0.3529s)** — sincroniza Bochka pulse line, cursor ring, BPM stamp, glyph pulse, beat lines, hypnotic dividers, kick visual. Todo respira al mismo tempo.
 
-- **Bochka Pulse**: línea de 2px bajo el nav que late a **170 BPM** (period 0.3636s) en accent. Heartbeat global de la página = "constant propulsion" de la bio.
-- **TV Static**: canvas full-viewport (`#tvStatic`) con noise random a ~15fps, opacity 6%, mix-blend screen, z-index 9997. Decay analógico industrial.
-- **Scanlines** permanentes en overlay (opacity 0.7, mix-blend overlay).
-- **Grain overlay** SVG estático al 3.5% opacity, z-index 9999.
-- **Glitch animation** en hover sobre `.hero-title`, `.section-title` y `.setlist-row .setlist-num` (chromatic aberration entre rojo y cyan `#00d9ff`).
+**Efectos atmosféricos globales:**
 
-**Traducciones de tensión sónica por sección** (visuales, no audio):
+- **Bochka Pulse**: línea de 2px bajo el nav latiendo en accent a 170 BPM. Heartbeat global.
+- **TV Static**: canvas full-viewport (`#tvStatic`) con noise random ~15fps, opacity 6%, mix-blend screen, z-index 9997
+- **Scanlines** permanentes en overlay (opacity 0.7, mix-blend overlay, z-index 9998)
+- **Grain overlay** SVG estático al 3.5% opacity, z-index 9999
+- **Boot loader** 1.1s con counter 140→170 BPM (siempre se muestra, no skipea por session)
+- **Custom cursor** dot + ring pulsando a 170 BPM (solo desktop con mouse fino, mix-blend difference)
 
-- **Marquee**: incluye palabras Cyrillic (БОЧКА, ТЕМНОТА, ПРЕССУРА) para autenticidad rusa Bochka.
-- **Origin**: tension gauge — barra vertical accent al lado de cada chapter creciendo en grosor + glow (I=fina, II=media, III=full). Build visual de la bio.
-- **Live**: countdown live "Next ritual in Xd · HH:MM:SS" arriba de los rituals, actualizado cada segundo. Tensión real-time.
-- **Productions**: hover sobre row → ampRatio de la wave interpola 0.42 → 0.72 (visual "louder").
-- **Aftermath**: image animation `memoryDecay` (filter blur/contrast pulsando 14s loop) + anecdote con text-shadow desplazado = ghost memory.
-- **Reverb**: text-shadow stack en quotes con offsets crecientes y opacity decreciente = reverberación visual.
-- **Press Kit**: 4 cards (Bio · Photo · Video · **Tech Rider**). Tech Rider es la spec sheet industrial.
+## Ritual Engine (el corazón del hero)
 
-## Diseño por sección (cada una transmite la bio)
+El hero NO es decorativo. Tiene un **botón "Engage ritual"** que arranca un kick sintético real a 170 BPM. Una vez engaged, todo el sitio se intensifica + el scroll-depth modula la intensidad.
 
-Cada sección traduce un concepto de la bio en lenguaje visual. Orden actual del sitio:
+### Componentes del hero
 
-1. **Hero** — backdrop con triple radial gradient rojo desvanecido + 4 stamps: TL `† Neo Bochka` (su subgénero declarado), TR `† 170 BPM` (pulsa sincronizado con el Bochka), BL coordenadas `33.4°S · 70.6°W`, BR `Santiago · CL`. Title `Maniatiko` en Elms Sans light + tracking amplio (ver Identidad visual). Phrase `DJ † Producer † Techno † Neo Bochka † Hypnotic` (géneros oficiales del artista). CTA `Listen to tracks` → `#mixes`.
-2. **Marquee** (divider) — 2 lanes scrolleando en direcciones opuestas con palabras del mundo de Maniatiko (Bochka Pressure, Hypnotic, Tectonic, Hard Kicks + crews chilenos). Loop infinito = "constant propulsion". Sin section wrapper.
-3. **I · Origin** — capítulos numerados I/II/III con alineación alternada izq/der + línea vertical izquierda con dots de accent. Sección biográfica (no manifiesto declarativo — la bio narra de dónde viene y cómo construye su sonido). Después de los chapters: **Artist Dossier** — tabla key/value con Origin · Base · Sound · Crews · Stage w/ · Platforms · Booking. Estructura editorial pro.
-4. **II · Live** — split automático por fecha actual:
-   - **Upcoming** como `rituals` blocks: día gigante (5rem accent) + month/year stacked + chapter I/II/III + venue/lineup + status badge `ON SALE`.
-   - **Archive** como tabla densa: Date | Venue | City. Hover row ilumina venue en accent.
-5. **III · Productions** — setlist numerado (01, 02, 03...). **Cada row tiene su propia wave inline** (canvas pequeño dentro del row, debajo del título y descripción). La wave es la "firma sonora" del track: freq/amp/speed/offset derivados por hash del título. Hover sobre el row ilumina la wave (opacity 0.55 → 1) y aplica chromatic glitch al número. Cada producción lleva su huella visual única.
-6. **IV · Aftermath** — filas editoriales alternadas (izq/der). Cada entrada: foto B&W tratada con corner badge de fecha + chapter num + venue + city + anecdote italic con border-left de accent. "What remained" después de cada set.
-7. **V · Reverb** — 3 cards con quotes con text-shadow stack creando reverberación visual + source en mono. "What lingers" — lo que se dijo y sigue resonando.
-8. **VI · Press Kit** — 4 cards descargables (Bio TXT · Press Photo · Promo Video · Tech Rider) con CTA Download. URLs `#` por ahora.
-9. **Footer** — `Booking Enquiries` bloque accent prominente con email `maniatikodj.bussines@gmail.com` (mailto) sobre los socials. CTA principal de contratación.
+1. **Shader WebGL Three.js fullscreen** (`canvas.hero-shader`): fragment shader que combina:
+   - Sub-bass radial bloom (sincronizado al kick)
+   - 5 anillos concéntricos emanando del centro (waterfall en fase)
+   - Kick flash en el centro (sharp attack + exp decay)
+   - Tectonic FBM noise (4 octavas) lento — "placas geológicas"
+   - Vignette circular
+   - Uniforms: `uTime`, `uResolution`, `uAccent`, `uIntensity` (lerps de 0 off → 1 engaged → 1.5 engaged-deep)
+2. **Veil** — vignette radial + linear scrim para legibilidad
+3. **Ghosts** — palabras flotantes con opacity baja, derivadas dinámicamente de `data.mixes.map(m => m.title)` — los tracks reales del artista flotan como mantra visual. Ciclo 12s con delays negativos.
+4. **BPM readout** (esquina sup derecha) — mono accent latiendo al BPM
+5. **Hero-core central:**
+   - `MANIATIKO` — Elms Sans light, char-split, ambient hypnotic wave loop (y: -5, opacity 0.85, sine.inOut, yoyo, stagger 0.08)
+   - **Role**: "Producer & DJ" mono, letter-spacing 0.42em, char-splitted, text-dim (off) → accent + glow + 0.58em (engaged)
+   - **Engage button** estilo "double-rule pulse" — sin border, sin bg, solo texto + 2 líneas accent finas latiendo en contrapunto al BPM. Hover: color → accent + letter-spacing expand
+6. **Scroll-hint** — línea pulsante 2.4s ease-in-out
 
-> La sección Crews fue removida — la info (crews chilenos + DJs B2B) ya está en el Artist Dossier de Origin. Los arrays `crews[]` y `lineup[]` permanecen en data.json por si se necesita reactivar la sección (renderer `roster` sigue definido). 10. **Footer** — brand grande, epitafio `† The ritual doesn't end. It only changes form †`, socials (IG, SC, TikTok, Facebook), copyright dinámico y credit `Made with love by @_dema1348` → `https://www.instagram.com/_dema1348/`.
+### Audio (Tone.js)
 
-**Inspiraciones explícitas** (adaptadas, no copiadas — paleta y tipos propios):
+- Click en `Engage ritual` → `await Tone.start()` (requiere user gesture, válido)
+- `Tone.MembraneSynth` (pitchDecay 0.06, octaves 6, sine osc) → `Tone.Filter(420, "lowpass")` → `Tone.Gain` → `Tone.Destination`
+- `Tone.Loop` triggerea kick C1 cada `"4n"` a 170 BPM
+- Cada kick dispatch evento `ritual:kick` (custom event) → todos los efectos audio-reactive escuchan
+- Gain modulado por scroll-depth: 0.45 (top) → 0.85 (bottom)
 
-- **De requiem-cl**: estructura general, chapters numerados, lightbox, GSAP ScrollTrigger reveals, motivo †.
-- **De dupouymusic.com**: Marquee, Artist Dossier, Archive table densa, Press Kit con 3 cards descargables.
+### Estado global engaged
 
-Si en el futuro se quiere ajustar el accent, se cambia `--accent` y `--accent-rgb`
-en `:root` de `styles.css` — todo el sitio responde por CSS vars.
+`body.ritual-engaged` activa:
+
+- Glow extra en bochka pulse line, scanlines opacity 1, TV static 0.1, grain 0.055
+- Hypnotic dividers opacity 0.9, marquee right lane 0.85
+- Ghosts del hero usan `ghostFadeEngaged` keyframe (peak 0.32, blur 0.4px, drop-shadow accent)
+- Overlay `body.ritual-engaged::after` — radial gradient accent que crece con `--ritual-depth`
+- Engage button: bg accent fill + color bg + letter-spacing 0.58em + halo glow
+
+### Scroll-depth modulation
+
+`scroll` event → `updateRitualDepth()` calcula `scrollY / (docHeight - vpHeight)` (0..1) → setea CSS var `--ritual-depth` + Tone.js gain rampTo + shader uIntensity target.
+
+CSS rules usan `calc(... + var(--ritual-depth) * ...)` para que glows, opacities, box-shadows escalen con la profundidad. Cuanto más bajo, más adentro estás.
+
+### Kick jolts (audio-reactive cuando engaged)
+
+Listener global a `ritual:kick`. En cada beat, dispara micro-animations GSAP en:
+
+1. **Hero title MANIATIKO** chars — cascade scale-punch (1 → 1.06, stagger 0.012s)
+2. **Hero role** "Producer & DJ" chars — cascade scale-punch (1 → 1.10, stagger 0.015s)
+3. **Section titles** — micro-shake X (1.5px, yoyo)
+4. **Hypnotic dividers** circles — scale-punch unísono (1.55 → 1) que reemplaza el waterfall CSS mientras dure engaged. `clearProps: "transform"` restaura el waterfall al desengage.
+5. **Ritual day numbers** (gigs upcoming) — jolt Y -3px
+6. **Booking CTA arrow** → — vibra +5px X
+7. **Marquee lanes** — empujadas en su dirección de scroll (+/- 7px) — "el bochka empuja el mantra"
+8. **Kick-flash global** — todos los elementos visibles dentro de `[section-title, epk-stat-num, ritual-day, setlist-num, featured-chip, dossier-key, presskit-kind, archive-venue]` reciben un text-shadow accent flash de 0.32s en cada beat (via IntersectionObserver para performance)
+
+### Mode off (sin engaged)
+
+El hero queda calmado: shader boost 0.4 (en vez de 1.3+), ghosts peak 0.055. El resto del sitio mantiene sus defaults atmosféricos (scanlines 0.7, bochka pulse normal, etc) — el "calmado" del off **solo aplica al hero**, no al resto.
+
+## Diseño por sección
+
+Orden actual (auto-derivado del nav desde `data.sections`):
+
+1. **Hero** (Ritual Engine, ver arriba)
+2. **Marquee** (divider) — 2 lanes **mantra**: lane top = "HYPNOTIC · HYPNOTIC · …" text-dim (90s loop), lane bottom = "BOCHKA · BOCHKA · …" accent diluido (110s loop, dirección opuesta). Cuando engaged, cada kick empuja las lanes 7px en su dir. Sin section wrapper.
+3. **I · Origin** — `chapters` (3 párrafos numerados I/II/III con alineación alternada + tension gauge accent vertical) + **Artist Dossier** (key/value table: Origin · Base · Sound · BPM · Crews · Stage w/ · Platforms · Booking).
+4. **II · Live** — `gigs`:
+   - **EPK stats banner** (4 columnas mono): Rituals played · Productions · Platforms · BPM peak
+   - **Countdown** al próximo gig (live HH:MM:SS update cada segundo)
+   - **Upcoming** como rituals blocks (día gigante 5rem accent + month/year + venue/lineup + status `ON SALE`)
+   - **Archive** como tabla densa (Date | Venue | City), hover ilumina venue
+5. **III · Productions** — `mixes` como setlist numerado (01, 02…). Cada row tiene **botón play** + canvas con wave inline (firma sonora por hash del título, ResizeObserver para re-medir). Click play → SoundCloud Widget API carga el track en mini-player sticky bottom. Hover/playing ilumina el wave + número con hypnotic glow (sin chromatic, escala 1.04). Playing: pulse animation 1.45s sincronizado con hero hypnotic wave.
+6. **IV · Aftermath** — `memories` editorial alternated rows. Foto B&W (filter grayscale + brightness + contrast + memoryDecay 14s loop) + corner badge fecha + chapter num + venue + city + anecdote italic con border-left accent.
+7. **V · Reverb** — `press` quotes con text-shadow stack = reverberación visual.
+8. **Hosted by** — `featured` chips horizontales con los venues/crews que lo han hosteado.
+9. **VI · Press Kit** — `presskit` 4 cards (Bio TXT · Press Photo · Promo Video · Tech Rider) con CTA Download.
+10. **Booking** — `booking-card` (sin form, sin backend): bloque destacado con mailto pre-armado (subject `[BOOKING] Event · Date · City`) + lista numerada "Include in your brief" + alt DM secundario al IG.
+11. **Footer** — brand grande, epitafio, socials, copyright, credit. **Sin booking block** (se removió — duplicaba la sección Booking).
+
+**Hypnotic dividers** entre secciones (excepto donde ya hay marquee) — 3 dots concéntricos SVG en waterfall pulsando al BPM. Insertados dinámicamente por JS en `insertHypnoticDividers()`.
 
 ## Estructura
 
 ```
 public/
-├── index.html          — shell HTML con nav, hero, <main id="sectionsRoot">, lightbox, footer
-├── data.json           — FUENTE ÚNICA de contenido (site, hero, nav, sections, socials, gigs, mixes, gallery, crews, press, footer)
-├── css/styles.css      — design system con tokens en :root (paleta placeholder)
-├── js/main.js          — fetch data.json → render → GSAP reveals → lightbox
-├── favicon.svg         — placeholder "M" sobre fondo negro
-├── robots.txt
-└── sitemap.xml
-firebase.json           — rewrites a index.html + cache headers para assets
-.firebaserc             — project ID: maniatiko-dj
+├── index.html          shell + meta SEO + JSON-LD + Firebase Analytics + <noscript> SEO fallback
+├── data.json           FUENTE ÚNICA de contenido
+├── css/styles.css      design system con tokens en :root
+├── js/main.js          fetch → render → init (shader, audio, jolts, depth, mini-player, etc.)
+├── favicon.svg         placeholder "M" sobre fondo negro
+├── robots.txt          allow all + sitemap
+├── sitemap.xml         con lastmod + image:image entries
+└── img/                dj1.jpg, dj2.jpeg, dj3.jpeg (fotos reales para Aftermath + og:image)
+firebase.json           rewrites a index.html + cache headers
+.firebaserc             project ID: maniatiko-dj
 ```
 
 ## Contenido dinámico (data.json)
 
-Todo el contenido vive en `public/data.json`. Para editar/agregar, solo se modifica este archivo.
+Todo el contenido vive en `public/data.json`. Para editar/agregar, **solo se modifica este archivo** (excepto los assets visuales que van en `public/img/`).
 
-### Estructura
+### Estructura principal
 
 - **site** — `{ name, tagline, description, url, locale, ogImage, themeColor }`
-- **analytics** — `{ enabled, firebase: { ... } }` (placeholder, no inicializado todavía)
-- **nav[]** — `{ label, href }` — opcional. Si está **vacío `[]`** o ausente, el nav se **auto-deriva desde `sections`**: toma cada sección con `title` y `id`, salta las que tienen `hideFromNav: true` (y las que no tienen título, como `marquee`). Cuando se agrega una sección nueva, el nav se actualiza solo. Si querés un orden custom o etiquetas distintas, llená este array y se usa como override.
-- **hero** — `{ title, phrase, stamps: { tl, tr, bl, br }, cta: { label, href } }`. Stamps son las 4 esquinas (top-left, top-right, bottom-left, bottom-right). `tr` recibe el pulso BPM automáticamente vía CSS.
-- **sections[]** — `{ id, type, title, subtitle?, source?, items?, body?, left?, right? }`
-  - `type`: `text` | `chapters` | `marquee` | `gigs` | `mixes` | `tracks` | `gallery` | `memories` | `crews` | `roster` | `press` | `presskit`
-  - **marquee**: divider tipográfico full-bleed sin section wrapper. Field `lanes`: array de strings, cada uno scrollea en dirección alterna.
-  - **chapters** soporta `dossier: { title, rows: [{ key, value }] }` que se renderiza después de los capítulos (Artist Dossier).
-  - `source`: nombre de array top-level del JSON (ej. `"gigs"`, `"mixes"`) — el render busca los items ahí
-  - `items`: alternativa, items inline (usado por `chapters`: array de strings con cada párrafo)
-  - `left` / `right` (solo para `roster`): `{ label, source }` — define las 2 columnas (collectives + shared stage)
-- **socials[]** — `{ label, url }` — links del footer. Orden: plataformas de música primero (Bandcamp, Spotify, SoundCloud, YouTube), luego redes sociales (Instagram, TikTok, Facebook).
-- **gigs[]** — `{ date (MM.DD.YYYY), city, venue, lineup[], tickets? }`. JS particiona en upcoming/past por fecha actual.
-- **mixes[]** — `{ platform, title, description, url }`. Usado por Tracks PRO (canvas + setlist).
-- **tracks[]**, **gallery[]** — actualmente vacías (legado por si se necesitan a futuro).
-- **memories[]** — `{ date, venue, city, anecdote, image }`. Foto opcional; si no hay, placeholder con gradiente accent.
-- **crews[]** — `{ name, link, logo? }`. Logo opcional; sin logo → chip de texto.
-- **lineup[]** — `{ name }`. DJs con los que ha compartido escenario.
-- **press[]** — `{ quote, source }`.
-- **presskit[]** — `{ kind, title, description, cta, url }`. URLs placeholder `#` hasta tener assets reales.
-- **footer** — `{ epitaph, booking: { label, email }, credit: { label, href, prefix } }`.
-  - `booking` se renderiza como bloque destacado con border accent en el footer (mailto link). Si se omite no aparece.
-  - `credit.prefix` personaliza el texto antes del nombre (default "Made by", actual "Made with love by").
+- **analytics** — `{ enabled, firebase: { ... } }` (currently **enabled: true**, conectado al proyecto)
+- **nav[]** — opcional override. Vacío `[]` → auto-derivado desde `sections` (saltando `marquee` y `hideFromNav: true`)
+- **hero** — `{ title, role, bpm, engage: { labelOff, labelOn } }`. Los ghosts se derivan automáticamente de `mixes`
+- **sections[]** — `{ id, type, title, subtitle?, source?, items?, card?, dossier?, lanes?, form?, hideFromNav? }`
+  - `type`: `text` | `chapters` | `marquee` | `gigs` | `mixes` | `tracks` | `gallery` | `memories` | `crews` | `roster` | `press` | `featured` | `presskit` | `booking` | `booking-card`
+  - **marquee.lanes**: array de strings (palabras únicas para mantra; se repiten 20× con separador `·`)
+  - **chapters** soporta `dossier: { title, rows: [{ key, value }] }`
+  - **booking-card.card**: `{ intro, email, emailLabel, emailSubject, brief: [...], alt: { label, handle, url } }`
+- **socials[]** — `{ label, url }`. Orden: música primero (Bandcamp · Spotify · SoundCloud · YouTube), luego redes (IG · TikTok · Facebook)
+- **gigs[]** — `{ date (MM.DD.YYYY), city, venue, lineup?, tickets? }`. JS particiona en upcoming/past
+- **mixes[]** — `{ platform, title, description, url }`. SoundCloud Widget API consume `url` directamente
+- **memories[]** — `{ date, venue, city, anecdote, image }`. Foto opcional
+- **featured[]** — `{ name, link? }`. Venues/crews que lo han hosteado
+- **press[]** — `{ quote, source }`
+- **presskit[]** — `{ kind, title, description, cta, url }`
+- **footer** — `{ epitaph, credit: { label, href, prefix } }` (sin booking block)
 
 ### Flujo de render (main.js)
 
-1. `fetch("data.json")` al `DOMContentLoaded`
-2. `applySite()` — title, theme-color
-3. `renderNav()` — links a partir de `data.nav`
-4. `renderHero()` — overline, título, frase, CTA
-5. `renderSections()` — itera `data.sections`, despacha por `type` a renderers específicos
-6. `renderFooter()` — brand, epitafio, socials, credit
-7. `initReveals()` — GSAP ScrollTrigger para todos los `[data-reveal]`
+1. `initBootLoader()` + `initLenis()` + `initCustomCursor()` (preboot)
+2. `fetch(data.json)` → `renderNav()` → `renderHero(data.hero, data.mixes)` → `renderSections()` → `renderFooter()`
+3. `initHypnoticTitles()` (char-split en todos los section-titles) + `insertHypnoticDividers()` (3 dots entre secciones)
+4. `initHeroShader()` (Three.js) + `initRitualAudio()` (Tone.js bind al engage button) + `initRitualDepthTracking()` (scroll modula audio + visual)
+5. `animateHeroIn()` (delay 1300ms, reveals del hero + ambient wave loop)
+6. `initReveals()` (GSAP ScrollTrigger para todos los `[data-reveal]`)
+7. `initTvStatic()` + `initNextRitualCountdown()` + `initBookingForm()` + `initMiniPlayer(data)` + `initAudioReactive()` + `initMarqueeJolt()` + `initKickJolts()` + `startHypnoticWaves()` + `initSetlistWaves(data.mixes)`
+8. `hideBootLoader()` (espera al BOOT_MIN_DURATION 1100ms)
 
-### Para agregar contenido
+## SEO — reglas vivas
 
-1. Editar `public/data.json` (agregar items a las colecciones)
-2. Agregar imágenes en `public/img/`
-3. `firebase deploy --only hosting`
+**El sitio depende de JS para mostrar contenido visualmente** pero el HTML inicial tiene structured data + `<noscript>` fallback para crawlers. Mantener ambos sincronizados.
 
-## Estado actual
+### Checklist SEO (estado actual)
 
-- Scaffold completo con 10 piezas (hero + marquee + 7 secciones + footer)
-- Identidad visual cerrada: rojo `#f20100` + Bochka pulse 140bpm + glitch en hover + scanlines permanentes + motivo †
-- **Datos reales del cuestionario (2026-06-09)**: 7 plataformas (Bandcamp, Spotify, SoundCloud, YouTube, IG, TikTok, Facebook), email de booking `maniatikodj.bussines@gmail.com`, género oficial "Techno · Neo Bochka · Hypnotic", 11 gigs reales (10 past + 1 upcoming: Club 808 el 20 Jun 2026), 6 tracks SoundCloud con URLs reales, 3 fotos en `public/img/` para Aftermath, bio narrativo completo
-- **Mock que falta reemplazar**:
-  - Memories anecdotes (texto poético genérico, las fotos sí son reales)
-  - Press quotes (3 quotes mock — esperan reviews reales)
+- ✅ `<html lang="en">`, charset, viewport
+- ✅ Title rico con keywords + geo ("DJ & Producer · Santiago, Chile")
+- ✅ Meta description (160 chars) con Bochka, BPM, booking
+- ✅ Meta keywords (Maniatiko, DJ Chile, hypnotic techno, Lo Prado, etc.)
+- ✅ Geo tags (`geo.region CL-RM`, `geo.position -33.45;-70.73`, `ICBM`)
+- ✅ Robots directives (max-image-preview:large, max-snippet:-1)
+- ✅ Canonical
+- ✅ Open Graph completo (type: profile, image apuntando a dj1.jpg con dimensions declared)
+- ✅ Twitter Card summary_large_image
+- ✅ `music:musician` namespace
+- ✅ JSON-LD `@graph` con **MusicGroup + WebSite + 6 MusicRecording + MusicEvent** (Schema.org)
+- ✅ `<noscript>` fallback en `<main>` con bio + tracks + gigs + socials con `rel="me"`
+- ✅ Sitemap.xml con lastmod + image:image entries de las 3 fotos
+- ✅ robots.txt allow + sitemap reference
+- ✅ Firebase Analytics conectado (`G-5CXDNBQMN6`)
+
+### Regla CRÍTICA — actualizar SEO al cambiar contenido
+
+**Cada vez que se agregue, quite o cambie información en `data.json` (tracks, gigs, bio, socials, etc.) hay que sincronizar:**
+
+1. **JSON-LD en `index.html`** — si se agrega/quita un track de `mixes`, agregar/quitar el `MusicRecording` correspondiente en el `@graph`. Si cambia un gig upcoming, actualizar el `MusicEvent`. Si cambia bio, actualizar `description` del `MusicGroup`. Si se suma/saca una plataforma social, actualizar `sameAs[]`.
+2. **`<noscript>` fallback en `index.html`** — duplicar el cambio textual (lista de tracks, gigs upcoming, socials).
+3. **`sitemap.xml`** — actualizar `lastmod` con la fecha del cambio.
+4. **Meta description/keywords** — si cambia el género, el sonido, o un dato relevante, actualizar.
+
+Esta sincronización es manual; el JS no la hace automáticamente porque los crawlers leen el HTML inicial sin esperar a JS.
+
+**Para cualquier task que toque `data.json`, verificar si requiere update SEO al final.**
+
+## Pendientes (resto)
+
+- Reemplazar mock content cuando llegue contenido real:
+  - Memories anecdotes (las fotos sí son reales)
+  - Press quotes (3 mock — esperan reviews reales)
   - Press Kit URLs (todos `#`, esperan Drive links reales)
-  - `img/og-image.jpg` (1200x630) y favicon definitivo
+- og-image dedicado de 1200x630 (actualmente apunta a dj1.jpg que es la foto general)
+- Favicon definitivo (actualmente SVG placeholder "M")
+- Web3Forms u otro service si se quiere form de booking real (actualmente Booking Card sin backend)
 
-## Pendientes
+## Inspiraciones
 
-- Reemplazar mock content cuando llegue contenido real
-- Crear `img/og-image.jpg` y favicon definitivo
-- Conectar Press Kit a Drive links reales (Bio TXT, fotos, video promo)
-- Configurar Firebase Analytics si se quiere (credentials en `data.analytics.firebase` + `enabled: true`)
-- Deploy: `firebase login` → `firebase deploy --only hosting`
-
-## Ideas de requiem que NO se trajeron (decisión consciente)
-
-Por el nivel "esenciales" elegido, queda fuera por ahora (se puede sumar después si se quiere):
-
-- Preloader cinemático con variantes
-- Cursor personalizado (dot + ring)
-- Particles canvas reactivo al scroll (sistema por fases)
-- Lenis smooth scroll
-- Ritual progresivo (localStorage para visitantes recurrentes)
-- Atmósfera por hora del día
-- Frases rotativas en hero/footer/breath
-- Slider infinito de logos
-- Modal de detalle de eventos pasados
+- **De requiem-cl**: estructura general, char-split, lightbox, GSAP ScrollTrigger reveals, motivo †, boot loader, custom cursor, Lenis, Firebase Analytics pattern
+- **De dupouymusic.com**: Marquee, Artist Dossier, Archive table densa, Press Kit cards
+- **De SPFDJ / 999999999 / Polygonia / HEX**: shader BPM-locked, char-split + ambient wave, minimalismo, mantra repetition
+- **Conceptual de la bio del artista**: el shader es el bochka literal; el button "Engage" hace audible la "constant propulsion"; los ghosts son los tracks como mantras flotantes; los kick jolts son la "propulsion" empujando el sitio
