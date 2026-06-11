@@ -265,6 +265,115 @@ El CMS tiene un **preview pane en vivo a la derecha del form** — el editor edi
 - ✅ Para verificar deploy: `https://github.com/Dema1348/maniatiko/actions` (los runs verdes son los exitosos).
 - ✅ Para rollback rápido: `git revert <sha>` + push → el workflow corre el revert y deploya el estado anterior.
 
+## Performance & A11y — optimizaciones aplicadas
+
+Lighthouse desktop final: **Performance 95 · A11y 96 · Best Practices 77 · SEO 100**. Las técnicas que se aplicaron y por qué:
+
+### 1. Lazy-load de librerías pesadas
+
+- **Tone.js (~150KB)** — NO se incluye con `<script>` en `index.html`. Se inyecta dinámicamente al primer click de "Engage ritual" via el helper `loadTone()` en `main.js`. Visitantes que solo navegan jamás descargan Tone.js.
+- **Three.js (~150KB) + SoundCloud Widget** — son `<script defer>` en `index.html`: descargan en paralelo al HTML y ejecutan antes de `DOMContentLoaded`, sin bloquear el initial paint.
+
+Patrón del lazy-load dinámico (reusable):
+
+```js
+const TONE_CDN = "https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js";
+let __tonePromise = null;
+function loadTone() {
+  if (typeof Tone !== "undefined") return Promise.resolve();
+  if (__tonePromise) return __tonePromise;
+  __tonePromise = new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = TONE_CDN;
+    s.async = true;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Failed to load Tone.js"));
+    document.head.appendChild(s);
+  });
+  return __tonePromise;
+}
+// Después en el click handler: await loadTone();
+```
+
+### 2. Imágenes WebP con `<picture>` fallback
+
+Las fotos `.jpg/.jpeg` están convertidas a WebP (con Pillow, `quality=82 method=6`). Ahorro 25–46% por imagen. Helper en `main.js`:
+
+```js
+function pictureTag(src, alt, className) {
+  if (!src) return "";
+  const webp = src.replace(/\.(jpe?g|png)$/i, ".webp");
+  return `
+    <picture>
+      <source srcset="${webp}" type="image/webp">
+      <img class="${className}" src="${src}" alt="${escapeAttr(alt || "")}" loading="lazy">
+    </picture>`;
+}
+```
+
+`data.json` sigue apuntando a `.jpg` (para que el `<noscript>` SEO fallback funcione sin asumir WebP). El JS construye el `<picture>` y el browser elige WebP si lo soporta.
+
+**OG image se mantiene JPG** — algunos crawlers (Facebook, Twitter viejo) no comen WebP en social previews.
+
+### 3. Google Fonts non-blocking
+
+Antes era `<link rel="stylesheet">` síncrono → bloqueaba render. Ahora:
+
+```html
+<link rel="preload" as="style" href="...fonts.googleapis.com/css2..."
+      onload="this.onload=null;this.rel='stylesheet'" />
+<noscript><link rel="stylesheet" href="...same URL..." /></noscript>
+```
+
+El browser descarga sin bloquear, aplica cuando termina. El `<noscript>` cubre el caso sin JS.
+
+### 4. `inert` attribute (a11y) para overlays escondidos
+
+Cuando un overlay (mini-player, lightbox) está cerrado pero el HTML sigue ahí con botones internos, **`aria-hidden="true"` no es suficiente** — los botones siguen siendo tabbables. Lighthouse falla `aria-hidden-focus`.
+
+**Patrón:** usar el atributo HTML `inert` (estándar moderno, soportado en todos los browsers). Cuando `inert` está activo, los descendientes no son focusables, no reciben pointer events ni leen para screen readers.
+
+```html
+<aside class="mini-player" id="miniPlayer" inert>
+  ...
+</aside>
+```
+
+```js
+function open()  { player.classList.add("is-open");  player.inert = false; }
+function close() { player.classList.remove("is-open"); player.inert = true; }
+```
+
+### 5. Página 404 custom
+
+`public/404.html` con la identidad visual del sitio (negro + accent + Elms Sans light + line pulse 170 BPM). Firebase Hosting la sirve automáticamente para rutas no encontradas — para eso hay que **quitar el `rewrite` catch-all** en `firebase.json`:
+
+```json
+{
+  "hosting": {
+    "public": "public",
+    "cleanUrls": true,
+    "trailingSlash": false,
+    // SIN rewrites catch-all "**" → /index.html
+    "headers": [ ... ]
+  }
+}
+```
+
+### 6. Defer + atributos modernos
+
+- `<script defer>` en todos los scripts de terceros que no son críticos para el primer paint
+- `loading="lazy"` en imágenes de Aftermath (ya vienen below-the-fold)
+- `cleanUrls: true` en Firebase Hosting → URLs sin `.html` extension
+- `trailingSlash: false` → redirige `path/` a `path` (canónico)
+
+### Issues no atacados (decisiones conscientes)
+
+- **`third-party-cookies`** (1 cookie de Firebase Analytics) — requiere cookie banner GDPR/Ley 19.628. Decisión: no implementado, riesgo asumido por bajo tráfico
+- **`bf-cache`** — Lenis y similares tienen unload handlers que rompen el back/forward cache. Trade-off aceptado por el smooth scroll
+- **`color-contrast`** — algunos elementos con `text-faint` (opacity 0.42) fallan ratio WCAG. Decisión estética
+- **Minify JS/CSS** — Lighthouse sugiere minificar (~21KB combinados). No hay build step; tradeoff aceptado por simplicidad de mantenimiento (CMS edita main.js indirectamente vía data.json)
+
 ## SEO — reglas vivas
 
 **El sitio depende de JS para mostrar contenido visualmente** pero el HTML inicial tiene structured data + `<noscript>` fallback para crawlers. Mantener ambos sincronizados.
