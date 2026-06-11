@@ -28,9 +28,17 @@
 
   whenReady((CMS, h) => {
 
-    // Cargar el CSS del sitio + nuestros overrides en el iframe
-    CMS.registerPreviewStyle("/css/styles.css");
-    CMS.registerPreviewStyle("/admin/preview.css");
+    // Cargar el CSS del sitio + overrides en el iframe del preview.
+    // Usamos URLs absolutas porque el iframe del preview vive en un
+    // contexto aislado y las rutas relativas no se resuelven.
+    const ORIGIN = window.location.origin;
+    CMS.registerPreviewStyle(ORIGIN + "/css/styles.css");
+    CMS.registerPreviewStyle(ORIGIN + "/admin/preview.css");
+
+    // También cargamos las fuentes del sitio en el iframe
+    CMS.registerPreviewStyle(
+      "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Elms+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+    );
 
     // ===== Helpers =====
     const roman = (n) =>
