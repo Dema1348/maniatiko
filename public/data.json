@@ -341,6 +341,13 @@
   ],
   "presskit": [
     {
+      "kind": "Brand Assets",
+      "title": "Logo Pack",
+      "description": "All logo variants — white, black, accent — in SVG (vector) and PNG (5 sizes each). For flyers, press, social media.",
+      "cta": "View & download",
+      "url": "/img/logos-preview.html"
+    },
+    {
       "kind": "Text Document",
       "title": "Artist Biography",
       "description": "Full press bio in plain text. Ready for event listings, festival programs and editorial.",

@@ -220,7 +220,7 @@ collections:
             collapsed: true
             summary: "{{title}}"
             fields:
-              - { label: "Tipo", name: "kind", widget: "string", hint: "Text Document / Image Asset / Video Asset / Technical Document" }
+              - { label: "Tipo", name: "kind", widget: "string", hint: "Brand Assets / Text Document / Image Asset / Video Asset / Technical Document" }
               - { label: "Título", name: "title", widget: "string" }
               - { label: "Descripción", name: "description", widget: "text" }
               - { label: "Texto del CTA", name: "cta", widget: "string" }
