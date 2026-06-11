@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /img/logos-preview.html
 
 # AI crawlers explicitly welcome (default) — uncomment to block specifically
 # User-agent: GPTBot
