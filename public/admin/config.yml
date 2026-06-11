@@ -80,7 +80,8 @@ collections:
                 name: "chapters"
                 widget: "list"
                 summary: "{{item}}"
-                field: { label: "Párrafo", name: "item", widget: "text" }
+                fields:
+                  - { label: "Párrafo", name: "item", widget: "text" }
               - label: "Dossier (tabla key/value)"
                 name: "dossier"
                 widget: "object"
@@ -109,7 +110,8 @@ collections:
                 name: "brief"
                 widget: "list"
                 summary: "{{item}}"
-                field: { label: "Item", name: "item", widget: "string" }
+                fields:
+                  - { label: "Item", name: "item", widget: "string" }
               - label: "Alt — link a DM Instagram"
                 name: "alt"
                 widget: "object"

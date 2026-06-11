@@ -68,15 +68,9 @@
       return new Date(yyyy, mm - 1, dd, 23, 59, 59) < new Date();
     };
 
-    // Normaliza items que vienen como string ("foo") o como object con un field
-    // de texto. Soporta TRES shapes:
-    //   1) string                          → se devuelve tal cual
-    //   2) plain object {item:"foo"}       → lee directo .item
-    //   3) Immutable.Map (Decap CMS state) → lee via .get("item")
-    //
-    // (3) ocurre cuando Decap pasa al preview entry.data sin deep-toJS de los
-    // inner records — los list+field items quedan como Immutable.Map y React
-    // crashea con "object with keys {item}" si se renderizan crudos.
+    // Normaliza items de list widgets que llegan como object con un solo field
+    // de texto (ej. [{item:"foo"}, {lane:"bar"}]) → devuelve el string interno.
+    // Pasa strings directos como están.
     //
     // Sin parámetros adicionales para que `arr.map(asText)` no rompa: map pasa
     // (value, index, array) — un segundo param `keys` recibiría el índice
@@ -85,49 +79,10 @@
     const asText = (it) => {
       if (it == null) return "";
       if (typeof it === "string") return it;
-      // Immutable.Map / Map nativo: tiene .get()
-      if (typeof it.get === "function") {
-        for (const k of ASTEXT_KEYS) {
-          const v = it.get(k);
-          if (typeof v === "string") return v;
-        }
-        return "";
-      }
-      // Plain object
       if (typeof it === "object") {
         for (const k of ASTEXT_KEYS) if (typeof it[k] === "string") return it[k];
       }
       return "";
-    };
-
-    // Convierte Immutable.List / array-like a array plain con .map estándar.
-    // Los list-fields que sobreviven sin toJS llegan como Immutable.List.
-    const toArr = (x) => {
-      if (!x) return [];
-      if (Array.isArray(x)) return x;
-      if (typeof x.toArray === "function") return x.toArray();
-      if (typeof x.toJS === "function") {
-        const js = x.toJS();
-        return Array.isArray(js) ? js : [];
-      }
-      return [];
-    };
-
-    // Lee una field de un object que puede ser Immutable.Map o plain.
-    const pickStr = (obj, key) => {
-      if (!obj) return "";
-      if (typeof obj.get === "function") {
-        const v = obj.get(key);
-        return typeof v === "string" ? v : "";
-      }
-      return typeof obj[key] === "string" ? obj[key] : "";
-    };
-    // Idem pero para sub-objects (devuelve un acceso "pickStr-aware"):
-    // si Map → wrappea para que .X funcione, si plain → devuelve plain.
-    const pickObj = (obj, key) => {
-      if (!obj) return null;
-      if (typeof obj.get === "function") return obj.get(key) || null;
-      return obj[key] || null;
     };
 
     // ===== Section renderers =====
@@ -161,7 +116,7 @@
 
     function MarqueeBlock({ section }) {
       const raw = section.chapters || section.items || section.lanes || [];
-      const lanes = toArr(raw).map(asText).filter(Boolean);
+      const lanes = raw.map(asText).filter(Boolean);
       if (!lanes.length) return null;
       const REPS = 12;
       const SEP = "  ·  ";
@@ -180,7 +135,7 @@
 
     function ChaptersBlock({ section, idx }) {
       const rawItems = section.chapters || section.items || [];
-      const items = toArr(rawItems).map(asText).filter(Boolean);
+      const items = rawItems.map(asText).filter(Boolean);
       const dossier = section.dossier;
       return h("section", { id: section.id, className: "section" },
         SectionHeader({ idx, title: section.title, subtitle: section.subtitle }),
@@ -192,21 +147,17 @@
             )
           )
         ),
-        dossier && (() => {
-          const dTitle = pickStr(dossier, "title");
-          const rows = toArr(pickObj(dossier, "rows"));
-          return rows.length && h("div", { className: "dossier" },
-            dTitle && h("h3", { className: "dossier-title" }, dTitle),
-            h("dl", { className: "dossier-list" },
-              rows.map((r, i) =>
-                h("div", { key: i, className: "dossier-row" },
-                  h("dt", { className: "dossier-key" }, pickStr(r, "key")),
-                  h("dd", { className: "dossier-value" }, pickStr(r, "value"))
-                )
+        dossier?.rows?.length && h("div", { className: "dossier" },
+          dossier.title && h("h3", { className: "dossier-title" }, dossier.title),
+          h("dl", { className: "dossier-list" },
+            dossier.rows.map((r, i) =>
+              h("div", { key: i, className: "dossier-row" },
+                h("dt", { className: "dossier-key" }, r.key || ""),
+                h("dd", { className: "dossier-value" }, r.value || "")
               )
             )
-          );
-        })()
+          )
+        )
       );
     }
 
@@ -367,22 +318,18 @@
 
     function BookingCardBlock({ section, idx }) {
       // section puede tener las keys directas (mergeado vía source="booking")
-      // o anidadas en section.card (legacy inline). Y cualquiera de las dos
-      // puede ser Map o plain object.
-      const c = pickObj(section, "card") || section;
-      const email = pickStr(c, "email");
-      if (!email) return null;
-      const intro = pickStr(c, "intro");
-      const emailLabel = pickStr(c, "emailLabel") || "† Direct booking";
-      const briefTexts = toArr(pickObj(c, "brief")).map(asText).filter(Boolean);
+      // o anidadas en section.card (legacy inline)
+      const c = section.card || section;
+      if (!c.email) return null;
+      const briefTexts = (c.brief || []).map(asText).filter(Boolean);
 
       return h("section", { id: section.id, className: "section" },
         SectionHeader({ idx, title: section.title, subtitle: section.subtitle }),
         h("div", { className: "booking-card" },
-          intro && h("p", { className: "booking-card-intro" }, intro),
+          c.intro && h("p", { className: "booking-card-intro" }, c.intro),
           h("div", { className: "booking-card-cta" },
-            h("span", { className: "booking-card-cta-label" }, emailLabel),
-            h("span", { className: "booking-card-cta-email" }, email),
+            h("span", { className: "booking-card-cta-label" }, c.emailLabel || "† Direct booking"),
+            h("span", { className: "booking-card-cta-email" }, c.email),
             h("span", { className: "booking-card-cta-arrow" }, "→")
           ),
           briefTexts.length > 0 && h("div", { className: "booking-card-brief" },
@@ -415,26 +362,9 @@
       );
     }
 
-    // Decap pasa entry.data como Immutable.Map. .toJS() debería hacer deep
-    // conversion, pero en algunos shapes (list+field con un solo subfield)
-    // los inner items quedan como Immutable.Map. Forzamos deep conversion
-    // recursiva por si quedó algo sin convertir.
-    function deepToJS(x) {
-      if (x == null || typeof x !== "object") return x;
-      if (typeof x.toJS === "function") {
-        const js = x.toJS();
-        // Si toJS hizo deep conversion, el resultado es plain — recursamos por las dudas
-        return js === x ? x : deepToJS(js);
-      }
-      if (Array.isArray(x)) return x.map(deepToJS);
-      const out = {};
-      for (const k of Object.keys(x)) out[k] = deepToJS(x[k]);
-      return out;
-    }
-
     // ===== Componente principal =====
     function SitePreview(props) {
-      const data = deepToJS(props.entry.getIn(["data"]).toJS());
+      const data = props.entry.getIn(["data"]).toJS();
       const site = data.site || {};
       const hero = data.hero || {};
       const sections = data.sections || [];
