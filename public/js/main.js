@@ -1738,6 +1738,11 @@ function initReveals() {
     return;
   gsap.registerPlugin(ScrollTrigger);
 
+  // Marcamos html.reveals-ready ANTES de seleccionar elementos. Esto activa
+  // el CSS `[data-reveal] { opacity: 0 }`. Sin esta clase los elementos están
+  // visibles por default — safety net si el init rompe en algún punto previo.
+  document.documentElement.classList.add("reveals-ready");
+
   gsap.utils.toArray("[data-reveal]").forEach((el) => {
     gsap.to(el, {
       opacity: 1,

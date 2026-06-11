@@ -1515,11 +1515,15 @@ body.ritual-engaged .tv-static { opacity: 0.1; }
   border-bottom: 1px solid var(--border);
 }
 
-/* GSAP reveal hooks */
-[data-reveal] {
+/* GSAP reveal hooks — escondemos los elementos para que GSAP los anime al entrar al viewport.
+   Pero SOLO si GSAP está disponible y el JS marcó la página como "reveals-ready".
+   Si JS rompe en cualquier punto del init, los elementos quedan visibles igual. */
+html.reveals-ready [data-reveal] {
   opacity: 0;
   transform: translateY(24px);
 }
+/* Fallback si JS no marca reveals-ready en 2s: muestra todo. Sin esta regla
+   los [data-reveal] quedan visible por default, lo cual es lo deseado. */
 
 /* ============================================================
    Marquee — divider tipográfico entre secciones.
