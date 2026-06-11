@@ -156,13 +156,21 @@
       const analytics = getAnalytics(app);
     </script>
 
-    <!-- Fonts (placeholder, redefinir cuando se cierre la identidad visual) -->
+    <!-- Fonts — preconnect + lazy-load (no render-blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Elms+Sans:ital,wght@0,100..900;1,100..900&display=swap"
-      rel="stylesheet"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Elms+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      />
+    </noscript>
 
     <link rel="stylesheet" href="css/styles.css" />
   </head>
@@ -268,7 +276,7 @@
     </main>
 
     <!-- Lightbox (galería) -->
-    <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lightbox" id="lightbox" inert>
       <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">
         &times;
       </button>
@@ -276,7 +284,7 @@
     </div>
 
     <!-- Sticky mini-player (aparece al reproducir un track) -->
-    <aside class="mini-player" id="miniPlayer" aria-hidden="true">
+    <aside class="mini-player" id="miniPlayer" inert>
       <button
         class="mini-player-toggle"
         id="miniPlayerToggle"

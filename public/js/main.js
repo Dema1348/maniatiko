@@ -432,13 +432,13 @@ function initMiniPlayer(data) {
   function open() {
     player.classList.add("is-open");
     document.body.classList.add("has-miniplayer");
-    player.setAttribute("aria-hidden", "false");
+    player.inert = false;
   }
   function closeMP() {
     widget.pause();
     player.classList.remove("is-open", "is-playing");
     document.body.classList.remove("has-miniplayer");
-    player.setAttribute("aria-hidden", "true");
+    player.inert = true;
     currentRow && currentRow.classList.remove("is-playing");
     currentRow = null;
     isPlaying = false;
@@ -1705,12 +1705,12 @@ function initLightbox() {
       ? `<iframe src="${video}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`
       : `<img src="${src}" alt="">`;
     lb.classList.add("is-open");
-    lb.setAttribute("aria-hidden", "false");
+    lb.inert = false;
   });
 
   const closeLb = () => {
     lb.classList.remove("is-open");
-    lb.setAttribute("aria-hidden", "true");
+    lb.inert = true;
     content.innerHTML = "";
   };
   close?.addEventListener("click", closeLb);
