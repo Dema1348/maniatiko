@@ -454,16 +454,29 @@ function close() { player.classList.remove("is-open"); player.inert = true; }
 
 ### Regla CRÍTICA — actualizar SEO al cambiar contenido
 
-**Cada vez que se agregue, quite o cambie información en `data.json` (tracks, gigs, bio, socials, etc.) hay que sincronizar:**
+**Decisión vigente: el sync HTML ↔ data.json NO es automático.** Hay un set de strings que están **duplicadas** entre `data.json` (lo que el CMS edita) y los HTMLs estáticos (`public/index.html` y `public/en/index.html`). Cuando un editor del CMS cambia alguno de esos campos, el sitio se actualiza al instante para usuarios reales (porque el JS reescribe `<title>`, `<meta name="description">`, hero, secciones), **pero el HTML inicial estático queda con la versión vieja**.
 
-1. **JSON-LD en `index.html`** — si se agrega/quita un track de `mixes`, agregar/quitar el `MusicRecording` correspondiente en el `@graph`. Si cambia un gig upcoming, actualizar el `MusicEvent`. Si cambia bio, actualizar `description` del `MusicGroup`. Si se suma/saca una plataforma social, actualizar `sameAs[]`.
-2. **`<noscript>` fallback en `index.html`** — duplicar el cambio textual (lista de tracks, gigs upcoming, socials).
+Eso impacta a:
+- **Preview cards de redes sociales** (Facebook, WhatsApp, Twitter, LinkedIn) — esos crawlers NO ejecutan JS, solo leen el HTML inicial. Usan `og:*` y `twitter:*` que están hardcoded.
+- **JSON-LD structured data** (`description`, `genre`, `MusicRecording`, `MusicEvent`) — Google sí ejecuta JS pero usa el HTML inicial como señal fuerte.
+- **`<noscript>` fallback** — crawlers legacy.
+
+**Qué hay que sincronizar manualmente** cuando se agrega/quita/cambia info significativa en `data.json`:
+
+1. **JSON-LD en ambos HTMLs (`index.html` + `en/index.html`)** — si se agrega/quita un track de `mixes`, agregar/quitar el `MusicRecording` correspondiente en el `@graph`. Si cambia un gig upcoming, actualizar el `MusicEvent`. Si cambia bio, actualizar `description` del `MusicGroup` (versión ES + versión EN). Si se suma/saca una plataforma social, actualizar `sameAs[]`.
+2. **`<noscript>` fallback en ambos HTMLs** — duplicar el cambio textual (lista de tracks, gigs upcoming, socials).
 3. **`sitemap.xml`** — actualizar `lastmod` con la fecha del cambio.
-4. **Meta description/keywords** — si cambia el género, el sonido, o un dato relevante, actualizar.
+4. **Meta tags hardcoded** — si cambia el género, el sonido, el tagline, o un dato relevante: `<meta name="description">`, `<meta name="keywords">`, `og:title`, `og:description`, `og:image:alt`, `twitter:title`, `twitter:description`, `twitter:image:alt` (cada uno en su HTML correspondiente — versión ES en `index.html`, versión EN en `en/index.html`).
+5. **`<title>`** — ambos HTMLs (versión ES e EN).
 
-Esta sincronización es manual; el JS no la hace automáticamente porque los crawlers leen el HTML inicial sin esperar a JS.
+**Pipeline de actualización SEO:**
 
-**Para cualquier task que toque `data.json`, verificar si requiere update SEO al final.**
+- **Cambio "menor"** del editor del CMS (sumar/borrar un gig, ajustar una descripción de track, agregar una memoria, editar una palabra del marquee) → no requiere sync HTML; el sitio renderiza bien para usuarios, y el SEO drifteado se autocorrige en el próximo cambio que sí toque HTML.
+- **Cambio "mayor"** que afecta a presentación social (cambio de tagline, descripción principal, género, sumar/quitar tracks importantes, sumar URL de social nueva) → hacer el commit en data.json + actualizar ambos HTMLs + sitemap.xml lastmod en el mismo PR.
+
+**Para cualquier task de developer que toque `data.json`, verificar al final si el cambio es "mayor" y requiere sync HTML.**
+
+(Existió una alternativa considerada: build-step que regenera HTML desde data.json antes del deploy. Se descartó para mantener simple el pipeline — Decap CMS commitea, GH Actions deploya tal cual, sin build step intermedio.)
 
 ## Pendientes (resto)
 
