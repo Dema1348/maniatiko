@@ -11,7 +11,7 @@ const DATA_URL = "/data.json";
 // --------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", async () => {
   initBootLoader();
-  initLenis();
+  initSmoothScroll();
   initCustomCursor();
   initYear();
   initNav();
@@ -297,57 +297,28 @@ function hideBootLoader() {
 }
 
 // --------------------------------------------------------------
-// Lenis smooth scroll — sincronizado con GSAP ticker
+// Smooth scroll nativo (anchor click → window.scrollTo con behavior smooth).
+// El sitio originalmente usaba Lenis 1.1.20 pero su onClick handler interno
+// llamaba querySelector con la velocity numérica del scroll, crasheando el
+// raf loop al haber anchors con ids no-CSS válidos en el DOM. Solución
+// nuclear: usar scroll nativo del browser (CSS scroll-behavior: smooth +
+// window.scrollTo({behavior:"smooth"})) — pierde el feel super-fluido de
+// Lenis pero es robusto y zero-dependency.
 // --------------------------------------------------------------
-function initLenis() {
-  if (typeof Lenis === "undefined") return;
-  const lenis = new Lenis({
-    duration: 1.15,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-    smoothTouch: false,
-  });
-  window.__lenis = lenis;
-
-  if (typeof gsap !== "undefined") {
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
-    gsap.ticker.lagSmoothing(0);
-  } else {
-    (function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    })(0);
-  }
-
-  // Anchor links — necesitamos AGARRAR todos los clicks en <a href="#...">
-  // en capture phase y stopImmediatePropagation para neutralizar el onClick
-  // INTERNO de Lenis. Si Lenis llega a procesarlos, llama
-  // `document.querySelector(href)` con cualquier href que empiece con `#`,
-  // incluyendo ids inválidos como `#-1` que rompen SyntaxError repetidamente
-  // durante el scroll loop.
-  //
-  // Nuestro handler hace el smooth scroll a mano (con Lenis si está, sino
-  // window.scrollTo nativo), validando que el id sea sintácticamente válido.
+function initSmoothScroll() {
   document.addEventListener("click", (e) => {
     const a = e.target.closest('a[href^="#"]');
     if (!a) return;
     const href = a.getAttribute("href");
-    // Neutralizamos al handler interno de Lenis pase lo que pase con este
-    // anchor — incluso si no podemos resolverlo, mejor "no hacer nada" que
-    // dejar a Lenis crashear el scroll loop con un selector inválido.
-    e.stopImmediatePropagation();
     if (!href || href === "#" || href.length < 2) return;
+    // Solo CSS ids válidos (no `#-1`, `#123`, etc)
     if (!/^#[A-Za-z][\w-]*$/.test(href)) return;
     const target = document.querySelector(href);
     if (!target) return;
     e.preventDefault();
     const top = target.getBoundingClientRect().top + window.scrollY - 64;
-    if (window.__lenis && typeof window.__lenis.scrollTo === "function") {
-      window.__lenis.scrollTo(top, { duration: 1.2 });
-    } else {
-      window.scrollTo({ top, behavior: "smooth" });
-    }
-  }, true); // capture phase: corre ANTES que el handler interno de Lenis
+    window.scrollTo({ top, behavior: "smooth" });
+  });
 }
 
 // --------------------------------------------------------------
@@ -1089,10 +1060,6 @@ function updateRitualDepth() {
 
 function initRitualDepthTracking() {
   document.addEventListener("scroll", updateRitualDepth, { passive: true });
-  // Lenis usa su propio scroll stream — engancho también ahí si está activo
-  if (window.__lenis && typeof window.__lenis.on === "function") {
-    window.__lenis.on("scroll", updateRitualDepth);
-  }
 }
 
 // --------------------------------------------------------------

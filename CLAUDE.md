@@ -26,7 +26,7 @@ Todo el copy, labels, meta tags, alt text, navegación, descripciones y body con
 
 - HTML5 / CSS3 / Vanilla JS (sin frameworks, sin build tools)
 - **GSAP 3.12.7 + ScrollTrigger** (CDN) — animaciones de entrada al scroll + ambient hypnotic waves + kick jolts
-- **Lenis 1.1.20** (CDN) — smooth scroll sincronizado al GSAP ticker
+- **Scroll smooth nativo** — CSS `scroll-behavior: smooth` + `window.scrollTo({behavior:"smooth"})` para anchor links. Originalmente Lenis 1.1.20 pero se removió por un bug donde su onClick handler interno llamaba `document.querySelector` con la velocity numérica del scroll, crasheando con SyntaxError cada frame (ids tipo `-1` no son CSS-syntáctico-válidos). El scroll nativo es robusto, zero-dep y suficiente para anchors.
 - **Three.js 0.160.0** (CDN) — shader WebGL fragment del hero (rings + kick + tectonic noise sincronizado al BPM)
 - **Tone.js 14.8.49** (CDN) — sintetiza el kick bochka procedural (MembraneSynth) opt-in al click de "Engage ritual"
 - **SoundCloud Widget API** — mini-player sticky + audio inline en Productions
@@ -211,7 +211,7 @@ Si sumás un bloque nuevo: definí los datos en un top-level + agregá un shell 
 
 ### Flujo de render (main.js)
 
-1. `initBootLoader()` + `initLenis()` + `initCustomCursor()` (preboot)
+1. `initBootLoader()` + `initSmoothScroll()` + `initCustomCursor()` (preboot)
 2. `fetch(data.json)` → `renderNav()` → `renderHero(data.hero, data.mixes)` → `renderSections()` → `renderFooter()`
 3. `initHypnoticTitles()` (char-split en todos los section-titles) + `insertHypnoticDividers()` (3 dots entre secciones)
 4. `initHeroShader()` (Three.js) + `initRitualAudio()` (Tone.js bind al engage button) + `initRitualDepthTracking()` (scroll modula audio + visual)
@@ -426,7 +426,7 @@ function close() { player.classList.remove("is-open"); player.inert = true; }
 ### Issues no atacados (decisiones conscientes)
 
 - **`third-party-cookies`** (1 cookie de Firebase Analytics) — requiere cookie banner GDPR/Ley 19.628. Decisión: no implementado, riesgo asumido por bajo tráfico
-- **`bf-cache`** — Lenis y similares tienen unload handlers que rompen el back/forward cache. Trade-off aceptado por el smooth scroll
+- **`bf-cache`** — algunas optimizaciones (GSAP ScrollTrigger, etc.) tienen unload handlers que rompen el back/forward cache. Trade-off aceptado por las animations
 - **`color-contrast`** — algunos elementos con `text-faint` (opacity 0.42) fallan ratio WCAG. Decisión estética
 - **Minify JS/CSS** — Lighthouse sugiere minificar (~21KB combinados). No hay build step; tradeoff aceptado por simplicidad de mantenimiento (CMS edita main.js indirectamente vía data.json)
 
