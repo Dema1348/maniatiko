@@ -1,11 +1,7 @@
 {
   "marquee": [
-    {
-      "lane": "HYPNOTIC"
-    },
-    {
-      "lane": "TECHNO"
-    }
+    "HYPNOTIC",
+    "TECHNO"
   ],
   "press": [
     {
@@ -79,15 +75,9 @@
   },
   "bio": {
     "chapters": [
-      {
-        "item": "Producer and DJ born in Santiago, Chile, focused on developing his own vision within industrial techno. His work emerges from a deeply personal quest — built upon his experiences, ear, artistic maturity and inner growth — shaping a new sonic language: a collision between Bochka pressure, hypnotic grooves, tectonic energy and a constant, dark, immersive and destructive propulsion in its impact."
-      },
-      {
-        "item": "His music is built upon an architecture of mental tension, physical intensity and emotional memory. Each production stems from his own lived experiences, processed and transfigured into sonic matter: distorted textures, abrasive percussion, dense atmospheres and repetitive structures that lead to prolonged hypnosis — making you feel like you're part of his story."
-      },
-      {
-        "item": "Within the Chilean underground scene he has become a recurring figure, sharing stages with Aldes, Kask4r, 19.85, Mary B, Likikon, Bonek and Lurtz. His presence reflects an expanding identity, marked by intense sonic exploration — both mental and physical — where darkness functions not only as aesthetic but as emotional, bodily and ritualistic territory."
-      }
+      "Producer and DJ born in Santiago, Chile, focused on developing his own vision within industrial techno. His work emerges from a deeply personal quest — built upon his experiences, ear, artistic maturity and inner growth — shaping a new sonic language: a collision between Bochka pressure, hypnotic grooves, tectonic energy and a constant, dark, immersive and destructive propulsion in its impact.",
+      "His music is built upon an architecture of mental tension, physical intensity and emotional memory. Each production stems from his own lived experiences, processed and transfigured into sonic matter: distorted textures, abrasive percussion, dense atmospheres and repetitive structures that lead to prolonged hypnosis — making you feel like you're part of his story.",
+      "Within the Chilean underground scene he has become a recurring figure, sharing stages with Aldes, Kask4r, 19.85, Mary B, Likikon, Bonek and Lurtz. His presence reflects an expanding identity, marked by intense sonic exploration — both mental and physical — where darkness functions not only as aesthetic but as emotional, bodily and ritualistic territory."
     ],
     "dossier": {
       "title": "† Artist Dossier",
@@ -383,24 +373,12 @@
     "emailLabel": "† Direct booking",
     "emailSubject": "[BOOKING] Event · Date · City",
     "brief": [
-      {
-        "item": "Event name / venue"
-      },
-      {
-        "item": "Date & city"
-      },
-      {
-        "item": "Expected capacity"
-      },
-      {
-        "item": "Set length & slot"
-      },
-      {
-        "item": "Fee / offer (USD)"
-      },
-      {
-        "item": "Lineup & context"
-      }
+      "Event name / venue",
+      "Date & city",
+      "Expected capacity",
+      "Set length & slot",
+      "Fee / offer (USD)",
+      "Lineup & context"
     ],
     "alt": {
       "label": "Or DM",

@@ -65,10 +65,8 @@ collections:
             name: "marquee"
             widget: "list"
             collapsed: false
-            summary: "{{lane}}"
+            allow_add: true
             hint: "Las palabras que cruzan horizontalmente entre el hero y Origin. Recomendado 2 palabras (la 1ra va a la izquierda en tono apagado, la 2da a la derecha en accent diluido). Podés sumar más, alternarán direcciones."
-            fields:
-              - { label: "Palabra (mantra)", name: "lane", widget: "string" }
 
           - label: "Origin — bio + dossier"
             name: "bio"
@@ -79,8 +77,8 @@ collections:
               - label: "Bio (3 párrafos numerados I/II/III)"
                 name: "chapters"
                 widget: "list"
-                summary: "{{item}}"
-                field: { label: "Párrafo", name: "item", widget: "text" }
+                allow_add: true
+                hint: "Cada item es un párrafo completo de la bio. Se renderiza numerado I/II/III en orden."
               - label: "Dossier (tabla key/value)"
                 name: "dossier"
                 widget: "object"
@@ -108,8 +106,8 @@ collections:
               - label: "Brief — checklist que el promotor debe incluir"
                 name: "brief"
                 widget: "list"
-                summary: "{{item}}"
-                field: { label: "Item", name: "item", widget: "string" }
+                allow_add: true
+                hint: "Cada item es un punto del checklist que el promotor recibe en el booking."
               - label: "Alt — link a DM Instagram"
                 name: "alt"
                 widget: "object"
