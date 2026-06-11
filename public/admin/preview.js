@@ -346,7 +346,11 @@
       );
     }
 
+    // En file collections, Decap usa el nombre del FILE entry, no de la collection.
+    // El config.yml define: collections[name=site].files[name=site_general]
+    // → registramos para AMBOS nombres por compatibilidad
+    CMS.registerPreviewTemplate("site_general", SitePreview);
     CMS.registerPreviewTemplate("site", SitePreview);
-    console.log("[admin/preview] preview template registered for 'site'");
+    console.log("[admin/preview] preview templates registered for 'site_general' and 'site'");
   });
 })();
