@@ -8,13 +8,25 @@
 // booking-card, footer.
 // ============================================================
 (function () {
-  // Decap usa React global. Esperamos a que el CMS esté disponible.
-  window.addEventListener("load", () => {
-    if (!window.CMS || !window.React) {
-      console.warn("[admin/preview] CMS or React not available");
+  // Decap CMS v3 expone window.h (createElement). En v2 exponía window.React.
+  // Esperamos polling porque el bundle se inicializa async después de su <script>.
+  function whenReady(cb, tries) {
+    tries = tries || 0;
+    const cms = window.CMS;
+    const h = window.h || (window.React && window.React.createElement);
+    if (cms && typeof cms.registerPreviewTemplate === "function" && h) {
+      console.log("[admin/preview] CMS ready, registering preview template");
+      cb(cms, h);
       return;
     }
-    const h = window.React.createElement;
+    if (tries > 40) {
+      console.warn("[admin/preview] CMS or h() not available after 4s. window.CMS:", !!window.CMS, "window.h:", !!window.h, "window.React:", !!window.React);
+      return;
+    }
+    setTimeout(() => whenReady(cb, tries + 1), 100);
+  }
+
+  whenReady((CMS, h) => {
 
     // Cargar el CSS del sitio + nuestros overrides en el iframe
     CMS.registerPreviewStyle("/css/styles.css");
