@@ -97,24 +97,22 @@
       }
       return "";
     };
-    // Mantengo asText como alias para retro-compat — usa el mismo t() ahora.
+    // Mantengo asText como alias — extrae texto desde strings, i18n directo,
+    // list widget shape, o list widget + i18n anidado ({item: {es, en}}).
     const asText = (it) => {
       if (it == null) return "";
       if (typeof it === "string") return it;
       if (typeof it === "object") {
-        // Primero intento i18n
         if (typeof it[PREVIEW_LANG] === "string") return it[PREVIEW_LANG];
         if (typeof it.es === "string") return it.es;
         if (typeof it.en === "string") return it.en;
-        // Si no, list widget shape
-        for (const k of ASTEXT_KEYS) if (typeof it[k] === "string") return it[k];
-        // Recursivo: si el value de .item/.text/etc es a su vez i18n {es, en}
         for (const k of ASTEXT_KEYS) {
-          const inner = it[k];
-          if (inner && typeof inner === "object") {
-            if (typeof inner[PREVIEW_LANG] === "string") return inner[PREVIEW_LANG];
-            if (typeof inner.es === "string") return inner.es;
-            if (typeof inner.en === "string") return inner.en;
+          const v = it[k];
+          if (typeof v === "string") return v;
+          if (v && typeof v === "object") {
+            if (typeof v[PREVIEW_LANG] === "string") return v[PREVIEW_LANG];
+            if (typeof v.es === "string") return v.es;
+            if (typeof v.en === "string") return v.en;
           }
         }
       }

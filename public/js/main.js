@@ -1804,10 +1804,20 @@ function asText(it) {
   if (typeof it === "string") return it;
   if (typeof it === "object") {
     // Soporte i18n: si es {es, en, ...} extrae según LANG con fallback
-    if (it[LANG] && typeof it[LANG] === "string") return it[LANG];
+    if (typeof it[LANG] === "string") return it[LANG];
     if (typeof it.es === "string") return it.es;
     if (typeof it.en === "string") return it.en;
-    for (const k of ASTEXT_KEYS) if (typeof it[k] === "string") return it[k];
+    // List widget shape: {item}/{lane}/{text}/...
+    for (const k of ASTEXT_KEYS) {
+      const v = it[k];
+      if (typeof v === "string") return v;
+      // Soporta {item: {es, en}} (list widget + i18n anidado)
+      if (v && typeof v === "object") {
+        if (typeof v[LANG] === "string") return v[LANG];
+        if (typeof v.es === "string") return v.es;
+        if (typeof v.en === "string") return v.en;
+      }
+    }
   }
   return "";
 }
