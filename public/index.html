@@ -346,14 +346,13 @@
     <!-- Lenis smooth scroll -->
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
 
-    <!-- Three.js — hero shader WebGL (5 layers) -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <!-- Three.js — hero shader WebGL (defer: no bloquea el initial paint) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
-    <!-- Tone.js — kick sintético 170 BPM (opt-in via Engage button) -->
-    <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
+    <!-- Tone.js NO se carga acá — lazy-load al primer click de Engage ritual (ver initRitualAudio en main.js) -->
 
     <!-- SoundCloud Widget API (mini-player) -->
-    <script src="https://w.soundcloud.com/player/api.js"></script>
+    <script defer src="https://w.soundcloud.com/player/api.js"></script>
 
     <script src="js/main.js"></script>
   </body>

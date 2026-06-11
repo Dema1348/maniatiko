@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 · Ritual not found · Maniatiko</title>
+    <meta name="description" content="The path you requested doesn't exist on maniatiko.cl. Return to the ritual." />
+    <meta name="robots" content="noindex, follow" />
+    <meta name="theme-color" content="#050505" />
+    <link rel="canonical" href="https://maniatiko.cl/" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Elms+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg: #050505;
+        --text: #e8e8e8;
+        --accent: #f20100;
+        --accent-rgb: 242, 1, 0;
+        --accent-glow: rgba(242, 1, 0, 0.5);
+        --font-logo: "Elms Sans", system-ui, sans-serif;
+        --font-mono: "Space Mono", ui-monospace, monospace;
+      }
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { scroll-behavior: smooth; }
+      body {
+        font-family: var(--font-mono);
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100svh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1.5rem;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+      }
+
+      /* Backdrop radial accent — sutil */
+      .backdrop {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background: radial-gradient(
+          ellipse 55% 45% at 50% 50%,
+          rgba(var(--accent-rgb), 0.12),
+          transparent 75%
+        );
+        pointer-events: none;
+      }
+
+      .content { position: relative; z-index: 1; max-width: 600px; }
+
+      .code {
+        font-family: var(--font-logo);
+        font-weight: 200;
+        font-size: clamp(7rem, 22vw, 14rem);
+        letter-spacing: 0.08em;
+        line-height: 0.95;
+        margin-bottom: 0.75rem;
+        text-shadow:
+          0 0 60px rgba(var(--accent-rgb), 0.35),
+          0 0 18px rgba(var(--accent-rgb), 0.2);
+      }
+
+      .line {
+        width: clamp(120px, 25vw, 220px);
+        height: 1px;
+        background: var(--accent);
+        margin: 0 auto 1.75rem;
+        animation: linePulse 0.3529s ease-out infinite;
+      }
+      @keyframes linePulse {
+        0%   { opacity: 1;   box-shadow: 0 0 18px var(--accent-glow); transform: scaleX(1); }
+        100% { opacity: 0.3; box-shadow: none; transform: scaleX(0.7); }
+      }
+
+      .label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.45em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+      }
+
+      .message {
+        font-size: 0.92rem;
+        letter-spacing: 0.06em;
+        color: var(--text);
+        opacity: 0.7;
+        margin-bottom: 2.5rem;
+        line-height: 1.7;
+      }
+
+      .back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.95rem 1.75rem;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: background 0.25s, color 0.25s, box-shadow 0.3s;
+      }
+      .back:hover {
+        background: var(--accent);
+        color: var(--bg);
+        box-shadow: 0 0 32px var(--accent-glow);
+      }
+      .back-arrow { font-family: var(--font-logo); font-weight: 300; }
+
+      /* Scanlines + grain leves para coherencia con el sitio */
+      .scanlines {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+        background-image: repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 2px,
+          rgba(232, 232, 232, 0.04) 2px,
+          rgba(232, 232, 232, 0.04) 3px
+        );
+        mix-blend-mode: overlay;
+        opacity: 0.4;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="backdrop" aria-hidden="true"></div>
+    <div class="scanlines" aria-hidden="true"></div>
+
+    <main class="content">
+      <span class="label">† Lost in the ritual</span>
+      <h1 class="code">404</h1>
+      <div class="line" aria-hidden="true"></div>
+      <p class="message">
+        The path you requested doesn't exist.<br>
+        The ritual continues elsewhere.
+      </p>
+      <a class="back" href="/">
+        <span class="back-arrow">←</span>
+        <span>Back to maniatiko.cl</span>
+      </a>
+    </main>
+  </body>
+</html>

@@ -922,11 +922,30 @@ function initHeroShader() {
 
 // --------------------------------------------------------------
 // Ritual audio — Tone.js sintetiza un kick a 170 BPM (opt-in)
+// Tone.js se carga lazy: solo si el visitante clickea Engage la primera vez.
+// Ahorra ~150KB de transferencia para visitantes que solo navegan.
 // --------------------------------------------------------------
+const TONE_CDN = "https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js";
+let __tonePromise = null;
+
+function loadTone() {
+  if (typeof Tone !== "undefined") return Promise.resolve();
+  if (__tonePromise) return __tonePromise;
+  __tonePromise = new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = TONE_CDN;
+    s.async = true;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Failed to load Tone.js"));
+    document.head.appendChild(s);
+  });
+  return __tonePromise;
+}
+
 function initRitualAudio() {
   const $btn = document.getElementById("heroEngage");
   const $label = document.getElementById("heroEngageLabel");
-  if (!$btn || typeof Tone === "undefined") return;
+  if (!$btn) return;
 
   let kick = null;
   let lp = null;
@@ -934,6 +953,13 @@ function initRitualAudio() {
 
   $btn.addEventListener("click", async () => {
     if (!__ritualEngaged) {
+      // Cargar Tone.js si no está cargado todavía (primera vez = ~150KB download)
+      try {
+        await loadTone();
+      } catch (e) {
+        console.error("[ritual] Tone.js failed to load", e);
+        return;
+      }
       // Inicia contexto de audio (requiere user gesture — el click es válido)
       if (Tone.context.state !== "running") {
         await Tone.start();
@@ -1092,6 +1118,18 @@ function renderMarquee(sec) {
   `;
 }
 
+// Genera <picture> con source WebP + fallback al original (JPG/PNG).
+// Si el path es "img/foo.jpg", el WebP esperado es "img/foo.webp" (mismo basename).
+function pictureTag(src, alt, className) {
+  if (!src) return "";
+  const webp = src.replace(/\.(jpe?g|png)$/i, ".webp");
+  return `
+    <picture>
+      <source srcset="${webp}" type="image/webp">
+      <img class="${className}" src="${src}" alt="${escapeAttr(alt || "")}" loading="lazy">
+    </picture>`;
+}
+
 function renderMemories(items) {
   if (!items.length) return "";
   return `
@@ -1103,7 +1141,7 @@ function renderMemories(items) {
           <div class="memory-visual">
             ${
               m.image
-                ? `<img class="memory-image" src="${m.image}" alt="${escapeAttr(m.venue || "")}" loading="lazy">`
+                ? pictureTag(m.image, m.venue, "memory-image")
                 : `<div class="memory-image memory-image--empty" aria-hidden="true"></div>`
             }
             <span class="memory-badge">${escapeHtml(m.date || "—")}</span>
