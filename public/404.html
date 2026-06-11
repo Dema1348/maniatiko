@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>404 · Ritual not found · Maniatiko</title>
-    <meta name="description" content="The path you requested doesn't exist on maniatiko.cl. Return to the ritual." />
+    <title>404 · Ritual torn · Maniatiko</title>
+    <meta name="description" content="The ritual fractured. Return to the cycle." />
     <meta name="robots" content="noindex, follow" />
     <meta name="theme-color" content="#050505" />
     <link rel="canonical" href="https://maniatiko.cl/" />
@@ -13,8 +13,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Elms+Sans:ital,wght@0,100..900;1,100..900&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Elms+Sans:ital,wght@0,200..900;1,200..900&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
 
     <style>
@@ -24,111 +26,64 @@
         --accent: #f20100;
         --accent-rgb: 242, 1, 0;
         --accent-glow: rgba(242, 1, 0, 0.5);
+        --corrupt: #d600ff;
+        --corrupt-rgb: 214, 0, 255;
         --font-logo: "Elms Sans", system-ui, sans-serif;
         --font-mono: "Space Mono", ui-monospace, monospace;
       }
-      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-      html { scroll-behavior: smooth; }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
       body {
-        font-family: var(--font-mono);
         background: var(--bg);
         color: var(--text);
-        min-height: 100svh;
+        overflow: hidden;
+        height: 100%;
+      }
+      body {
+        font-family: var(--font-mono);
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        min-height: 100svh;
         padding: 2rem 1.5rem;
-        position: relative;
-        overflow: hidden;
         text-align: center;
       }
 
-      /* Backdrop radial accent — sutil */
-      .backdrop {
-        position: absolute;
+      /* Canvas WebGL del shader corrupted (fullscreen behind everything) */
+      .shader-canvas {
+        position: fixed;
         inset: 0;
         z-index: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .veil {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
         background: radial-gradient(
-          ellipse 55% 45% at 50% 50%,
-          rgba(var(--accent-rgb), 0.12),
-          transparent 75%
+          ellipse 70% 55% at 50% 50%,
+          transparent 0%,
+          rgba(0, 0, 0, 0.25) 55%,
+          rgba(0, 0, 0, 0.78) 100%
         );
         pointer-events: none;
       }
 
-      .content { position: relative; z-index: 1; max-width: 600px; }
-
-      .code {
-        font-family: var(--font-logo);
-        font-weight: 200;
-        font-size: clamp(7rem, 22vw, 14rem);
-        letter-spacing: 0.08em;
-        line-height: 0.95;
-        margin-bottom: 0.75rem;
-        text-shadow:
-          0 0 60px rgba(var(--accent-rgb), 0.35),
-          0 0 18px rgba(var(--accent-rgb), 0.2);
-      }
-
-      .line {
-        width: clamp(120px, 25vw, 220px);
-        height: 1px;
-        background: var(--accent);
-        margin: 0 auto 1.75rem;
-        animation: linePulse 0.3529s ease-out infinite;
-      }
-      @keyframes linePulse {
-        0%   { opacity: 1;   box-shadow: 0 0 18px var(--accent-glow); transform: scaleX(1); }
-        100% { opacity: 0.3; box-shadow: none; transform: scaleX(0.7); }
-      }
-
-      .label {
-        font-size: 0.78rem;
-        font-weight: 700;
-        letter-spacing: 0.45em;
-        text-transform: uppercase;
-        color: var(--accent);
-        margin-bottom: 0.5rem;
-      }
-
-      .message {
-        font-size: 0.92rem;
-        letter-spacing: 0.06em;
-        color: var(--text);
-        opacity: 0.7;
-        margin-bottom: 2.5rem;
-        line-height: 1.7;
-      }
-
-      .back {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.85rem;
-        padding: 0.95rem 1.75rem;
-        border: 1px solid var(--accent);
-        color: var(--accent);
-        font-family: var(--font-mono);
-        font-size: 0.78rem;
-        font-weight: 700;
-        letter-spacing: 0.32em;
-        text-transform: uppercase;
-        text-decoration: none;
-        transition: background 0.25s, color 0.25s, box-shadow 0.3s;
-      }
-      .back:hover {
-        background: var(--accent);
-        color: var(--bg);
-        box-shadow: 0 0 32px var(--accent-glow);
-      }
-      .back-arrow { font-family: var(--font-logo); font-weight: 300; }
-
-      /* Scanlines + grain leves para coherencia con el sitio */
+      /* Scanlines overlay para coherencia con el sitio */
       .scanlines {
         position: fixed;
         inset: 0;
-        pointer-events: none;
-        z-index: 2;
+        z-index: 9998;
         background-image: repeating-linear-gradient(
           to bottom,
           transparent 0,
@@ -137,26 +92,342 @@
           rgba(232, 232, 232, 0.04) 3px
         );
         mix-blend-mode: overlay;
-        opacity: 0.4;
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      /* Contenido */
+      .content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.75rem;
+      }
+
+      .label {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.45em;
+        text-transform: uppercase;
+        color: var(--corrupt);
+        text-shadow:
+          0 0 12px rgba(var(--corrupt-rgb), 0.55),
+          0 0 4px rgba(var(--corrupt-rgb), 0.35);
+        transition: color 0.6s ease, text-shadow 0.6s ease;
+      }
+      body.is-recovering .label {
+        color: var(--accent);
+        text-shadow:
+          0 0 18px rgba(var(--accent-rgb), 0.65),
+          0 0 6px rgba(var(--accent-rgb), 0.45);
+      }
+
+      .code {
+        font-family: var(--font-logo);
+        font-weight: 200;
+        font-size: clamp(7rem, 24vw, 16rem);
+        letter-spacing: 0.1em;
+        line-height: 0.95;
+        text-shadow:
+          0 0 56px rgba(var(--corrupt-rgb), 0.55),
+          0 0 14px rgba(var(--corrupt-rgb), 0.35);
+        transition: text-shadow 0.6s ease, letter-spacing 0.6s ease;
+        white-space: nowrap;
+      }
+      body.is-recovering .code {
+        text-shadow:
+          0 0 64px rgba(var(--accent-rgb), 0.55),
+          0 0 18px rgba(var(--accent-rgb), 0.35);
+        letter-spacing: 0.14em;
+      }
+
+      .message {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        opacity: 0.75;
+        line-height: 2;
+      }
+      .message strong {
+        color: var(--corrupt);
+        font-weight: 700;
+        transition: color 0.6s ease;
+      }
+      body.is-recovering .message strong {
+        color: var(--accent);
+      }
+
+      /* Engage-style button (mismo lenguaje que el hero) */
+      .return {
+        margin-top: 0.5rem;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.25rem 1.5rem;
+        background: none;
+        border: none;
+        color: var(--text);
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.42em;
+        text-transform: uppercase;
+        text-decoration: none;
+        cursor: pointer;
+        transition: color 0.4s, letter-spacing 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+          text-shadow 0.4s;
+      }
+      .return:hover {
+        color: var(--accent);
+        letter-spacing: 0.55em;
+        text-shadow: 0 0 18px rgba(var(--accent-rgb), 0.55),
+          0 0 6px rgba(var(--accent-rgb), 0.35);
+      }
+      .return-rule {
+        display: block;
+        width: clamp(56px, 8vw, 84px);
+        height: 1px;
+        background: var(--corrupt);
+        transform-origin: center;
+        animation: ruleCorrupt 0.18s ease-out infinite;
+        opacity: 0.6;
+        transition: background 0.4s, animation-duration 0.4s, width 0.4s;
+      }
+      .return-rule--bottom {
+        animation-delay: -0.09s;
+      }
+      body.is-recovering .return-rule {
+        background: var(--accent);
+        animation: ruleRecovered 0.3529s ease-out infinite;
+        width: clamp(80px, 12vw, 120px);
+        opacity: 1;
+      }
+      @keyframes ruleCorrupt {
+        0% {
+          transform: scaleX(1.6) skewX(8deg);
+          opacity: 1;
+        }
+        100% {
+          transform: scaleX(0.4) skewX(-8deg);
+          opacity: 0.2;
+        }
+      }
+      @keyframes ruleRecovered {
+        0% {
+          transform: scaleX(1.45);
+          opacity: 1;
+          box-shadow: 0 0 12px var(--accent-glow);
+        }
+        100% {
+          transform: scaleX(0.55);
+          opacity: 0.25;
+          box-shadow: none;
+        }
+      }
+
+      /* Cuando se redirige: glitch out final */
+      body.is-imploding .content {
+        animation: imploding 0.7s ease-in forwards;
+      }
+      @keyframes imploding {
+        0%   { transform: scale(1)   skew(0deg);    filter: blur(0);   opacity: 1; }
+        40%  { transform: scale(1.05) skew(3deg);   filter: blur(2px); opacity: 0.85; }
+        100% { transform: scale(0.6) skew(-12deg); filter: blur(20px); opacity: 0; }
+      }
+
+      @media (max-width: 480px) {
+        .code { letter-spacing: 0.06em; }
+        .message { letter-spacing: 0.3em; font-size: 0.7rem; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .return-rule,
+        body.is-imploding .content {
+          animation: none !important;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="backdrop" aria-hidden="true"></div>
+    <canvas class="shader-canvas" id="shader" aria-hidden="true"></canvas>
+    <div class="veil" aria-hidden="true"></div>
     <div class="scanlines" aria-hidden="true"></div>
 
     <main class="content">
-      <span class="label">† Lost in the ritual</span>
+      <span class="label">† Ritual torn</span>
       <h1 class="code">404</h1>
-      <div class="line" aria-hidden="true"></div>
       <p class="message">
-        The path you requested doesn't exist.<br>
-        The ritual continues elsewhere.
+        Path lost. <strong>Groove severed.</strong>
       </p>
-      <a class="back" href="/">
-        <span class="back-arrow">←</span>
-        <span>Back to maniatiko.cl</span>
+      <a class="return" href="/" id="returnBtn">
+        <span class="return-rule return-rule--top" aria-hidden="true"></span>
+        <span class="return-label">Return to the cycle</span>
+        <span class="return-rule return-rule--bottom" aria-hidden="true"></span>
       </a>
     </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script>
+      (function () {
+        if (typeof THREE === "undefined") return;
+        const canvas = document.getElementById("shader");
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+        const scene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+        // uRecovery: 0 = corrupted (default), 1 = recovered (al hover del botón)
+        const uniforms = {
+          uTime:       { value: 0 },
+          uResolution: { value: new THREE.Vector2(1, 1) },
+          uAccent:     { value: new THREE.Vector3(242 / 255, 1 / 255, 0 / 255) },
+          uCorrupt:    { value: new THREE.Vector3(214 / 255, 0 / 255, 255 / 255) },
+          uRecovery:   { value: 0 },
+          uImploding:  { value: 0 },
+        };
+
+        const material = new THREE.ShaderMaterial({
+          uniforms,
+          vertexShader: `
+            varying vec2 vUv;
+            void main() { vUv = uv; gl_Position = vec4(position, 1.0); }
+          `,
+          fragmentShader: `
+            precision highp float;
+            varying vec2 vUv;
+            uniform float uTime;
+            uniform vec2  uResolution;
+            uniform vec3  uAccent;
+            uniform vec3  uCorrupt;
+            uniform float uRecovery;  // 0..1 — interpola corrupted → normal
+            uniform float uImploding; // 0..1 — final implosion al click
+
+            #define BPM 170.0
+
+            float hash(vec2 p) {
+              return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+            }
+
+            void main() {
+              vec2 uv = vUv - 0.5;
+              uv.x *= uResolution.x / uResolution.y;
+              float dist = length(uv);
+
+              // Imploding: el shader se contrae al centro
+              dist /= mix(1.0, 0.3, uImploding);
+
+              float beatTime  = uTime * BPM / 60.0;
+              float beatFract = fract(beatTime);
+
+              // Jitter random — máximo cuando corrupted, cero cuando recovered
+              float corruption = 1.0 - uRecovery;
+              float tick = floor(uTime * 12.0);
+              float jitter = hash(vec2(tick, 0.0)) * 0.5 * corruption;
+
+              // Sub-bass: distorted cuando corrupted
+              float subBass = exp(-beatFract * (5.0 + jitter * 8.0)) *
+                              smoothstep(0.7, 0.0, dist) * 0.5;
+
+              // 6 anillos: speeds aleatorios cuando corrupted, sincronizados cuando recovered
+              float rings = 0.0;
+              for (int i = 0; i < 6; i++) {
+                float fi = float(i);
+                float ringPhase = fi / 6.0;
+                // Random speed multiplier (0.4..1.8) cuando corrupted, 1.0 cuando recovered
+                float chaosSpeed = 0.4 + hash(vec2(fi, 13.7)) * 1.4;
+                float ringSpeed = mix(chaosSpeed, 1.0, uRecovery);
+                float ringT = mod(beatTime * ringSpeed + ringPhase, 1.0);
+                float ringRadius = ringT * 0.9;
+                float ringDist = abs(dist - ringRadius);
+                float ri = smoothstep(0.018 + corruption * 0.02, 0.0, ringDist) *
+                           (1.0 - ringT);
+                rings += ri;
+              }
+              rings *= 0.5;
+
+              // Kick flash con timing errático
+              float corruptedBeat = mod(beatFract + jitter * 0.4, 1.0);
+              float kick = exp(-corruptedBeat * 9.0) *
+                           smoothstep(0.22, 0.0, dist) * 0.85;
+
+              // Boost mayor cuando recovered
+              float boost = 0.55 + uRecovery * 0.45;
+              float vignette = 1.0 - smoothstep(0.48, 1.0, dist);
+
+              // Color: lerp de magenta (corrupt) a rojo (accent)
+              vec3 color = mix(uCorrupt, uAccent, uRecovery);
+
+              vec3 finalColor = color * (subBass + rings + kick) * boost * vignette;
+              finalColor += color * 0.008;
+
+              // Imploding: flash bright al final
+              finalColor += vec3(uImploding * 0.4);
+
+              gl_FragColor = vec4(finalColor, 1.0);
+            }
+          `,
+        });
+
+        const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+        scene.add(mesh);
+
+        function resize() {
+          const w = canvas.clientWidth || window.innerWidth;
+          const h = canvas.clientHeight || window.innerHeight;
+          renderer.setSize(w, h, false);
+          uniforms.uResolution.value.set(w, h);
+        }
+        resize();
+        window.addEventListener("resize", resize);
+
+        const t0 = performance.now();
+        let targetRecovery = 0;
+        let targetImploding = 0;
+
+        function tick() {
+          uniforms.uTime.value = (performance.now() - t0) / 1000;
+          // Lerp hacia el target — recovery suave al hover/leave
+          uniforms.uRecovery.value += (targetRecovery - uniforms.uRecovery.value) * 0.08;
+          uniforms.uImploding.value += (targetImploding - uniforms.uImploding.value) * 0.12;
+          renderer.render(scene, camera);
+          requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+
+        // === Hover handlers ===
+        const btn = document.getElementById("returnBtn");
+        btn.addEventListener("mouseenter", () => {
+          targetRecovery = 1;
+          document.body.classList.add("is-recovering");
+        });
+        btn.addEventListener("mouseleave", () => {
+          if (!document.body.classList.contains("is-imploding")) {
+            targetRecovery = 0;
+            document.body.classList.remove("is-recovering");
+          }
+        });
+        btn.addEventListener("focus", () => {
+          targetRecovery = 1;
+          document.body.classList.add("is-recovering");
+        });
+
+        // === Click → boost recovery + implode + redirect ===
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          targetRecovery = 1;
+          targetImploding = 1;
+          document.body.classList.add("is-recovering", "is-imploding");
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 700);
+        });
+      })();
+    </script>
   </body>
 </html>
