@@ -1105,17 +1105,13 @@ function renderSectionBody(type, items, sec, data) {
 }
 
 function renderMarquee(sec, data) {
-  // Las palabras del marquee pueden venir de:
-  //  1) sec.source → array top-level del JSON (preferido, editable como field propio en el CMS).
-  //     Cada item puede ser string o object {lane: "..."}.
-  //  2) sec.lanes inline (legacy, array de strings).
+  // Las palabras pueden venir de sec.source → array top-level del JSON,
+  // o de sec.lanes inline (legacy). asText() normaliza strings y objects {lane}.
   const fromSource =
     sec.source && data && Array.isArray(data[sec.source])
-      ? data[sec.source].map((it) =>
-          typeof it === "string" ? it : it && (it.lane || it.text || it.value) || ""
-        )
+      ? data[sec.source].map(asText)
       : null;
-  const lanes = (fromSource || sec.lanes || sec.items || []).filter(Boolean);
+  const lanes = (fromSource || sec.lanes || sec.items || []).map(asText).filter(Boolean);
   if (!lanes.length) return "";
   // Mantra: la palabra única se repite muchas veces con separador para que el loop
   // sea seamless. La velocidad de cada lane está controlada por CSS.
@@ -1304,10 +1300,10 @@ function renderChapters(items, dossier) {
     ? `<div class="chapters" data-reveal>
         ${items
           .map(
-            (text, i) => `
+            (raw, i) => `
         <article class="chapter chapter--${i % 2 === 0 ? "left" : "right"}">
           <span class="chapter-num">${roman(i + 1)}</span>
-          <p class="chapter-text">${escapeHtml(text)}</p>
+          <p class="chapter-text">${escapeHtml(asText(raw))}</p>
         </article>`,
           )
           .join("")}
@@ -1560,7 +1556,7 @@ function renderBookingCard(sec) {
   const c = sec.card || sec;
   if (!c.email) return "";
   const subj = encodeURIComponent(c.emailSubject || "[BOOKING]");
-  const briefItems = Array.isArray(c.brief) ? c.brief : [];
+  const briefItems = Array.isArray(c.brief) ? c.brief.map(asText).filter(Boolean) : [];
   const briefHtml = briefItems.length
     ? `<div class="booking-card-brief">
          <span class="booking-card-brief-label">† Include in your brief</span>
@@ -1744,6 +1740,19 @@ function initLightbox() {
 // --------------------------------------------------------------
 // Helpers
 // --------------------------------------------------------------
+// Normalizador de items que pueden venir como string ("foo") o object con key
+// principal ({item:"foo"} / {text:"foo"} / {lane:"foo"} / etc).
+// Los widgets list de Decap CMS guardan como objects con un nombre de field;
+// data.json puede tener forma legacy con strings simples — ambos válidos.
+function asText(it, keys = ["item", "text", "value", "lane", "name"]) {
+  if (it == null) return "";
+  if (typeof it === "string") return it;
+  if (typeof it === "object") {
+    for (const k of keys) if (typeof it[k] === "string") return it[k];
+  }
+  return "";
+}
+
 function escapeHtml(s) {
   return String(s ?? "")
     .replace(/&/g, "&amp;")

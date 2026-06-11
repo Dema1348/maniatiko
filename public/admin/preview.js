@@ -68,6 +68,17 @@
       return new Date(yyyy, mm - 1, dd, 23, 59, 59) < new Date();
     };
 
+    // Normaliza items que vienen como string ("foo") o como object con un field
+    // de texto (Decap CMS list widget guarda con .item, .lane, etc).
+    const asText = (it, keys = ["item", "text", "value", "lane", "name"]) => {
+      if (it == null) return "";
+      if (typeof it === "string") return it;
+      if (typeof it === "object") {
+        for (const k of keys) if (typeof it[k] === "string") return it[k];
+      }
+      return "";
+    };
+
     // ===== Section renderers =====
 
     function HeroBlock({ hero }) {
@@ -97,8 +108,34 @@
       ];
     }
 
+    function MarqueeBlock({ section }) {
+      const raw = section.chapters || section.items || section.lanes || [];
+      // section es el merge de data[source] + sec; si source es marquee (array)
+      // entonces el .lanes proviene de un merge donde section termina siendo el array.
+      // Para robustez también aceptamos section como array directo.
+      const lanes = (Array.isArray(section)
+        ? section
+        : raw.length ? raw : []
+      ).map(asText).filter(Boolean);
+      if (!lanes.length) return null;
+      const REPS = 12;
+      const SEP = "  ·  ";
+      return h("div", { id: section.id || "marquee", className: "marquee", "aria-hidden": true },
+        lanes.map((mantra, i) => {
+          const line = (String(mantra).trim() + SEP).repeat(REPS);
+          return h("div", { key: i, className: `marquee-lane marquee-lane--${i % 2 === 0 ? "left" : "right"}` },
+            h("div", { className: "marquee-track" },
+              h("span", null, line),
+              h("span", null, line)
+            )
+          );
+        })
+      );
+    }
+
     function ChaptersBlock({ section, idx }) {
-      const items = section.chapters || section.items || [];
+      const rawItems = section.chapters || section.items || [];
+      const items = rawItems.map(asText).filter(Boolean);
       const dossier = section.dossier;
       return h("section", { id: section.id, className: "section" },
         SectionHeader({ idx, title: section.title, subtitle: section.subtitle }),
@@ -292,17 +329,20 @@
             h("span", { className: "booking-card-cta-email" }, c.email),
             h("span", { className: "booking-card-cta-arrow" }, "→")
           ),
-          c.brief?.length && h("div", { className: "booking-card-brief" },
-            h("span", { className: "booking-card-brief-label" }, "† Include in your brief"),
-            h("ol", { className: "booking-card-brief-list" },
-              c.brief.map((b, i) =>
-                h("li", { key: i },
-                  h("span", { className: "booking-card-brief-num" }, String(i + 1).padStart(2, "0")),
-                  b
+          c.brief?.length && (() => {
+            const briefTexts = c.brief.map(asText).filter(Boolean);
+            return briefTexts.length && h("div", { className: "booking-card-brief" },
+              h("span", { className: "booking-card-brief-label" }, "† Include in your brief"),
+              h("ol", { className: "booking-card-brief-list" },
+                briefTexts.map((b, i) =>
+                  h("li", { key: i },
+                    h("span", { className: "booking-card-brief-num" }, String(i + 1).padStart(2, "0")),
+                    b
+                  )
                 )
               )
-            )
-          )
+            );
+          })()
         )
       );
     }
@@ -332,18 +372,20 @@
       const socials = data.socials || [];
 
       // Resolución homologa de source (espejo de main.js renderSections):
-      //   - data[source] array → es la lista de items del bloque
+      //   - data[source] array → se inyecta como sec.items (acceso uniforme en los renderers)
       //   - data[source] object → se mergea sobre sec (chapters, dossier, booking shape, etc)
       function resolveSec(sec) {
         const src = sec.source ? data[sec.source] : null;
-        if (src && !Array.isArray(src)) return { ...src, ...sec };
+        if (Array.isArray(src)) return { ...sec, items: src };
+        if (src && typeof src === "object") return { ...src, ...sec };
         return sec;
       }
 
       let idx = 0;
       const sectionBlocks = sections.map((rawSec) => {
-        if (rawSec.type === "marquee") return null;
         const sec = resolveSec(rawSec);
+        // El marquee no incrementa el contador roman (es un divider, no chapter)
+        if (sec.type === "marquee") return h(MarqueeBlock, { key: sec.id || "marquee", section: sec });
         idx += 1;
         switch (sec.type) {
           case "chapters":     return h(ChaptersBlock, { key: sec.id, section: sec, idx });
