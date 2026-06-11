@@ -319,28 +319,35 @@ function initLenis() {
     })(0);
   }
 
-  // Anchor links — calculamos la Y target manualmente y se la pasamos a Lenis
-  // como NÚMERO (no Element). Esto bypassa el bug de Lenis 1.1.20 donde si le
-  // pasás un Element + offset, su loop interno llama querySelector con la
-  // velocity numérica del scroll (-10.58, -9.41, ...) tirando SyntaxError.
+  // Anchor links — necesitamos AGARRAR todos los clicks en <a href="#...">
+  // en capture phase y stopImmediatePropagation para neutralizar el onClick
+  // INTERNO de Lenis. Si Lenis llega a procesarlos, llama
+  // `document.querySelector(href)` con cualquier href que empiece con `#`,
+  // incluyendo ids inválidos como `#-1` que rompen SyntaxError repetidamente
+  // durante el scroll loop.
+  //
+  // Nuestro handler hace el smooth scroll a mano (con Lenis si está, sino
+  // window.scrollTo nativo), validando que el id sea sintácticamente válido.
   document.addEventListener("click", (e) => {
     const a = e.target.closest('a[href^="#"]');
     if (!a) return;
     const href = a.getAttribute("href");
+    // Neutralizamos al handler interno de Lenis pase lo que pase con este
+    // anchor — incluso si no podemos resolverlo, mejor "no hacer nada" que
+    // dejar a Lenis crashear el scroll loop con un selector inválido.
+    e.stopImmediatePropagation();
     if (!href || href === "#" || href.length < 2) return;
     if (!/^#[A-Za-z][\w-]*$/.test(href)) return;
     const target = document.querySelector(href);
     if (!target) return;
     e.preventDefault();
     const top = target.getBoundingClientRect().top + window.scrollY - 64;
-    // Con Lenis activo: lenis.scrollTo(<number>) NO entra al path bugueado del
-    // querySelector. Sin Lenis: scroll nativo con smooth behavior.
     if (window.__lenis && typeof window.__lenis.scrollTo === "function") {
       window.__lenis.scrollTo(top, { duration: 1.2 });
     } else {
       window.scrollTo({ top, behavior: "smooth" });
     }
-  });
+  }, true); // capture phase: corre ANTES que el handler interno de Lenis
 }
 
 // --------------------------------------------------------------
