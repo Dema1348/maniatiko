@@ -319,16 +319,22 @@ function initLenis() {
     })(0);
   }
 
-  // Anchor links pasan por Lenis para mantener el feel suave
+  // Anchor links — Lenis ya hace el smooth scroll si interceptamos con
+  // window.scrollTo. Pasarle un Element directo a lenis.scrollTo dispara un
+  // bug en Lenis 1.1.20 donde su loop interno llama querySelector con números
+  // (la velocity interpolada del scroll) y tira SyntaxError.
   document.addEventListener("click", (e) => {
     const a = e.target.closest('a[href^="#"]');
     if (!a) return;
     const href = a.getAttribute("href");
     if (!href || href === "#" || href.length < 2) return;
+    // Validar que el href sea un selector seguro (id válido): #ident-123 OK
+    if (!/^#[A-Za-z][\w-]*$/.test(href)) return;
     const target = document.querySelector(href);
     if (!target) return;
     e.preventDefault();
-    lenis.scrollTo(target, { offset: -64 });
+    const top = target.getBoundingClientRect().top + window.scrollY - 64;
+    window.scrollTo({ top, behavior: "smooth" });
   });
 }
 
