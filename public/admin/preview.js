@@ -46,7 +46,6 @@
 
     // Resuelve paths de imágenes a URL absoluta. El iframe del preview no
     // resuelve paths relativas contra el origin del CMS — hay que explicitarlo.
-    const ORIGIN = window.location.origin;
     function resolveAsset(path) {
       if (!path) return "";
       if (/^(https?:)?\/\//.test(path) || path.startsWith("data:") || path.startsWith("blob:")) return path;
