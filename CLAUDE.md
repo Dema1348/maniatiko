@@ -228,6 +228,31 @@ Editar los archivos local (`data.json`, `index.html`, etc.), `git commit`, `git 
 - **Firebase Hosting**: el hosting real de `maniatiko.cl`. Recibe los deploys del Action.
 - **Cloudflare**: DNS authoritative para `maniatiko.cl` (nameservers `frank.ns.cloudflare.com` + `oaklyn.ns.cloudflare.com`). El A record apunta a Firebase con nube naranja (proxy/CDN delante).
 
+### CMS Preview Pane (Decap CMS v3)
+
+El CMS tiene un **preview pane en vivo a la derecha del form** — el editor edita los fields a la izquierda y ve el sitio renderizado al instante a la derecha. Implementado en `public/admin/preview.js` + `public/admin/preview.css`.
+
+**Cómo se enchufa:**
+
+- `public/admin/index.html` carga `<script src="preview.js"></script>` después del bundle de Decap
+- `preview.js` espera (polling 100ms × 40 intentos) a que `window.CMS` + `window.h` estén disponibles, luego llama `CMS.registerPreviewTemplate("site_general", SitePreview)` y `CMS.registerPreviewStyle(...)`
+- El SitePreview renderiza con React (`window.h` = `createElement`) los blocks: hero, chapters+dossier, gigs+EPK+archive, mixes setlist, memorias, press quotes, featured chips, presskit, booking card, footer
+
+**Quirks importantes (aprendidos a fuerza de romperlo):**
+
+1. **Decap CMS v3 expone `window.h` (no `window.React`)** — usar `window.h || window.React.createElement` para retro-compat.
+2. **File collections: `registerPreviewTemplate(file.name, …)`, no `collection.name`.** Nuestro config tiene `collection.name = "site"` con `file.name = "site_general"` — el preview se registra para `"site_general"`. Si registrás para `"site"` no se aplica (Decap cae al fallback default `field: value`).
+3. **Polling para esperar a `window.CMS`** — el bundle de Decap se inicializa async, así que `window.addEventListener("load", ...)` no es suficiente. Hay que poll hasta que `CMS.registerPreviewTemplate` exista.
+4. **URLs absolutas en `registerPreviewStyle`** — el iframe del preview no resuelve rutas relativas contra el origin del CMS. Hay que usar `window.location.origin + "/css/styles.css"`.
+5. **Google Fonts también van con `registerPreviewStyle`** — sino la tipografía cae a fallbacks del sistema y el preview se ve raro.
+6. **Imágenes con paths relativas → `resolveAsset(path)`** — helper que convierte `"img/dj1.jpg"` a URL absoluta. Si la `<img src>` tiene path relativa el iframe no la resuelve.
+
+**Mantenimiento:**
+
+- Si modificás los **renderers de `main.js`** (cambiás cómo se ve una sección, sumás un type nuevo), también hay que actualizar el render correspondiente en `preview.js`. No es DRY pero es el costo de tener preview live sin server-side rendering.
+- El preview **NO incluye** animaciones JS del sitio real: Three.js shader, Tone.js kick, GSAP waves, kick jolts, marquee jolt, scroll-depth modulation. Para validar esas hay que recargar el sitio real.
+- `public/admin/preview.css` oculta las capas globales (loader, scanlines, TV static, bochka pulse, cursor, ghosts, mini-player, etc.) para que el iframe se vea limpio.
+
 ### Reglas de oro
 
 - ❌ **NO** correr `firebase deploy --only hosting` desde local — duplica deploys y deja el repo desincronizado de producción.
