@@ -1,5 +1,10 @@
 # maniatiko.dj
 
+> **Datos del artista:** la fuente de verdad de toda la info de Maniatiko (identidad, gigs, tracks, plataformas, paleta, pendientes) está en [`QUESTIONNAIRE.md`](./QUESTIONNAIRE.md). Si necesitás contexto sobre QUÉ contiene el sitio (no CÓMO funciona), leélo primero — incluye marcadores ✓/🟡/⏳ que indican qué es real vs mock vs TBD.
+
+---
+
+
 Landing page estática para el DJ **Maniatiko**. Hosting en Firebase (`maniatiko-dj.web.app`). Inspirada en `requiem-cl` (`/Users/edson/Desktop/requiem/requiem`): contenido dinámico desde `data.json`, render por JS, animaciones GSAP scroll, lightbox. Evolucionó hacia un **Ritual Engine** con shader WebGL + audio sintético opt-in.
 
 ## Idioma — EL SITIO ES EN INGLÉS
