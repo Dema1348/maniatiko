@@ -1,0 +1,111 @@
+/* ============================================================
+   Decap CMS preview iframe — overrides
+   Carga el styles.css del sitio + estos overrides para hacer
+   el preview legible (ocultar capas animadas que no aportan).
+   ============================================================ */
+
+/* Ocultar overlays full-viewport del sitio real que no aplican al preview */
+.boot-loader,
+.tv-static,
+.scanlines,
+.grain-overlay,
+.bochka-pulse,
+.cursor,
+.hero-shader,
+.hero-veil,
+.hero-ghosts,
+.hero-bpm,
+.mini-player,
+.nav,
+.scroll-hint,
+.lightbox,
+.hypnotic-divider {
+  display: none !important;
+}
+
+/* El iframe del preview debe scrollearse normal */
+html,
+body {
+  overflow: visible !important;
+  background: var(--bg);
+}
+
+/* Hero: sin fullscreen + sin animaciones agresivas */
+.hero {
+  min-height: auto !important;
+  padding: 2.5rem 1.5rem !important;
+  background: var(--bg);
+}
+.hero-title {
+  font-size: clamp(2rem, 6vw, 4rem) !important;
+}
+.hero-char {
+  animation: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+.hero-role-char {
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Engage button: visible pero sin animaciones */
+.hero-engage-rule {
+  animation: none !important;
+  opacity: 0.6 !important;
+  transform: none !important;
+}
+
+/* Iframe wrapper — un poco de aire para que el preview no se sienta apretado */
+.preview-root {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-family: var(--font-body);
+  padding-bottom: 4rem;
+}
+
+/* Stamp arriba para marcar que es preview */
+.preview-banner {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(var(--accent-rgb), 0.12);
+  border-bottom: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+  text-align: center;
+}
+
+/* Reset some animations that look weird without their JS counterpart */
+.setlist-num,
+.setlist-wave,
+.ritual-day,
+.epk-stat-num {
+  animation: none !important;
+}
+
+/* Section title: sin char-split wave loop en preview */
+.section-title {
+  letter-spacing: -0.03em !important;
+}
+.hypnotic-char {
+  animation: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+/* Setlist wave canvas vacío sin JS */
+.setlist-wave {
+  display: none !important;
+}
+
+/* Mini-player no aplica en preview */
+.has-miniplayer .footer {
+  padding-bottom: 4rem !important;
+}
