@@ -1049,12 +1049,19 @@ function renderSections(sections, data) {
   let chapterIdx = 0;
   const html = sections
     .map((sec) => {
-      const items = sec.source ? data[sec.source] || [] : sec.items || [];
+      // Resolución homologa de source:
+      //  - Si data[sec.source] es array → es la colección de items (gigs, mixes, press, etc.)
+      //  - Si data[sec.source] es object → se mergea sobre sec (bio.chapters/dossier, booking.intro/email/etc.)
+      //    Las keys del sec (id, type, title, subtitle, source) sobrescriben las del source para que
+      //    el shape del section siga siendo el canónico.
+      const src = sec.source ? data[sec.source] : null;
+      const items = Array.isArray(src) ? src : sec.items || [];
+      const mergedSec = src && !Array.isArray(src) ? { ...src, ...sec } : sec;
       if (sec.type === "marquee") {
-        return renderMarquee(sec, data);
+        return renderMarquee(mergedSec, data);
       }
       chapterIdx += 1;
-      const body = renderSectionBody(sec.type, items, sec, data);
+      const body = renderSectionBody(sec.type, items, mergedSec, data);
       return `
         <section id="${sec.id}" class="section" data-section="${sec.type}">
           <span class="section-label" data-reveal>${roman(chapterIdx)}</span>
@@ -1074,7 +1081,8 @@ function renderSectionBody(type, items, sec, data) {
     case "text":
       return `<div class="section-text" data-reveal>${sec.body || ""}</div>`;
     case "chapters":
-      return renderChapters(sec.items || [], sec.dossier);
+      // sec.chapters viene del source top-level "bio"; sec.items es el legacy inline
+      return renderChapters(sec.chapters || sec.items || [], sec.dossier);
     case "memories":
       return renderMemories(items);
     case "gigs":
@@ -1548,7 +1556,8 @@ function renderFeatured(items) {
 }
 
 function renderBookingCard(sec) {
-  const c = sec.card || {};
+  // sec puede traer las keys directas (vía source="booking") o anidadas en sec.card (legacy inline)
+  const c = sec.card || sec;
   if (!c.email) return "";
   const subj = encodeURIComponent(c.emailSubject || "[BOOKING]");
   const briefItems = Array.isArray(c.brief) ? c.brief : [];

@@ -98,7 +98,7 @@
     }
 
     function ChaptersBlock({ section, idx }) {
-      const items = section.items || [];
+      const items = section.chapters || section.items || [];
       const dossier = section.dossier;
       return h("section", { id: section.id, className: "section" },
         SectionHeader({ idx, title: section.title, subtitle: section.subtitle }),
@@ -280,7 +280,8 @@
     }
 
     function BookingCardBlock({ section, idx }) {
-      const c = section.card || {};
+      // Soporta tanto el shape mergeado (section.email, section.brief…) como el legacy section.card.X
+      const c = section.card || section;
       if (!c.email) return null;
       return h("section", { id: section.id, className: "section" },
         SectionHeader({ idx, title: section.title, subtitle: section.subtitle }),
@@ -330,9 +331,19 @@
       const footer = data.footer || {};
       const socials = data.socials || [];
 
+      // Resolución homologa de source (espejo de main.js renderSections):
+      //   - data[source] array → es la lista de items del bloque
+      //   - data[source] object → se mergea sobre sec (chapters, dossier, booking shape, etc)
+      function resolveSec(sec) {
+        const src = sec.source ? data[sec.source] : null;
+        if (src && !Array.isArray(src)) return { ...src, ...sec };
+        return sec;
+      }
+
       let idx = 0;
-      const sectionBlocks = sections.map((sec) => {
-        if (sec.type === "marquee") return null;
+      const sectionBlocks = sections.map((rawSec) => {
+        if (rawSec.type === "marquee") return null;
+        const sec = resolveSec(rawSec);
         idx += 1;
         switch (sec.type) {
           case "chapters":     return h(ChaptersBlock, { key: sec.id, section: sec, idx });

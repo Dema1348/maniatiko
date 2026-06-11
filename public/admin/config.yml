@@ -70,6 +70,55 @@ collections:
             fields:
               - { label: "Palabra (mantra)", name: "lane", widget: "string" }
 
+          - label: "Origin — bio + dossier"
+            name: "bio"
+            widget: "object"
+            collapsed: false
+            hint: "La primera sección de la página: 3 párrafos de bio + tabla de datos del artista (Origin, Base, Sound, BPM, etc)."
+            fields:
+              - label: "Bio (3 párrafos numerados I/II/III)"
+                name: "chapters"
+                widget: "list"
+                summary: "{{item}}"
+                field: { label: "Párrafo", name: "item", widget: "text" }
+              - label: "Dossier (tabla key/value)"
+                name: "dossier"
+                widget: "object"
+                collapsed: false
+                fields:
+                  - { label: "Título del dossier", name: "title", widget: "string", default: "† Artist Dossier" }
+                  - label: "Filas"
+                    name: "rows"
+                    widget: "list"
+                    summary: "{{key}} → {{value}}"
+                    fields:
+                      - { label: "Clave (ej. Origin, Base, BPM)", name: "key", widget: "string" }
+                      - { label: "Valor", name: "value", widget: "string" }
+
+          - label: "Booking — bloque de contacto al final"
+            name: "booking"
+            widget: "object"
+            collapsed: false
+            hint: "Datos del bloque destacado de Booking — el mailto se arma automáticamente con email + subject."
+            fields:
+              - { label: "Intro (frase corta arriba)", name: "intro", widget: "string", required: false }
+              - { label: "Email destino", name: "email", widget: "string" }
+              - { label: "Label del email (ej. † Direct booking)", name: "emailLabel", widget: "string", default: "† Direct booking" }
+              - { label: "Subject del email (asunto)", name: "emailSubject", widget: "string", default: "[BOOKING] Event · Date · City" }
+              - label: "Brief — checklist que el promotor debe incluir"
+                name: "brief"
+                widget: "list"
+                summary: "{{item}}"
+                field: { label: "Item", name: "item", widget: "string" }
+              - label: "Alt — link a DM Instagram"
+                name: "alt"
+                widget: "object"
+                required: false
+                fields:
+                  - { label: "Label (ej. Or DM)", name: "label", widget: "string", default: "Or DM" }
+                  - { label: "Handle (ej. @maniatiko.dj)", name: "handle", widget: "string" }
+                  - { label: "URL completa", name: "url", widget: "string" }
+
           - label: "Redes sociales (orden = orden en footer)"
             name: "socials"
             widget: "list"
@@ -128,45 +177,14 @@ collections:
             name: "sections"
             widget: "list"
             collapsed: true
-            hint: "No tocar a menos que sepas lo que hacés. Esto define la estructura de bloques de la página."
+            hint: "No tocar a menos que sepas lo que hacés. Solo controla el orden, el tipo y los títulos de cada bloque — el CONTENIDO real de cada uno se edita en su field propio arriba (Marquee, Origin, Tracks, Gigs, etc.)."
+            summary: "{{id}} — {{type}}"
             fields:
               - { label: "ID", name: "id", widget: "string" }
               - { label: "Tipo", name: "type", widget: "string", hint: "marquee | chapters | gigs | mixes | memories | press | featured | presskit | booking-card" }
               - { label: "Título", name: "title", widget: "string", required: false }
               - { label: "Subtítulo", name: "subtitle", widget: "string", required: false }
-              - { label: "Source (nombre de la colección en data.json)", name: "source", widget: "string", required: false }
-              - { label: "Items (para chapters: array de párrafos)", name: "items", widget: "list", field: { label: "Párrafo", name: "item", widget: "text" }, required: false }
-              - label: "Dossier (para chapters)"
-                name: "dossier"
-                widget: "object"
-                required: false
-                fields:
-                  - { label: "Título", name: "title", widget: "string", required: false }
-                  - label: "Rows (key/value)"
-                    name: "rows"
-                    widget: "list"
-                    required: false
-                    fields:
-                      - { label: "Clave", name: "key", widget: "string" }
-                      - { label: "Valor", name: "value", widget: "string" }
-              - label: "Card (para booking-card)"
-                name: "card"
-                widget: "object"
-                required: false
-                fields:
-                  - { label: "Intro", name: "intro", widget: "string", required: false }
-                  - { label: "Email destino", name: "email", widget: "string", required: false }
-                  - { label: "Label del email", name: "emailLabel", widget: "string", required: false }
-                  - { label: "Subject del email", name: "emailSubject", widget: "string", required: false }
-                  - { label: "Brief items", name: "brief", widget: "list", field: { label: "Item", name: "item", widget: "string" }, required: false }
-                  - label: "Alt (DM Instagram)"
-                    name: "alt"
-                    widget: "object"
-                    required: false
-                    fields:
-                      - { label: "Label", name: "label", widget: "string", required: false }
-                      - { label: "Handle", name: "handle", widget: "string", required: false }
-                      - { label: "URL", name: "url", widget: "string", required: false }
+              - { label: "Source (nombre del bloque en data.json — todos las secciones reales usan este)", name: "source", widget: "string", required: false }
 
           # === Colecciones top-level del data.json ===
           - label: "Gigs (fechas en vivo)"
