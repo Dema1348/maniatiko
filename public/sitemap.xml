@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://maniatiko.cl/</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://maniatiko.cl/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://maniatiko.cl/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://maniatiko.cl/" />
     <image:image>
       <image:loc>https://maniatiko.cl/img/og-share.jpg</image:loc>
       <image:title>Maniatiko — share card</image:title>
-      <image:caption>Hypnotic industrial techno DJ &amp; Producer from Santiago, Chile</image:caption>
+      <image:caption>DJ y productor de techno industrial hipnótico desde Santiago, Chile</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://maniatiko.cl/img/dj1.jpg</image:loc>
-      <image:title>Maniatiko performing live</image:title>
-      <image:caption>Hypnotic industrial techno DJ from Santiago, Chile</image:caption>
+      <image:title>Maniatiko en vivo</image:title>
+      <image:caption>DJ de techno industrial hipnótico desde Santiago, Chile</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://maniatiko.cl/img/dj2.jpeg</image:loc>
@@ -23,6 +27,20 @@
     <image:image>
       <image:loc>https://maniatiko.cl/img/dj3.jpeg</image:loc>
       <image:title>Maniatiko — Circuito Integrado, Valparaíso</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://maniatiko.cl/en/</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://maniatiko.cl/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://maniatiko.cl/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://maniatiko.cl/" />
+    <image:image>
+      <image:loc>https://maniatiko.cl/img/og-share.jpg</image:loc>
+      <image:title>Maniatiko — share card</image:title>
+      <image:caption>Hypnotic industrial techno DJ &amp; Producer from Santiago, Chile</image:caption>
     </image:image>
   </url>
   <url>

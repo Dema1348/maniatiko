@@ -143,6 +143,38 @@ button {
   color: var(--accent);
 }
 
+/* Language switcher — pequeño grupo ES · EN al final del nav.
+   El idioma activo en accent, el inactivo en text-dim. */
+.lang-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  margin-left: clamp(0.5rem, 1.5vw, 1.25rem);
+  padding-left: clamp(0.5rem, 1.5vw, 1.25rem);
+  border-left: 1px solid rgba(232, 232, 232, 0.18);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.lang-switcher-link {
+  color: var(--text-faint);
+  text-decoration: none;
+  transition: color 0.2s, letter-spacing 0.2s;
+  padding: 0.1em 0;
+}
+.lang-switcher-link.is-active {
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+.lang-switcher-link:hover:not(.is-active) {
+  color: var(--text);
+}
+.lang-switcher-sep {
+  color: var(--text-faint);
+  opacity: 0.5;
+}
+
 .nav-toggle {
   display: none;
   width: 32px;
@@ -1675,6 +1707,14 @@ body.ritual-engaged .tv-static { opacity: 0.1; }
   }
   .nav-links.is-open {
     transform: translateX(0);
+  }
+  /* En mobile el switcher queda dentro del drawer, sin borde izquierdo */
+  .lang-switcher {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
   }
 }
 

@@ -1,61 +1,18 @@
 {
-  "marquee": [
-    {
-      "lane": "HYPNOTIC"
+  "site": {
+    "name": "Maniatiko",
+    "tagline": {
+      "es": "Techno Industrial Hipnótico",
+      "en": "Hypnotic Industrial Techno"
     },
-    {
-      "lane": "INDUSTRIAL"
-    }
-  ],
-  "press": [
-    {
-      "quote": "Constant, dark, immersive propulsion. He doesn't play: he pushes.",
-      "source": "Underground CL"
+    "description": {
+      "es": "Maniatiko — productor y DJ de techno industrial hipnótico desde Santiago, Chile.",
+      "en": "Maniatiko — hypnotic industrial techno producer and DJ from Santiago, Chile."
     },
-    {
-      "quote": "Bochka pressure pushed to the limit. Prolonged hypnosis as physical territory.",
-      "source": "Hollenraum"
-    },
-    {
-      "quote": "Part of the new generation redrawing Chilean techno.",
-      "source": "Radikals Sessions"
-    },
-    {
-      "quote": "It doesn't need a lengthy intro; the sounds trap your mind right away",
-      "source": "Edson"
-    }
-  ],
-  "nav": [],
-  "socials": [
-    {
-      "label": "Bandcamp",
-      "url": "https://maniatiko1.bandcamp.com"
-    },
-    {
-      "label": "Spotify",
-      "url": "https://open.spotify.com/intl-es/artist/50KNp3KIPhqS0AVe8BKUbG"
-    },
-    {
-      "label": "SoundCloud",
-      "url": "https://soundcloud.com/maniatikx"
-    },
-    {
-      "label": "Instagram",
-      "url": "https://www.instagram.com/maniatiko.dj"
-    },
-    {
-      "label": "YouTube",
-      "url": "https://www.youtube.com/@maniatikx"
-    },
-    {
-      "label": "TikTok",
-      "url": "https://www.tiktok.com/@maniatiko.dj"
-    },
-    {
-      "label": "Facebook",
-      "url": "https://www.facebook.com/profile.php?id=61590419833191"
-    }
-  ],
+    "url": "https://maniatiko.cl/",
+    "ogImage": "img/og-share.jpg",
+    "themeColor": "#050505"
+  },
   "analytics": {
     "enabled": true,
     "firebase": {
@@ -68,384 +25,388 @@
       "measurementId": "G-5CXDNBQMN6"
     }
   },
-  "site": {
-    "name": "Maniatiko",
-    "tagline": "Hypnotic Industrial Techno",
-    "description": "Maniatiko — hypnotic industrial techno producer and DJ from Santiago, Chile.",
-    "url": "https://maniatiko.cl/",
-    "locale": "en_US",
-    "ogImage": "img/og-share.jpg",
-    "themeColor": "#050505"
+  "nav": [],
+  "hero": {
+    "title": "Maniatiko",
+    "role": {
+      "es": "Productor & DJ",
+      "en": "Producer & DJ"
+    },
+    "bpm": 170,
+    "engage": {
+      "labelOff": {
+        "es": "Iniciar ritual",
+        "en": "Engage ritual"
+      },
+      "labelOn": {
+        "es": "Detener",
+        "en": "Disengage"
+      }
+    }
   },
+  "marquee": [
+    { "lane": "HYPNOTIC" },
+    { "lane": "INDUSTRIAL" }
+  ],
   "bio": {
     "chapters": [
       {
-        "item": "Producer and DJ born in Santiago, Chile, focused on developing his own vision within industrial techno. His work emerges from a deeply personal quest — built upon his experiences, ear, artistic maturity and inner growth — shaping a new sonic language: a collision between Bochka pressure, hypnotic grooves, tectonic energy and a constant, dark, immersive and destructive propulsion in its impact."
+        "item": {
+          "es": "Productor y DJ nacido en Santiago, Chile, enfocado en desarrollar su propia visión dentro del techno industrial. Su trabajo emerge de una búsqueda profundamente personal — construida sobre sus experiencias, oído, madurez artística y crecimiento interno — dando forma a un nuevo lenguaje sonoro: una colisión entre la presión del Bochka, grooves hipnóticos, energía tectónica y una propulsión constante, oscura, inmersiva y destructiva en su impacto.",
+          "en": "Producer and DJ born in Santiago, Chile, focused on developing his own vision within industrial techno. His work emerges from a deeply personal quest — built upon his experiences, ear, artistic maturity and inner growth — shaping a new sonic language: a collision between Bochka pressure, hypnotic grooves, tectonic energy and a constant, dark, immersive and destructive propulsion in its impact."
+        }
       },
       {
-        "item": "His music is built upon an architecture of mental tension, physical intensity and emotional memory. Each production stems from his own lived experiences, processed and transfigured into sonic matter: distorted textures, abrasive percussion, dense atmospheres and repetitive structures that lead to prolonged hypnosis — making you feel like you're part of his story."
+        "item": {
+          "es": "Su música se construye sobre una arquitectura de tensión mental, intensidad física y memoria emocional. Cada producción nace de sus propias experiencias vividas, procesadas y transfiguradas en materia sonora: texturas distorsionadas, percusiones abrasivas, atmósferas densas y estructuras repetitivas que conducen a una hipnosis prolongada — haciéndote sentir parte de su historia.",
+          "en": "His music is built upon an architecture of mental tension, physical intensity and emotional memory. Each production stems from his own lived experiences, processed and transfigured into sonic matter: distorted textures, abrasive percussion, dense atmospheres and repetitive structures that lead to prolonged hypnosis — making you feel like you're part of his story."
+        }
       },
       {
-        "item": "Within the Chilean underground scene he has become a recurring figure, sharing stages with Aldes, Kask4r, 19.85, Mary B, Likikon, Bonek and Lurtz. His presence reflects an expanding identity, marked by intense sonic exploration — both mental and physical — where darkness functions not only as aesthetic but as emotional, bodily and ritualistic territory."
+        "item": {
+          "es": "Dentro de la escena underground chilena se ha vuelto una figura recurrente, compartiendo escenarios con Aldes, Kask4r, 19.85, Mary B, Likikon, Bonek y Lurtz. Su presencia refleja una identidad en expansión, marcada por una exploración sonora intensa — mental y física — donde la oscuridad funciona no solo como estética sino como territorio emocional, corporal y ritual.",
+          "en": "Within the Chilean underground scene he has become a recurring figure, sharing stages with Aldes, Kask4r, 19.85, Mary B, Likikon, Bonek and Lurtz. His presence reflects an expanding identity, marked by intense sonic exploration — both mental and physical — where darkness functions not only as aesthetic but as emotional, bodily and ritualistic territory."
+        }
       }
     ],
     "dossier": {
-      "title": "† Artist Dossier",
+      "title": {
+        "es": "† Dossier del artista",
+        "en": "† Artist Dossier"
+      },
       "rows": [
-        {
-          "key": "Origin",
-          "value": "Chile"
-        },
-        {
-          "key": "Base",
-          "value": "Lo Prado, Santiago"
-        },
-        {
-          "key": "Sound",
-          "value": "Techno · Neo Bochka · Hypnotic"
-        },
-        {
-          "key": "BPM",
-          "value": "150–170"
-        },
-        {
-          "key": "Crews",
-          "value": "Radikals · Blackout · Hollenraum · Circuito Integrado · 909 Freakz · Teknokratas"
-        },
-        {
-          "key": "Stage w/",
-          "value": "Aldes · Kask4r · 19.85 · Mary B · Likikon · Bonek · Lurtz"
-        },
-        {
-          "key": "Platforms",
-          "value": "Bandcamp · Spotify · SoundCloud · YouTube · Instagram · TikTok · Facebook"
-        },
-        {
-          "key": "Booking",
-          "value": "maniatikodj.bussines@gmail.com"
-        }
+        { "key": { "es": "Origen",            "en": "Origin"     }, "value": "Chile" },
+        { "key": { "es": "Base",              "en": "Base"       }, "value": "Lo Prado, Santiago" },
+        { "key": { "es": "Sonido",            "en": "Sound"      }, "value": "Techno · Neo Bochka · Hypnotic" },
+        { "key": { "es": "BPM",               "en": "BPM"        }, "value": "150–170" },
+        { "key": { "es": "Crews",             "en": "Crews"      }, "value": "Radikals · Blackout · Hollenraum · Circuito Integrado · 909 Freakz · Teknokratas" },
+        { "key": { "es": "En escenario con",  "en": "Stage w/"   }, "value": "Aldes · Kask4r · 19.85 · Mary B · Likikon · Bonek · Lurtz" },
+        { "key": { "es": "Plataformas",       "en": "Platforms"  }, "value": "Bandcamp · Spotify · SoundCloud · YouTube · Instagram · TikTok · Facebook" },
+        { "key": { "es": "Booking",           "en": "Booking"    }, "value": "maniatikodj.bussines@gmail.com" }
       ]
     }
   },
+  "gigs": [
+    { "date": "06.20.2026", "city": "Santiago, CL", "venue": "Club 808" },
+    { "date": "05.29.2026", "city": "Santiago, CL", "venue": "Requiem × Vërrückt" },
+    { "date": "05.16.2026", "city": "Santiago, CL", "venue": "Verminous" },
+    { "date": "05.08.2026", "city": "Santiago, CL", "venue": "Galpón Technokikazo" },
+    { "date": "03.28.2026", "city": "Santiago, CL", "venue": "Vërrückt · F2F Armoniko" },
+    { "date": "03.27.2026", "city": "Santiago, CL", "venue": "Metalurgia Tekno" },
+    { "date": "03.01.2026", "city": "Santiago, CL", "venue": "Club Roxbury" },
+    { "date": "02.28.2026", "city": "Santiago, CL", "venue": "Nicole Lukys · Radikals Techno warmup" },
+    { "date": "01.02.2026", "city": "Santiago, CL", "venue": "Höllenraum × Inmortal Techno" },
+    { "date": "11.08.2025", "city": "Santiago, CL", "venue": "Pater Noster" },
+    { "date": "11.01.2025", "city": "Santiago, CL", "venue": "Lobotonik · Radikals Techno" },
+    { "date": "07.30.2026", "city": "Santiago, CL", "venue": "Radikals Techno" }
+  ],
   "mixes": [
     {
       "platform": "SoundCloud · Original",
       "title": "MANTRA",
-      "description": "Prolonged hypnosis. Bochka pressure as repeated mantra.",
+      "description": {
+        "es": "Hipnosis prolongada. Presión del Bochka como mantra repetido.",
+        "en": "Prolonged hypnosis. Bochka pressure as repeated mantra."
+      },
       "url": "https://soundcloud.com/maniatikx/mantra"
     },
     {
       "platform": "SoundCloud · Original",
       "title": "SINFONIA DEL MAL ETERNO",
-      "description": "Distortion, abrasive percussion, dense atmosphere.",
+      "description": {
+        "es": "Distorsión, percusión abrasiva, atmósfera densa.",
+        "en": "Distortion, abrasive percussion, dense atmosphere."
+      },
       "url": "https://soundcloud.com/maniatikx/symphony-of-eternal-evil"
     },
     {
       "platform": "SoundCloud · Original",
       "title": "LAMENTOS",
-      "description": "Emotional memory transfigured into sonic matter.",
+      "description": {
+        "es": "Memoria emocional transfigurada en materia sonora.",
+        "en": "Emotional memory transfigured into sonic matter."
+      },
       "url": "https://soundcloud.com/maniatikx/maniatiko-lamentos"
     },
     {
       "platform": "SoundCloud · Original",
       "title": "ALMA DISTORSIONADA",
-      "description": "Distorted textures. Repetitive structure that drags you in.",
+      "description": {
+        "es": "Texturas distorsionadas. Estructura repetitiva que te arrastra.",
+        "en": "Distorted textures. Repetitive structure that drags you in."
+      },
       "url": "https://soundcloud.com/maniatikx/46fd1481-88a7-45e1-8dec-eaece79798c1"
     },
     {
       "platform": "SoundCloud · Original",
       "title": "LA MELODÍA DE LA DESESPERACIÓN",
-      "description": "Mental tension as territory. Constant propulsion.",
+      "description": {
+        "es": "Tensión mental como territorio. Propulsión constante.",
+        "en": "Mental tension as territory. Constant propulsion."
+      },
       "url": "https://soundcloud.com/maniatikx/6b8454c8-a636-4e0a-a8ff-4fb13ee44cf2"
     },
     {
       "platform": "SoundCloud · Original",
       "title": "VIOLENCIA INTRAFAMILIAR",
-      "description": "Physical intensity. Hard kicks. No contemplation.",
+      "description": {
+        "es": "Intensidad física. Kicks duros. Sin contemplación.",
+        "en": "Physical intensity. Hard kicks. No contemplation."
+      },
       "url": "https://soundcloud.com/maniatikx/7c928bc8-230a-426c-9542-cdde60682f31"
     }
   ],
-  "featured": [
-    {
-      "name": "Radikals Techno",
-      "link": "https://instagram.com/radikalstechno"
-    },
-    {
-      "name": "Höllenraum",
-      "link": ""
-    },
-    {
-      "name": "Vërrückt",
-      "link": ""
-    },
-    {
-      "name": "Requiem",
-      "link": ""
-    },
-    {
-      "name": "Club 808",
-      "link": ""
-    },
-    {
-      "name": "Metalurgia Tekno",
-      "link": ""
-    },
-    {
-      "name": "Pater Noster",
-      "link": ""
-    },
-    {
-      "name": "Inmortal Techno",
-      "link": ""
-    },
-    {
-      "name": "Teknokratas",
-      "link": "https://www.instagram.com/teknokratascl"
-    },
-    {
-      "name": "Galpón Technokikazo",
-      "link": ""
-    },
-    {
-      "name": "Verminous",
-      "link": ""
-    },
-    {
-      "name": "Club Roxbury",
-      "link": ""
-    }
-  ],
-  "gigs": [
-    {
-      "date": "06.20.2026",
-      "city": "Santiago, CL",
-      "venue": "Club 808"
-    },
-    {
-      "date": "05.29.2026",
-      "city": "Santiago, CL",
-      "venue": "Requiem × Vërrückt"
-    },
-    {
-      "date": "05.16.2026",
-      "city": "Santiago, CL",
-      "venue": "Verminous"
-    },
-    {
-      "date": "05.08.2026",
-      "city": "Santiago, CL",
-      "venue": "Galpón Technokikazo"
-    },
-    {
-      "date": "03.28.2026",
-      "city": "Santiago, CL",
-      "venue": "Vërrückt · F2F Armoniko"
-    },
-    {
-      "date": "03.27.2026",
-      "city": "Santiago, CL",
-      "venue": "Metalurgia Tekno"
-    },
-    {
-      "date": "03.01.2026",
-      "city": "Santiago, CL",
-      "venue": "Club Roxbury"
-    },
-    {
-      "date": "02.28.2026",
-      "city": "Santiago, CL",
-      "venue": "Nicole Lukys · Radikals Techno warmup"
-    },
-    {
-      "date": "01.02.2026",
-      "city": "Santiago, CL",
-      "venue": "Höllenraum × Inmortal Techno"
-    },
-    {
-      "date": "11.08.2025",
-      "city": "Santiago, CL",
-      "venue": "Pater Noster"
-    },
-    {
-      "date": "11.01.2025",
-      "city": "Santiago, CL",
-      "venue": "Lobotonik · Radikals Techno"
-    },
-    {
-      "city": "Santiago, CL",
-      "date": "07.30.2026",
-      "venue": "Radikals Techno"
-    }
-  ],
-  "sections": [
-    {
-      "id": "marquee",
-      "type": "marquee",
-      "source": "marquee"
-    },
-    {
-      "id": "bio",
-      "type": "chapters",
-      "title": "Origin",
-      "subtitle": "Architecture of mental tension",
-      "source": "bio"
-    },
-    {
-      "id": "gigs",
-      "type": "gigs",
-      "title": "Live",
-      "subtitle": "Where the ritual continues",
-      "source": "gigs"
-    },
-    {
-      "id": "mixes",
-      "type": "mixes",
-      "title": "Productions",
-      "subtitle": "Originals · SoundCloud",
-      "source": "mixes"
-    },
-    {
-      "id": "memories",
-      "type": "memories",
-      "title": "Aftermath",
-      "subtitle": "What remained",
-      "source": "memories"
-    },
-    {
-      "id": "press",
-      "type": "press",
-      "title": "Reverb",
-      "subtitle": "What lingers",
-      "source": "press"
-    },
-    {
-      "id": "featured",
-      "type": "featured",
-      "title": "Hosted by",
-      "subtitle": "Crews, venues & collectives that have summoned the ritual",
-      "source": "featured"
-    },
-    {
-      "id": "presskit",
-      "type": "presskit",
-      "title": "Press Kit",
-      "subtitle": "Assets & dossier for press, promoters and editorial",
-      "source": "presskit"
-    },
-    {
-      "id": "booking",
-      "type": "booking-card",
-      "title": "Booking",
-      "subtitle": "For event organisers, promoters & residencies",
-      "source": "booking"
-    }
-  ],
-  "presskit": [
-    {
-      "kind": "Brand Assets",
-      "title": "Logo Pack",
-      "description": "All logo variants — white, black, accent — in SVG (vector) and PNG (5 sizes each). For flyers, press, social media.",
-      "cta": "View & download",
-      "url": "/img/logos-preview.html"
-    },
-    {
-      "kind": "Text Document",
-      "title": "Artist Biography",
-      "description": "Full press bio in plain text. Ready for event listings, festival programs and editorial.",
-      "cta": "Download .TXT",
-      "url": "#"
-    },
-    {
-      "kind": "Image Asset",
-      "title": "Press Photo",
-      "description": "High-resolution press photograph in B&W. Minimum 300 DPI for print reproduction.",
-      "cta": "Download Photos",
-      "url": "#"
-    },
-    {
-      "kind": "Video Asset",
-      "title": "Promo Video",
-      "description": "DJ set footage and artist reel. Available via YouTube channel or direct request.",
-      "cta": "Download Video",
-      "url": "#"
-    },
-    {
-      "kind": "Technical Document",
-      "title": "Tech Rider",
-      "description": "BPM 150–170 · 3× CDJ-3000 · DJM-A9 mixer · Booth monitor · Custom FX chain · USB only.",
-      "cta": "Download .PDF",
-      "url": "#"
-    }
-  ],
-  "booking": {
-    "intro": "Send the brief. Replies within 48h.",
-    "email": "maniatikodj.bussines@gmail.com",
-    "emailLabel": "† Direct booking",
-    "emailSubject": "[BOOKING] Event · Date · City",
-    "brief": [
-      {
-        "item": "Event name / venue"
-      },
-      {
-        "item": "Date & city"
-      },
-      {
-        "item": "Expected capacity"
-      },
-      {
-        "item": "Set length & slot"
-      },
-      {
-        "item": "Fee / offer (USD)"
-      },
-      {
-        "item": "Lineup & context"
-      }
-    ],
-    "alt": {
-      "label": "Or DM",
-      "handle": "@maniatiko.dj",
-      "url": "https://www.instagram.com/maniatiko.dj"
-    }
-  },
-  "hero": {
-    "title": "Maniatiko",
-    "role": "Producer & DJ",
-    "bpm": 170,
-    "engage": {
-      "labelOff": "Engage ritual",
-      "labelOn": "Disengage"
-    }
-  },
-  "footer": {
-    "epitaph": "† The ritual doesn't end. It only changes form †",
-    "credit": {
-      "label": "@_dema1348",
-      "href": "https://www.instagram.com/_dema1348/",
-      "prefix": "Made with love by"
-    }
-  },
   "memories": [
     {
       "date": "—",
       "venue": "BLACKOUT × RADIKALS",
       "city": "Santiago, CL",
-      "anecdote": "Sunrise found us still pushing. The kick wouldn't stop.",
+      "anecdote": {
+        "es": "El amanecer nos encontró todavía empujando. El kick no se detenía.",
+        "en": "Sunrise found us still pushing. The kick wouldn't stop."
+      },
       "image": "img/dj1.jpg"
     },
     {
       "date": "—",
       "venue": "HOLLENRAUM",
       "city": "Santiago, CL",
-      "anecdote": "The room held its breath until the drop. Then nothing was the same.",
+      "anecdote": {
+        "es": "La sala contuvo el aliento hasta el drop. Después nada fue igual.",
+        "en": "The room held its breath until the drop. Then nothing was the same."
+      },
       "image": "img/dj2.jpeg"
     },
     {
       "date": "—",
       "venue": "CIRCUITO INTEGRADO",
       "city": "Valparaíso, CL",
-      "anecdote": "They asked for one more hour. We gave them three.",
+      "anecdote": {
+        "es": "Pidieron una hora más. Les dimos tres.",
+        "en": "They asked for one more hour. We gave them three."
+      },
       "image": "img/dj3.jpeg"
     }
-  ]
+  ],
+  "press": [
+    {
+      "quote": {
+        "es": "Propulsión constante, oscura, inmersiva. No toca: empuja.",
+        "en": "Constant, dark, immersive propulsion. He doesn't play: he pushes."
+      },
+      "source": "Underground CL"
+    },
+    {
+      "quote": {
+        "es": "Presión del Bochka llevada al límite. Hipnosis prolongada como territorio físico.",
+        "en": "Bochka pressure pushed to the limit. Prolonged hypnosis as physical territory."
+      },
+      "source": "Hollenraum"
+    },
+    {
+      "quote": {
+        "es": "Parte de la nueva generación redibujando el techno chileno.",
+        "en": "Part of the new generation redrawing Chilean techno."
+      },
+      "source": "Radikals Sessions"
+    },
+    {
+      "quote": {
+        "es": "No necesita una intro larga; los sonidos atrapan tu mente de inmediato.",
+        "en": "It doesn't need a lengthy intro; the sounds trap your mind right away"
+      },
+      "source": "Edson"
+    }
+  ],
+  "featured": [
+    { "name": "Radikals Techno",     "link": "https://instagram.com/radikalstechno" },
+    { "name": "Höllenraum",          "link": "" },
+    { "name": "Vërrückt",            "link": "" },
+    { "name": "Requiem",             "link": "" },
+    { "name": "Club 808",            "link": "" },
+    { "name": "Metalurgia Tekno",    "link": "" },
+    { "name": "Pater Noster",        "link": "" },
+    { "name": "Inmortal Techno",     "link": "" },
+    { "name": "Teknokratas",         "link": "https://www.instagram.com/teknokratascl" },
+    { "name": "Galpón Technokikazo", "link": "" },
+    { "name": "Verminous",           "link": "" },
+    { "name": "Club Roxbury",        "link": "" }
+  ],
+  "presskit": [
+    {
+      "kind":  { "es": "Recursos de marca",     "en": "Brand Assets" },
+      "title": { "es": "Logo Pack",             "en": "Logo Pack" },
+      "description": {
+        "es": "Todas las variantes del logo — blanco, negro, accent — en SVG (vectorial) y PNG (5 tamaños c/u). Para flyers, prensa, redes sociales.",
+        "en": "All logo variants — white, black, accent — in SVG (vector) and PNG (5 sizes each). For flyers, press, social media."
+      },
+      "cta":   { "es": "Ver y descargar",       "en": "View & download" },
+      "url": "/img/logos-preview.html"
+    },
+    {
+      "kind":  { "es": "Documento de texto",    "en": "Text Document" },
+      "title": { "es": "Biografía del artista", "en": "Artist Biography" },
+      "description": {
+        "es": "Bio completa para prensa en texto plano. Lista para listados de eventos, programas de festival y editorial.",
+        "en": "Full press bio in plain text. Ready for event listings, festival programs and editorial."
+      },
+      "cta":   { "es": "Descargar .TXT",        "en": "Download .TXT" },
+      "url": "#"
+    },
+    {
+      "kind":  { "es": "Imagen",                "en": "Image Asset" },
+      "title": { "es": "Foto de prensa",        "en": "Press Photo" },
+      "description": {
+        "es": "Fotografía de prensa en alta resolución B&N. Mínimo 300 DPI para reproducción impresa.",
+        "en": "High-resolution press photograph in B&W. Minimum 300 DPI for print reproduction."
+      },
+      "cta":   { "es": "Descargar fotos",       "en": "Download Photos" },
+      "url": "#"
+    },
+    {
+      "kind":  { "es": "Video",                 "en": "Video Asset" },
+      "title": { "es": "Video promo",           "en": "Promo Video" },
+      "description": {
+        "es": "Material de DJ set y reel del artista. Disponible vía canal de YouTube o solicitud directa.",
+        "en": "DJ set footage and artist reel. Available via YouTube channel or direct request."
+      },
+      "cta":   { "es": "Descargar video",       "en": "Download Video" },
+      "url": "#"
+    },
+    {
+      "kind":  { "es": "Documento técnico",     "en": "Technical Document" },
+      "title": { "es": "Tech Rider",            "en": "Tech Rider" },
+      "description": {
+        "es": "BPM 150–170 · 3× CDJ-3000 · Mixer DJM-A9 · Monitor de booth · Cadena FX custom · Solo USB.",
+        "en": "BPM 150–170 · 3× CDJ-3000 · DJM-A9 mixer · Booth monitor · Custom FX chain · USB only."
+      },
+      "cta":   { "es": "Descargar .PDF",        "en": "Download .PDF" },
+      "url": "#"
+    }
+  ],
+  "booking": {
+    "intro": {
+      "es": "Mandá el brief. Respondo en 48h.",
+      "en": "Send the brief. Replies within 48h."
+    },
+    "email": "maniatikodj.bussines@gmail.com",
+    "emailLabel": {
+      "es": "† Booking directo",
+      "en": "† Direct booking"
+    },
+    "emailSubject": {
+      "es": "[BOOKING] Evento · Fecha · Ciudad",
+      "en": "[BOOKING] Event · Date · City"
+    },
+    "brief": [
+      { "item": { "es": "Nombre del evento / venue",   "en": "Event name / venue" } },
+      { "item": { "es": "Fecha y ciudad",              "en": "Date & city" } },
+      { "item": { "es": "Aforo esperado",              "en": "Expected capacity" } },
+      { "item": { "es": "Duración del set y slot",     "en": "Set length & slot" } },
+      { "item": { "es": "Fee / oferta (USD)",          "en": "Fee / offer (USD)" } },
+      { "item": { "es": "Lineup y contexto",           "en": "Lineup & context" } }
+    ],
+    "alt": {
+      "label": { "es": "O DM", "en": "Or DM" },
+      "handle": "@maniatiko.dj",
+      "url": "https://www.instagram.com/maniatiko.dj"
+    }
+  },
+  "footer": {
+    "epitaph": {
+      "es": "† El ritual no termina. Solo cambia de forma †",
+      "en": "† The ritual doesn't end. It only changes form †"
+    },
+    "credit": {
+      "label": "@_dema1348",
+      "href": "https://www.instagram.com/_dema1348/",
+      "prefix": {
+        "es": "Hecho con amor por",
+        "en": "Made with love by"
+      }
+    }
+  },
+  "sections": [
+    { "id": "marquee",  "type": "marquee",      "source": "marquee" },
+    {
+      "id": "bio", "type": "chapters",
+      "title":    { "es": "Origen",   "en": "Origin" },
+      "subtitle": { "es": "Arquitectura de la tensión mental", "en": "Architecture of mental tension" },
+      "source": "bio"
+    },
+    {
+      "id": "gigs", "type": "gigs",
+      "title":    { "es": "En vivo",  "en": "Live" },
+      "subtitle": { "es": "Donde el ritual continúa", "en": "Where the ritual continues" },
+      "source": "gigs"
+    },
+    {
+      "id": "mixes", "type": "mixes",
+      "title":    { "es": "Producciones", "en": "Productions" },
+      "subtitle": { "es": "Originales · SoundCloud", "en": "Originals · SoundCloud" },
+      "source": "mixes"
+    },
+    {
+      "id": "memories", "type": "memories",
+      "title":    { "es": "Después del ritual", "en": "Aftermath" },
+      "subtitle": { "es": "Lo que quedó",       "en": "What remained" },
+      "source": "memories"
+    },
+    {
+      "id": "press", "type": "press",
+      "title":    { "es": "Reverberación", "en": "Reverb" },
+      "subtitle": { "es": "Lo que persiste", "en": "What lingers" },
+      "source": "press"
+    },
+    {
+      "id": "featured", "type": "featured",
+      "title":    { "es": "Anfitrionado por", "en": "Hosted by" },
+      "subtitle": { "es": "Crews, venues y colectivos que han invocado el ritual", "en": "Crews, venues & collectives that have summoned the ritual" },
+      "source": "featured"
+    },
+    {
+      "id": "presskit", "type": "presskit",
+      "title":    { "es": "Press Kit", "en": "Press Kit" },
+      "subtitle": { "es": "Recursos y dossier para prensa, promotores y editorial", "en": "Assets & dossier for press, promoters and editorial" },
+      "source": "presskit"
+    },
+    {
+      "id": "booking", "type": "booking-card",
+      "title":    { "es": "Booking", "en": "Booking" },
+      "subtitle": { "es": "Para organizadores de eventos, promotores y residencias", "en": "For event organisers, promoters & residencies" },
+      "source": "booking"
+    }
+  ],
+  "socials": [
+    { "label": "Bandcamp",   "url": "https://maniatiko1.bandcamp.com" },
+    { "label": "Spotify",    "url": "https://open.spotify.com/intl-es/artist/50KNp3KIPhqS0AVe8BKUbG" },
+    { "label": "SoundCloud", "url": "https://soundcloud.com/maniatikx" },
+    { "label": "Instagram",  "url": "https://www.instagram.com/maniatiko.dj" },
+    { "label": "YouTube",    "url": "https://www.youtube.com/@maniatikx" },
+    { "label": "TikTok",     "url": "https://www.tiktok.com/@maniatiko.dj" },
+    { "label": "Facebook",   "url": "https://www.facebook.com/profile.php?id=61590419833191" }
+  ],
+  "i18n": {
+    "labels": {
+      "epkStats": {
+        "rituals":     { "es": "Rituales tocados", "en": "Rituals played" },
+        "productions": { "es": "Producciones",     "en": "Productions" },
+        "platforms":   { "es": "Plataformas",      "en": "Platforms" },
+        "bpmPeak":     { "es": "BPM pico",         "en": "BPM peak" }
+      },
+      "onSale":         { "es": "EN VENTA",                  "en": "ON SALE" },
+      "archive":        { "es": "† Archivo",                 "en": "† Archive" },
+      "archiveCols": {
+        "date":  { "es": "Fecha",  "en": "Date" },
+        "venue": { "es": "Venue",  "en": "Venue" },
+        "city":  { "es": "Ciudad", "en": "City" }
+      },
+      "briefHeading":   { "es": "† Incluí en tu brief",      "en": "† Include in your brief" },
+      "nextRitual":     { "es": "Próximo ritual",            "en": "Next ritual" },
+      "switcher": {
+        "es": { "label": "ES", "title": "Español" },
+        "en": { "label": "EN", "title": "English" }
+      }
+    }
+  }
 }

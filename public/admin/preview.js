@@ -68,19 +68,55 @@
       return new Date(yyyy, mm - 1, dd, 23, 59, 59) < new Date();
     };
 
-    // Normaliza items de list widgets que llegan como object con un solo field
-    // de texto (ej. [{item:"foo"}, {lane:"bar"}]) → devuelve el string interno.
-    // Pasa strings directos como están.
-    //
-    // Sin parámetros adicionales para que `arr.map(asText)` no rompa: map pasa
-    // (value, index, array) — un segundo param `keys` recibiría el índice
-    // numérico y rompería el `for...of`.
+    // ===== i18n del preview =====
+    // El preview tiene su propio toggle ES/EN (top-right) que el editor usa
+    // para ver cómo queda cada idioma. Persiste en localStorage entre cargas.
+    let PREVIEW_LANG = (() => {
+      try { return localStorage.getItem("preview_lang") || "es"; }
+      catch (_) { return "es"; }
+    })();
+    const setPreviewLang = (lang) => {
+      PREVIEW_LANG = lang;
+      try { localStorage.setItem("preview_lang", lang); } catch (_) {}
+      // Force re-render disparando un click en algo o resetear React por cambio de state
+      // Decap re-renderiza el preview en cada keystroke del form; cambiamos el state
+      // y disparamos un re-render forzado con un dummy update.
+      window.dispatchEvent(new Event("decap-preview-lang-change"));
+    };
+
+    // Traduce un valor que puede ser string (legacy/no traducible) o {es, en}.
+    // Soporta también shape de Decap CMS list widgets ({item} / {lane} / etc).
     const ASTEXT_KEYS = ["item", "text", "value", "lane", "name"];
+    const t = (v) => {
+      if (v == null) return "";
+      if (typeof v === "string") return v;
+      if (typeof v === "object") {
+        if (typeof v[PREVIEW_LANG] === "string") return v[PREVIEW_LANG];
+        if (typeof v.es === "string") return v.es;
+        if (typeof v.en === "string") return v.en;
+      }
+      return "";
+    };
+    // Mantengo asText como alias para retro-compat — usa el mismo t() ahora.
     const asText = (it) => {
       if (it == null) return "";
       if (typeof it === "string") return it;
       if (typeof it === "object") {
+        // Primero intento i18n
+        if (typeof it[PREVIEW_LANG] === "string") return it[PREVIEW_LANG];
+        if (typeof it.es === "string") return it.es;
+        if (typeof it.en === "string") return it.en;
+        // Si no, list widget shape
         for (const k of ASTEXT_KEYS) if (typeof it[k] === "string") return it[k];
+        // Recursivo: si el value de .item/.text/etc es a su vez i18n {es, en}
+        for (const k of ASTEXT_KEYS) {
+          const inner = it[k];
+          if (inner && typeof inner === "object") {
+            if (typeof inner[PREVIEW_LANG] === "string") return inner[PREVIEW_LANG];
+            if (typeof inner.es === "string") return inner.es;
+            if (typeof inner.en === "string") return inner.en;
+          }
+        }
       }
       return "";
     };
@@ -96,10 +132,10 @@
       return h("section", { className: "hero" },
         h("div", { className: "hero-core" },
           h("h1", { className: "hero-title" }, chars),
-          hero.role && h("span", { className: "hero-role" }, hero.role),
+          h("span", { className: "hero-role" }, t(hero.role)),
           h("button", { className: "hero-engage", disabled: true },
             h("span", { className: "hero-engage-rule hero-engage-rule--top" }),
-            h("span", { className: "hero-engage-label" }, hero.engage?.labelOff || "Engage ritual"),
+            h("span", { className: "hero-engage-label" }, t(hero.engage?.labelOff) || "Engage ritual"),
             h("span", { className: "hero-engage-rule hero-engage-rule--bottom" })
           )
         )
@@ -109,8 +145,8 @@
     function SectionHeader({ idx, title, subtitle }) {
       return [
         h("span", { key: "lbl", className: "section-label" }, roman(idx)),
-        h("h2",   { key: "ttl", className: "section-title" }, title || ""),
-        subtitle && h("p", { key: "sub", className: "section-subtitle" }, subtitle),
+        h("h2",   { key: "ttl", className: "section-title" }, t(title)),
+        subtitle && h("p", { key: "sub", className: "section-subtitle" }, t(subtitle)),
       ];
     }
 
@@ -148,11 +184,11 @@
           )
         ),
         dossier?.rows?.length && h("div", { className: "dossier" },
-          dossier.title && h("h3", { className: "dossier-title" }, dossier.title),
+          dossier.title && h("h3", { className: "dossier-title" }, t(dossier.title)),
           h("dl", { className: "dossier-list" },
             dossier.rows.map((r, i) =>
               h("div", { key: i, className: "dossier-row" },
-                h("dt", { className: "dossier-key" }, r.key || ""),
+                h("dt", { className: "dossier-key" }, t(r.key)),
                 h("dd", { className: "dossier-value" }, r.value || "")
               )
             )
@@ -166,19 +202,20 @@
       const upcoming = gigs.filter((g) => !isPast(g.date));
       const past = gigs.filter((g) => isPast(g.date));
 
+      const L = I18N_LABELS.epkStats || {};
       const stats = h("div", { className: "epk-stats" }, [
         h("div", { key: "s1", className: "epk-stat" },
           h("span", { className: "epk-stat-num" }, String(gigs.length).padStart(2, "0")),
-          h("span", { className: "epk-stat-label" }, "Rituals played")),
+          h("span", { className: "epk-stat-label" }, t(L.rituals) || "Rituals played")),
         h("div", { key: "s2", className: "epk-stat" },
           h("span", { className: "epk-stat-num" }, String((mixes || []).length).padStart(2, "0")),
-          h("span", { className: "epk-stat-label" }, "Productions")),
+          h("span", { className: "epk-stat-label" }, t(L.productions) || "Productions")),
         h("div", { key: "s3", className: "epk-stat" },
           h("span", { className: "epk-stat-num" }, String((socials || []).length).padStart(2, "0")),
-          h("span", { className: "epk-stat-label" }, "Platforms")),
+          h("span", { className: "epk-stat-label" }, t(L.platforms) || "Platforms")),
         h("div", { key: "s4", className: "epk-stat" },
           h("span", { className: "epk-stat-num" }, "170"),
-          h("span", { className: "epk-stat-label" }, "BPM peak")),
+          h("span", { className: "epk-stat-label" }, t(L.bpmPeak) || "BPM peak")),
       ]);
 
       const ritualsEl = upcoming.length && h("div", { className: "rituals" },
@@ -197,17 +234,20 @@
               g.lineup && h("p", { className: "ritual-lineup" }, g.lineup.join(" · "))
             ),
             h("div", { className: "ritual-action" },
-              h("span", { className: "ritual-status" }, "ON SALE")
+              h("span", { className: "ritual-status" }, t(I18N_LABELS.onSale) || "ON SALE")
             )
           );
         })
       );
 
+      const archCols = I18N_LABELS.archiveCols || {};
       const archiveEl = past.length && h("div", { className: "archive" },
-        h("h3", { className: "archive-title" }, "† Archive"),
+        h("h3", { className: "archive-title" }, t(I18N_LABELS.archive) || "† Archive"),
         h("table", { className: "archive-table" },
           h("thead", null, h("tr", null,
-            h("th", null, "Date"), h("th", null, "Venue"), h("th", null, "City"))),
+            h("th", null, t(archCols.date) || "Date"),
+            h("th", null, t(archCols.venue) || "Venue"),
+            h("th", null, t(archCols.city) || "City"))),
           h("tbody", null, past.map((g, i) => {
             const d = parseGigDate(g.date);
             return h("tr", { key: i },
@@ -239,7 +279,7 @@
               ),
               h("div", { className: "setlist-meta" },
                 h("h3", { className: "setlist-title" }, m.title || ""),
-                m.description && h("p", { className: "setlist-desc" }, m.description)
+                m.description && h("p", { className: "setlist-desc" }, t(m.description))
               )
             )
           )
@@ -264,7 +304,7 @@
               h("div", { className: "memory-body" },
                 h("h3", { className: "memory-venue" }, m.venue || ""),
                 m.city && h("p", { className: "memory-city" }, m.city),
-                m.anecdote && h("p", { className: "memory-anecdote" }, `"${m.anecdote}"`)
+                m.anecdote && h("p", { className: "memory-anecdote" }, `"${t(m.anecdote)}"`)
               )
             )
           )
@@ -279,7 +319,7 @@
         h("div", { className: "reverb" },
           items.map((p, i) =>
             h("blockquote", { key: i, className: "reverb-card" },
-              h("p", { className: "reverb-quote" }, `"${p.quote || ""}"`),
+              h("p", { className: "reverb-quote" }, `"${t(p.quote)}"`),
               h("div", { className: "reverb-source" }, `— ${p.source || ""}`)
             )
           )
@@ -306,10 +346,10 @@
         h("div", { className: "presskit" },
           items.map((it, i) =>
             h("article", { key: i, className: "presskit-card" },
-              h("span", { className: "presskit-kind" }, it.kind || ""),
-              h("h3", { className: "presskit-title" }, it.title || ""),
-              it.description && h("p", { className: "presskit-desc" }, it.description),
-              h("span", { className: "presskit-cta" }, `${it.cta || "Download"} →`)
+              h("span", { className: "presskit-kind" }, t(it.kind)),
+              h("h3", { className: "presskit-title" }, t(it.title)),
+              it.description && h("p", { className: "presskit-desc" }, t(it.description)),
+              h("span", { className: "presskit-cta" }, `${t(it.cta) || "Download"} →`)
             )
           )
         )
@@ -326,14 +366,14 @@
       return h("section", { id: section.id, className: "section" },
         SectionHeader({ idx, title: section.title, subtitle: section.subtitle }),
         h("div", { className: "booking-card" },
-          c.intro && h("p", { className: "booking-card-intro" }, c.intro),
+          c.intro && h("p", { className: "booking-card-intro" }, t(c.intro)),
           h("div", { className: "booking-card-cta" },
-            h("span", { className: "booking-card-cta-label" }, c.emailLabel || "† Direct booking"),
+            h("span", { className: "booking-card-cta-label" }, t(c.emailLabel) || "† Direct booking"),
             h("span", { className: "booking-card-cta-email" }, c.email),
             h("span", { className: "booking-card-cta-arrow" }, "→")
           ),
           briefTexts.length > 0 && h("div", { className: "booking-card-brief" },
-            h("span", { className: "booking-card-brief-label" }, "† Include in your brief"),
+            h("span", { className: "booking-card-brief-label" }, t(I18N_LABELS.briefHeading) || "† Include in your brief"),
             h("ol", { className: "booking-card-brief-list" },
               briefTexts.map((b, i) =>
                 h("li", { key: i },
@@ -351,7 +391,7 @@
       return h("footer", { className: "footer" },
         h("div", { className: "footer-inner" },
           h("div", { className: "footer-brand" }, site.name || ""),
-          footer.epitaph && h("p", { className: "footer-epitaph" }, footer.epitaph),
+          footer.epitaph && h("p", { className: "footer-epitaph" }, t(footer.epitaph)),
           socials.length && h("div", { className: "footer-links" },
             socials.map((s, i) => h("a", { key: i, href: "#" }, s.label || ""))
           ),
@@ -359,6 +399,33 @@
             h("p", null, `© ${new Date().getFullYear()} ${site.name || ""}.`)
           )
         )
+      );
+    }
+
+    // Global con los labels i18n del data — seteado por SitePreview antes de los renders.
+    let I18N_LABELS = {};
+
+    // Banner del preview con toggle ES/EN. Click → cambia localStorage + reload del iframe.
+    function PreviewBanner() {
+      const onSwitch = (lang) => (e) => {
+        e.preventDefault();
+        setPreviewLang(lang);
+        // Recargar SOLO el iframe del preview — el form del CMS no se ve afectado.
+        setTimeout(() => location.reload(), 30);
+      };
+      return h("div", { className: "preview-banner" },
+        h("span", null, "● Preview · cambios live (sin animaciones) · "),
+        h("a", {
+          href: "#",
+          onClick: onSwitch("es"),
+          style: { color: PREVIEW_LANG === "es" ? "var(--accent)" : "inherit", marginRight: "0.5em" }
+        }, "ES"),
+        h("span", null, " · "),
+        h("a", {
+          href: "#",
+          onClick: onSwitch("en"),
+          style: { color: PREVIEW_LANG === "en" ? "var(--accent)" : "inherit", marginLeft: "0.5em" }
+        }, "EN")
       );
     }
 
@@ -370,6 +437,9 @@
       const sections = data.sections || [];
       const footer = data.footer || {};
       const socials = data.socials || [];
+
+      // Set global labels para que los blocks puedan leer sin pasarlos por props
+      I18N_LABELS = data?.i18n?.labels || {};
 
       // Resolución homologa de source (espejo de main.js renderSections):
       //   - data[source] array → se inyecta como sec.items (acceso uniforme en los renderers)
@@ -400,8 +470,8 @@
         }
       });
 
-      return h("div", { className: "preview-root" },
-        h("div", { className: "preview-banner" }, "● Preview · cambios live (sin animaciones)"),
+      return h("div", { className: "preview-root", "data-preview-lang": PREVIEW_LANG },
+        h(PreviewBanner),
         HeroBlock({ hero }),
         h("main", null, sectionBlocks),
         Footer({ site, footer, socials })

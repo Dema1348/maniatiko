@@ -4,7 +4,7 @@
 // Inicializa GSAP ScrollTrigger reveals y lightbox.
 // ============================================================
 
-const DATA_URL = "data.json";
+const DATA_URL = "/data.json";
 
 // --------------------------------------------------------------
 // Boot
@@ -624,14 +624,22 @@ async function loadData() {
 // --------------------------------------------------------------
 function applySite(site) {
   if (!site) return;
+  const tagline = t(site.tagline);
   if (site.name) {
-    document.title = site.tagline
-      ? `${site.name} — ${site.tagline}`
+    document.title = tagline
+      ? `${site.name} — ${tagline}`
       : site.name;
   }
   if (site.themeColor) {
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute("content", site.themeColor);
+  }
+  // Actualizar meta description al cambiar idioma (los HTML estáticos ya
+  // traen su versión inicial; este overwrite es por si data.json cambia).
+  const description = t(site.description);
+  if (description) {
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute("content", description);
   }
 }
 
@@ -674,9 +682,38 @@ function renderNav(data) {
       .map((s) => ({ label: s.title, href: `#${s.id}` }));
   }
 
-  root.innerHTML = items
-    .map((it) => `<a href="${it.href}">${escapeHtml(it.label)}</a>`)
+  const linksHtml = items
+    .map((it) => `<a href="${it.href}">${escapeHtml(t(it.label))}</a>`)
     .join("");
+
+  // Switcher de idioma — preserva el hash para que el ancla sobreviva al cambio
+  const switcher = renderLangSwitcher(data);
+
+  root.innerHTML = linksHtml + switcher;
+}
+
+// Switcher ES / EN — links full-reload preservando el hash actual.
+// Idioma activo en accent, inactivo en text-dim.
+function renderLangSwitcher(data) {
+  const sw = data?.i18n?.labels?.switcher || {
+    es: { label: "ES", title: "Español" },
+    en: { label: "EN", title: "English" },
+  };
+  const hash = location.hash || "";
+  // Path equivalente en el otro idioma (sin slash final para clean URLs)
+  const currentPath = location.pathname.replace(/\/$/, "") || "/";
+  const isEn = LANG === "en";
+  // Stripping /en al pasar a ES
+  const esPath = isEn ? currentPath.replace(/^\/en(\/|$)/, "/") : currentPath;
+  // Prefijo /en al pasar a EN
+  const enPath = isEn ? currentPath : "/en" + (currentPath === "/" ? "/" : currentPath);
+
+  return `
+    <div class="lang-switcher" role="group" aria-label="Language">
+      <a href="${esPath}${hash}" class="lang-switcher-link ${isEn ? "" : "is-active"}" title="${escapeAttr(sw.es?.title || "Español")}" hreflang="es">${escapeHtml(sw.es?.label || "ES")}</a>
+      <span class="lang-switcher-sep">·</span>
+      <a href="${enPath}${hash}" class="lang-switcher-link ${isEn ? "is-active" : ""}" title="${escapeAttr(sw.en?.title || "English")}" hreflang="en">${escapeHtml(sw.en?.label || "EN")}</a>
+    </div>`;
 }
 
 // --------------------------------------------------------------
@@ -708,9 +745,10 @@ function renderHero(hero, mixes) {
     $title.innerHTML = chars;
     if ($logo) $logo.textContent = hero.title;
   }
-  if ($role && hero.role) {
+  const role = t(hero.role);
+  if ($role && role) {
     // Char-split también en el role — habilita el cascade scale punch al kick
-    const chars = hero.role
+    const chars = role
       .split("")
       .map((c) =>
         c === " "
@@ -722,10 +760,12 @@ function renderHero(hero, mixes) {
   }
   if ($bpm && hero.bpm) $bpm.textContent = `${hero.bpm} BPM`;
   if (hero.engage) {
-    if ($engageLabel) $engageLabel.textContent = hero.engage.labelOff || "Engage";
+    const labelOff = t(hero.engage.labelOff) || "Engage";
+    const labelOn  = t(hero.engage.labelOn)  || "Disengage";
+    if ($engageLabel) $engageLabel.textContent = labelOff;
     if ($engage) {
-      $engage.dataset.labelOff = hero.engage.labelOff || "Engage";
-      $engage.dataset.labelOn  = hero.engage.labelOn  || "Disengage";
+      $engage.dataset.labelOff = labelOff;
+      $engage.dataset.labelOn  = labelOn;
     }
   }
 
@@ -1062,11 +1102,13 @@ function renderSections(sections, data) {
       }
       chapterIdx += 1;
       const body = renderSectionBody(sec.type, items, mergedSec, data);
+      const title = t(sec.title);
+      const subtitle = t(sec.subtitle);
       return `
         <section id="${sec.id}" class="section" data-section="${sec.type}">
           <span class="section-label" data-reveal>${roman(chapterIdx)}</span>
-          <h2 class="section-title" data-reveal>${escapeHtml(sec.title || "")}</h2>
-          ${sec.subtitle ? `<p class="section-subtitle" data-reveal>${escapeHtml(sec.subtitle)}</p>` : ""}
+          <h2 class="section-title" data-reveal>${escapeHtml(title)}</h2>
+          ${subtitle ? `<p class="section-subtitle" data-reveal>${escapeHtml(subtitle)}</p>` : ""}
           ${body}
         </section>
       `;
@@ -1098,7 +1140,7 @@ function renderSectionBody(type, items, sec, data) {
     case "booking":
       return renderBooking(sec);
     case "booking-card":
-      return renderBookingCard(sec);
+      return renderBookingCard(sec, data);
     default:
       return `<pre data-reveal>${escapeHtml(JSON.stringify(items, null, 2))}</pre>`;
   }
@@ -1164,7 +1206,7 @@ function renderMemories(items) {
           <div class="memory-body">
             <h3 class="memory-venue">${escapeHtml(m.venue || "")}</h3>
             ${m.city ? `<p class="memory-city">${escapeHtml(m.city)}</p>` : ""}
-            ${m.anecdote ? `<p class="memory-anecdote">"${escapeHtml(m.anecdote)}"</p>` : ""}
+            ${m.anecdote ? `<p class="memory-anecdote">"${escapeHtml(t(m.anecdote))}"</p>` : ""}
           </div>
         </article>`,
         )
@@ -1309,16 +1351,17 @@ function renderChapters(items, dossier) {
           .join("")}
       </div>`
     : "";
+  const dossierTitle = dossier ? t(dossier.title) : "";
   const dossierHtml =
     dossier && dossier.rows
       ? `<div class="dossier" data-reveal>
-         ${dossier.title ? `<h3 class="dossier-title">${escapeHtml(dossier.title)}</h3>` : ""}
+         ${dossierTitle ? `<h3 class="dossier-title">${escapeHtml(dossierTitle)}</h3>` : ""}
          <dl class="dossier-list">
            ${dossier.rows
              .map(
                (r) => `
              <div class="dossier-row">
-               <dt class="dossier-key">${escapeHtml(r.key || "")}</dt>
+               <dt class="dossier-key">${escapeHtml(t(r.key))}</dt>
                <dd class="dossier-value">${escapeHtml(r.value || "")}</dd>
              </div>`,
              )
@@ -1333,11 +1376,12 @@ function renderEpkStats(data) {
   const gigs = (data.gigs || []).length;
   const tracks = (data.mixes || []).length;
   const platforms = (data.socials || []).length;
+  const L = data?.i18n?.labels?.epkStats || {};
   const stats = [
-    { num: String(gigs).padStart(2, "0"), label: "Rituals played" },
-    { num: String(tracks).padStart(2, "0"), label: "Productions" },
-    { num: String(platforms).padStart(2, "0"), label: "Platforms" },
-    { num: "170", label: "BPM peak" },
+    { num: String(gigs).padStart(2, "0"),     label: t(L.rituals)     || "Rituals played" },
+    { num: String(tracks).padStart(2, "0"),   label: t(L.productions) || "Productions" },
+    { num: String(platforms).padStart(2, "0"), label: t(L.platforms)   || "Platforms" },
+    { num: "170",                              label: t(L.bpmPeak)     || "BPM peak" },
   ];
   return `
     <div class="epk-stats" data-reveal>
@@ -1368,9 +1412,10 @@ function renderGigs(items, data) {
   const nextGig = upcoming
     .slice()
     .sort((a, b) => gigDateValue(a.date) - gigDateValue(b.date))[0];
+  const nextRitualLabel = t(data?.i18n?.labels?.nextRitual) || "Next ritual";
   const countdownHtml = nextGig
     ? `<div class="next-ritual" data-reveal data-target="${nextGig.date}">
-         <span class="next-ritual-label">† Next ritual in</span>
+         <span class="next-ritual-label">† ${escapeHtml(nextRitualLabel)}</span>
          <span class="next-ritual-timer" id="nextRitualTimer">—</span>
          <span class="next-ritual-target">${escapeHtml(nextGig.venue || "")}</span>
        </div>`
@@ -1395,7 +1440,7 @@ function renderGigs(items, data) {
               ${g.lineup ? `<p class="ritual-lineup">${escapeHtml(g.lineup.join(" · "))}</p>` : ""}
             </div>
             <div class="ritual-action">
-              <span class="ritual-status">ON SALE</span>
+              <span class="ritual-status">${escapeHtml(t(data?.i18n?.labels?.onSale) || "ON SALE")}</span>
               ${g.tickets ? `<a class="ritual-tickets" href="${g.tickets}" target="_blank" rel="noopener">Tickets ↗</a>` : ""}
             </div>
           </article>`;
@@ -1404,12 +1449,13 @@ function renderGigs(items, data) {
       </div>`
     : "";
 
+  const archCols = data?.i18n?.labels?.archiveCols || {};
   const archiveHtml = past.length
     ? `<div class="archive" data-reveal>
-        <h3 class="archive-title">† Archive</h3>
+        <h3 class="archive-title">${escapeHtml(t(data?.i18n?.labels?.archive) || "† Archive")}</h3>
         <table class="archive-table">
           <thead>
-            <tr><th>Date</th><th>Venue</th><th>City</th></tr>
+            <tr><th>${escapeHtml(t(archCols.date) || "Date")}</th><th>${escapeHtml(t(archCols.venue) || "Venue")}</th><th>${escapeHtml(t(archCols.city) || "City")}</th></tr>
           </thead>
           <tbody>
             ${past
@@ -1488,7 +1534,7 @@ function renderMixes(items) {
           </div>
           <div class="setlist-meta">
             <h3 class="setlist-title">${escapeHtml(m.title || "")}</h3>
-            ${m.description ? `<p class="setlist-desc">${escapeHtml(m.description)}</p>` : ""}
+            ${m.description ? `<p class="setlist-desc">${escapeHtml(t(m.description))}</p>` : ""}
             <canvas class="setlist-wave" data-wave-index="${i}" aria-hidden="true"></canvas>
           </div>
           ${m.url ? `<a class="setlist-action" href="${m.url}" target="_blank" rel="noopener">↗ SoundCloud</a>` : ""}
@@ -1507,10 +1553,10 @@ function renderPresskit(items) {
         .map(
           (it) => `
         <article class="presskit-card">
-          <span class="presskit-kind">${escapeHtml(it.kind || "")}</span>
-          <h3 class="presskit-title">${escapeHtml(it.title || "")}</h3>
-          ${it.description ? `<p class="presskit-desc">${escapeHtml(it.description)}</p>` : ""}
-          <a class="presskit-cta" href="${it.url || "#"}" ${it.url && it.url.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${escapeHtml(it.cta || "Download")} →</a>
+          <span class="presskit-kind">${escapeHtml(t(it.kind))}</span>
+          <h3 class="presskit-title">${escapeHtml(t(it.title))}</h3>
+          ${it.description ? `<p class="presskit-desc">${escapeHtml(t(it.description))}</p>` : ""}
+          <a class="presskit-cta" href="${it.url || "#"}" ${it.url && it.url.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${escapeHtml(t(it.cta) || "Download")} →</a>
         </article>`,
         )
         .join("")}
@@ -1526,7 +1572,7 @@ function renderPress(items) {
         .map(
           (p) => `
         <blockquote class="reverb-card">
-          <p class="reverb-quote">"${escapeHtml(p.quote || "")}"</p>
+          <p class="reverb-quote">"${escapeHtml(t(p.quote))}"</p>
           <div class="reverb-source">— ${escapeHtml(p.source || "")}</div>
         </blockquote>`,
         )
@@ -1551,15 +1597,18 @@ function renderFeatured(items) {
   `;
 }
 
-function renderBookingCard(sec) {
+function renderBookingCard(sec, data) {
   // sec puede traer las keys directas (vía source="booking") o anidadas en sec.card (legacy inline)
   const c = sec.card || sec;
   if (!c.email) return "";
-  const subj = encodeURIComponent(c.emailSubject || "[BOOKING]");
+  const subj = encodeURIComponent(t(c.emailSubject) || "[BOOKING]");
+  const intro = t(c.intro);
+  const emailLabel = t(c.emailLabel) || "† Direct booking";
   const briefItems = Array.isArray(c.brief) ? c.brief.map(asText).filter(Boolean) : [];
+  const briefHeading = t(data?.i18n?.labels?.briefHeading) || "† Include in your brief";
   const briefHtml = briefItems.length
     ? `<div class="booking-card-brief">
-         <span class="booking-card-brief-label">† Include in your brief</span>
+         <span class="booking-card-brief-label">${escapeHtml(briefHeading)}</span>
          <ol class="booking-card-brief-list">
            ${briefItems
              .map(
@@ -1573,16 +1622,16 @@ function renderBookingCard(sec) {
   const altHtml =
     c.alt && c.alt.url && c.alt.handle
       ? `<div class="booking-card-alt">
-           <span class="booking-card-alt-label">${escapeHtml(c.alt.label || "Or DM")}</span>
+           <span class="booking-card-alt-label">${escapeHtml(t(c.alt.label) || "Or DM")}</span>
            <a href="${c.alt.url}" target="_blank" rel="noopener" class="booking-card-alt-link">${escapeHtml(c.alt.handle)} ↗</a>
          </div>`
       : "";
 
   return `
     <div class="booking-card" data-reveal>
-      ${c.intro ? `<p class="booking-card-intro">${escapeHtml(c.intro)}</p>` : ""}
+      ${intro ? `<p class="booking-card-intro">${escapeHtml(intro)}</p>` : ""}
       <a class="booking-card-cta" href="mailto:${c.email}?subject=${subj}">
-        <span class="booking-card-cta-label">${escapeHtml(c.emailLabel || "† Direct booking")}</span>
+        <span class="booking-card-cta-label">${escapeHtml(emailLabel)}</span>
         <span class="booking-card-cta-email">${escapeHtml(c.email)}</span>
         <span class="booking-card-cta-arrow">→</span>
       </a>
@@ -1642,8 +1691,9 @@ function renderFooter(data) {
   document.getElementById("footerBrand").textContent = site.name || "";
   document.getElementById("footerName").textContent = site.name || "";
 
-  if (footer.epitaph) {
-    document.getElementById("footerEpitaph").textContent = footer.epitaph;
+  const epitaph = t(footer.epitaph);
+  if (epitaph) {
+    document.getElementById("footerEpitaph").textContent = epitaph;
   }
 
   const $booking = document.getElementById("footerBooking");
@@ -1667,7 +1717,7 @@ function renderFooter(data) {
 
   if (footer.credit && footer.credit.label) {
     const credit = document.getElementById("footerCredit");
-    const prefix = footer.credit.prefix || "Made by";
+    const prefix = t(footer.credit.prefix) || "Made by";
     const name = footer.credit.href
       ? `<a href="${footer.credit.href}" target="_blank" rel="noopener">${escapeHtml(footer.credit.label)}</a>`
       : escapeHtml(footer.credit.label);
@@ -1753,7 +1803,40 @@ function asText(it) {
   if (it == null) return "";
   if (typeof it === "string") return it;
   if (typeof it === "object") {
+    // Soporte i18n: si es {es, en, ...} extrae según LANG con fallback
+    if (it[LANG] && typeof it[LANG] === "string") return it[LANG];
+    if (typeof it.es === "string") return it.es;
+    if (typeof it.en === "string") return it.en;
     for (const k of ASTEXT_KEYS) if (typeof it[k] === "string") return it[k];
+  }
+  return "";
+}
+
+// ============================================================
+// i18n — el idioma se determina al cargar la página:
+//   1) Si la URL incluye /en/ → 'en'
+//   2) Si <html lang="en"> → 'en'
+//   3) Default → 'es'
+// El switcher en el nav navega a /en/<path> o /<path> (full reload).
+// ============================================================
+const LANG = (() => {
+  const path = location.pathname;
+  if (path === "/en" || path === "/en/" || path.startsWith("/en/")) return "en";
+  const htmlLang = (document.documentElement.lang || "").toLowerCase();
+  if (htmlLang.startsWith("en")) return "en";
+  return "es";
+})();
+
+// Traduce un valor que puede ser string (común) o object con shape {es, en}.
+// Es seguro pasar cualquier cosa — strings pasan sin cambio, objects sin
+// {es, en} también (fallback a asText), null/undefined → "".
+function t(v) {
+  if (v == null) return "";
+  if (typeof v === "string") return v;
+  if (typeof v === "object") {
+    if (typeof v[LANG] === "string") return v[LANG];
+    if (typeof v.es === "string") return v.es;
+    if (typeof v.en === "string") return v.en;
   }
   return "";
 }
