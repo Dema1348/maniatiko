@@ -32,12 +32,12 @@
       "url": "https://soundcloud.com/maniatikx"
     },
     {
-      "label": "YouTube",
-      "url": "https://www.youtube.com/@maniatikx"
-    },
-    {
       "label": "Instagram",
       "url": "https://www.instagram.com/maniatiko.dj"
+    },
+    {
+      "label": "YouTube",
+      "url": "https://www.youtube.com/@maniatikx"
     },
     {
       "label": "TikTok",
@@ -212,6 +212,11 @@
       "date": "11.01.2025",
       "city": "Santiago, CL",
       "venue": "Lobotonik · Radikals Techno"
+    },
+    {
+      "city": "Santiago, CL",
+      "date": "07.30.2026",
+      "venue": "Radikals Techno"
     }
   ],
   "sections": [
@@ -378,7 +383,7 @@
   ],
   "hero": {
     "title": "Maniatiko",
-    "role": "DJ & producer",
+    "role": "Producer & DJ",
     "bpm": 170,
     "engage": {
       "labelOff": "Engage ritual",
