@@ -44,6 +44,16 @@
     const roman = (n) =>
       ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"][n - 1] || String(n);
 
+    // Resuelve paths de imágenes a URL absoluta. El iframe del preview no
+    // resuelve paths relativas contra el origin del CMS — hay que explicitarlo.
+    const ORIGIN = window.location.origin;
+    function resolveAsset(path) {
+      if (!path) return "";
+      if (/^(https?:)?\/\//.test(path) || path.startsWith("data:") || path.startsWith("blob:")) return path;
+      if (path.startsWith("/")) return ORIGIN + path;
+      return ORIGIN + "/" + path;
+    }
+
     const parseGigDate = (str) => {
       const months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
       const parts = (str || "").split(".");
@@ -210,7 +220,7 @@
             h("article", { key: i, className: `memory memory--${i % 2 === 0 ? "left" : "right"}` },
               h("div", { className: "memory-visual" },
                 m.image
-                  ? h("img", { className: "memory-image", src: m.image, alt: m.venue || "" })
+                  ? h("img", { className: "memory-image", src: resolveAsset(m.image), alt: m.venue || "" })
                   : h("div", { className: "memory-image memory-image--empty" }),
                 h("span", { className: "memory-badge" }, m.date || "—"),
                 h("span", { className: "memory-chapter" }, roman(i + 1))
