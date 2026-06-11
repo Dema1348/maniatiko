@@ -1051,7 +1051,7 @@ function renderSections(sections, data) {
     .map((sec) => {
       const items = sec.source ? data[sec.source] || [] : sec.items || [];
       if (sec.type === "marquee") {
-        return renderMarquee(sec);
+        return renderMarquee(sec, data);
       }
       chapterIdx += 1;
       const body = renderSectionBody(sec.type, items, sec, data);
@@ -1096,8 +1096,18 @@ function renderSectionBody(type, items, sec, data) {
   }
 }
 
-function renderMarquee(sec) {
-  const lanes = (sec.lanes || sec.items || []).filter(Boolean);
+function renderMarquee(sec, data) {
+  // Las palabras del marquee pueden venir de:
+  //  1) sec.source → array top-level del JSON (preferido, editable como field propio en el CMS).
+  //     Cada item puede ser string o object {lane: "..."}.
+  //  2) sec.lanes inline (legacy, array de strings).
+  const fromSource =
+    sec.source && data && Array.isArray(data[sec.source])
+      ? data[sec.source].map((it) =>
+          typeof it === "string" ? it : it && (it.lane || it.text || it.value) || ""
+        )
+      : null;
+  const lanes = (fromSource || sec.lanes || sec.items || []).filter(Boolean);
   if (!lanes.length) return "";
   // Mantra: la palabra única se repite muchas veces con separador para que el loop
   // sea seamless. La velocidad de cada lane está controlada por CSS.

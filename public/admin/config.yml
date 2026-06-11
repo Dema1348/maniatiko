@@ -61,6 +61,15 @@ collections:
                   - { label: "Texto cuando está apagado", name: "labelOff", widget: "string", default: "Engage ritual" }
                   - { label: "Texto cuando está activo", name: "labelOn", widget: "string", default: "Disengage" }
 
+          - label: "Marquee — palabras del mantra"
+            name: "marquee"
+            widget: "list"
+            collapsed: false
+            summary: "{{lane}}"
+            hint: "Las palabras que cruzan horizontalmente entre el hero y Origin. Recomendado 2 palabras (la 1ra va a la izquierda en tono apagado, la 2da a la derecha en accent diluido). Podés sumar más, alternarán direcciones."
+            fields:
+              - { label: "Palabra (mantra)", name: "lane", widget: "string" }
+
           - label: "Redes sociales (orden = orden en footer)"
             name: "socials"
             widget: "list"
@@ -127,7 +136,6 @@ collections:
               - { label: "Subtítulo", name: "subtitle", widget: "string", required: false }
               - { label: "Source (nombre de la colección en data.json)", name: "source", widget: "string", required: false }
               - { label: "Items (para chapters: array de párrafos)", name: "items", widget: "list", field: { label: "Párrafo", name: "item", widget: "text" }, required: false }
-              - { label: "Lanes (para marquee)", name: "lanes", widget: "list", field: { label: "Mantra", name: "lane", widget: "string" }, required: false }
               - label: "Dossier (para chapters)"
                 name: "dossier"
                 widget: "object"

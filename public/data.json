@@ -69,6 +69,10 @@
     "ogImage": "img/og-share.jpg",
     "themeColor": "#050505"
   },
+  "marquee": [
+    { "lane": "HYPNOTIC" },
+    { "lane": "BOCHKA" }
+  ],
   "mixes": [
     {
       "platform": "SoundCloud · Original",
@@ -223,10 +227,7 @@
     {
       "id": "marquee",
       "type": "marquee",
-      "lanes": [
-        "HYPNOTIC",
-        "BOCHKA"
-      ]
+      "source": "marquee"
     },
     {
       "id": "bio",
