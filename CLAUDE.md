@@ -174,23 +174,40 @@ Todo el contenido vive en `public/data.json`. Para editar/agregar, **solo se mod
 
 ### Estructura principal
 
+**Convención clave: TODAS las secciones del sitio son homologas — cada entry en `sections[]` apunta a una key top-level vía `source`, no lleva contenido inline.** Esto permite editar el contenido de cada bloque desde un field propio del CMS (no enterrado en "Secciones avanzadas").
+
 - **site** — `{ name, tagline, description, url, locale, ogImage, themeColor }`
 - **analytics** — `{ enabled, firebase: { ... } }` (currently **enabled: true**, conectado al proyecto)
 - **nav[]** — opcional override. Vacío `[]` → auto-derivado desde `sections` (saltando `marquee` y `hideFromNav: true`)
 - **hero** — `{ title, role, bpm, engage: { labelOff, labelOn } }`. Los ghosts se derivan automáticamente de `mixes`
-- **sections[]** — `{ id, type, title, subtitle?, source?, items?, card?, dossier?, lanes?, form?, hideFromNav? }`
-  - `type`: `text` | `chapters` | `marquee` | `gigs` | `mixes` | `tracks` | `gallery` | `memories` | `crews` | `roster` | `press` | `featured` | `presskit` | `booking` | `booking-card`
-  - **marquee.lanes**: array de strings (palabras únicas para mantra; se repiten 20× con separador `·`)
-  - **chapters** soporta `dossier: { title, rows: [{ key, value }] }`
-  - **booking-card.card**: `{ intro, email, emailLabel, emailSubject, brief: [...], alt: { label, handle, url } }`
-- **socials[]** — `{ label, url }`. Orden: música primero (Bandcamp · Spotify · SoundCloud · YouTube), luego redes (IG · TikTok · Facebook)
+- **sections[]** — shells mínimos `{ id, type, title?, subtitle?, source, hideFromNav? }`. Cada uno apunta a un top-level del JSON. **Casi nunca se edita esta lista** — solo si querés reordenar bloques o sumar/sacar uno entero. Los `type` válidos: `text` | `chapters` | `marquee` | `gigs` | `mixes` | `memories` | `press` | `featured` | `presskit` | `booking-card`.
+
+**Top-levels que aporta contenido** (cada uno mapea a un section vía `source`):
+
+- **marquee[]** — array de objects `{ lane }` (las palabras del mantra, alternan dirección)
+- **bio** — `{ chapters: [{item}, {item}, ...], dossier: { title, rows: [{key, value}] } }` (renderiza la sección Origin)
 - **gigs[]** — `{ date (MM.DD.YYYY), city, venue, lineup?, tickets? }`. JS particiona en upcoming/past
 - **mixes[]** — `{ platform, title, description, url }`. SoundCloud Widget API consume `url` directamente
 - **memories[]** — `{ date, venue, city, anecdote, image }`. Foto opcional
 - **featured[]** — `{ name, link? }`. Venues/crews que lo han hosteado
 - **press[]** — `{ quote, source }`
 - **presskit[]** — `{ kind, title, description, cta, url }`
-- **footer** — `{ epitaph, credit: { label, href, prefix } }` (sin booking block)
+- **booking** — `{ intro, email, emailLabel, emailSubject, brief: [{item}, ...], alt: { label, handle, url } }`
+- **socials[]** — `{ label, url }`. Orden: música primero (Bandcamp · Spotify · SoundCloud · YouTube), luego redes (IG · TikTok · Facebook)
+- **footer** — `{ epitaph, credit: { label, href, prefix } }`
+
+**Cómo resuelve el renderer (`renderSections` en main.js):**
+
+```js
+const src = sec.source ? data[sec.source] : null;
+const items = Array.isArray(src) ? src : (sec.items || []);
+const mergedSec = (src && !Array.isArray(src)) ? { ...src, ...sec } : sec;
+```
+
+- Si `data[source]` es **array** → es la lista de items del bloque (gigs, mixes, press, etc.).
+- Si `data[source]` es **object** → se mergea sobre sec, las keys del sec ganan (id/type/title/subtitle/source). Permite shapes ricos como `bio` (chapters + dossier) o `booking` (intro + email + brief + alt).
+
+Si sumás un bloque nuevo: definí los datos en un top-level + agregá un shell con `source` en `sections[]` + sumá un field propio en el config del CMS (no en "Secciones avanzado").
 
 ### Flujo de render (main.js)
 
@@ -251,6 +268,16 @@ El CMS tiene un **preview pane en vivo a la derecha del form** — el editor edi
 4. **URLs absolutas en `registerPreviewStyle`** — el iframe del preview no resuelve rutas relativas contra el origin del CMS. Hay que usar `window.location.origin + "/css/styles.css"`.
 5. **Google Fonts también van con `registerPreviewStyle`** — sino la tipografía cae a fallbacks del sistema y el preview se ve raro.
 6. **Imágenes con paths relativas → `resolveAsset(path)`** — helper que convierte `"img/dj1.jpg"` a URL absoluta. Si la `<img src>` tiene path relativa el iframe no la resuelve.
+7. **REGLA CRÍTICA — siempre `fields:` (plural), nunca `field:` (singular).** Decap CMS tiene un bug donde los list widgets con `field:` singular (un solo subfield) NO se convierten correctamente en `.toJS()` — los inner items quedan como `Immutable.Map` y React crashea con `error #31: Objects are not valid as a React child (found: object with keys {item})` o los renderiza como `Map { "item": "..." }`. Con `fields:` plural Decap los maneja con el lifecycle estándar (igual que socials/press/gigs) y todo funciona. **Aunque solo necesites UN subfield, igual usá `fields:` con un array de uno**:
+   ```yaml
+   # ❌ NO USAR
+   field: { label: "Párrafo", name: "item", widget: "text" }
+   # ✅ USAR (incluso para un solo subfield)
+   fields:
+     - { label: "Párrafo", name: "item", widget: "text" }
+   ```
+8. **Helper `asText` para normalizar list items.** El renderer (`main.js` y `preview.js`) usa `asText(item)` para extraer texto de items que pueden ser strings o objects con keys conocidas (`item`, `text`, `value`, `lane`, `name`). Sin esto los `[{item:"..."}]` se renderizarían como `[object Object]`. **TRAMPA: la función NO debe tener parámetros adicionales** — `arr.map(asText)` pasa `(value, index, array)` y un segundo parámetro recibiría el índice numérico, rompiendo `for (const k of <number>)` con TypeError. Mantener `function asText(it)` con un solo parámetro y `ASTEXT_KEYS` como const top-level.
+9. **Sincronizar renderers main.js ↔ preview.js.** Si cambiás cómo se renderiza una sección en `main.js`, hay que reflejar el cambio en `preview.js`. No es DRY pero es el costo de tener preview live sin server-side rendering.
 
 **Mantenimiento:**
 
@@ -264,6 +291,35 @@ El CMS tiene un **preview pane en vivo a la derecha del form** — el editor edi
 - ❌ **NO** editar el sitio directamente desde Netlify dashboard — Netlify solo provee auth, no edita contenido.
 - ✅ Para verificar deploy: `https://github.com/Dema1348/maniatiko/actions` (los runs verdes son los exitosos).
 - ✅ Para rollback rápido: `git revert <sha>` + push → el workflow corre el revert y deploya el estado anterior.
+
+### Cache de Cloudflare — trampa común en deploys urgentes
+
+**Síntoma:** pusheaste el fix, GitHub Actions corrió verde, Firebase tiene el código nuevo, pero el sitio en `maniatiko.cl` sigue mostrando lo viejo. Pueden pasar horas y nada cambia.
+
+**Causa:** Cloudflare CDN está delante de Firebase Hosting (la nube naranja del A record). Cachea archivos según `Cache-Control`. Por default Firebase Hosting devolvía `max-age=14400` (4 horas) para JS/CSS/JSON, y Cloudflare lo respeta hasta que expira.
+
+**Ya configurado en `firebase.json`** — TTLs bajos para que esto no vuelva a pasar:
+- `**/*.@(js|css|json)` → `max-age=300, must-revalidate` (5 min)
+- `**/*.html` → `max-age=0, must-revalidate` (siempre revalida)
+- `/admin/**` → `max-age=60, must-revalidate` (CMS responde rápido a edits)
+- imágenes → `max-age=31536000, immutable` (1 año, no cambian)
+
+**Cómo verificar si es cache** cuando hay duda — comparar Firebase directo vs Cloudflare:
+```bash
+# Bypass Cloudflare (va directo a Firebase)
+curl -s https://maniatiko-dj.web.app/js/main.js | grep -c <palabra-clave-nueva>
+# Con Cloudflare delante
+curl -s https://maniatiko.cl/js/main.js | grep -c <palabra-clave-nueva>
+```
+Si el primero da hits y el segundo 0 → cache de Cloudflare. Verificar también headers con `curl -sI`: `cf-cache-status: HIT` + `age: <segundos>` confirma.
+
+**Purgar cache manualmente** cuando es urgente (cambio importante que no puede esperar 5 min):
+1. `dash.cloudflare.com` → maniatiko.cl
+2. **Caching → Configuration → Purge Everything** (o **Custom Purge** con URLs específicas)
+3. Confirmar — toma ~30s
+4. Hard refresh del browser (`Cmd+Shift+R`) por las dudas
+
+**`maniatiko-dj.web.app`** sirve el sitio directo desde Firebase sin Cloudflare — útil para debugging y para previewar deploys recientes sin esperar al TTL.
 
 ## Performance & A11y — optimizaciones aplicadas
 
