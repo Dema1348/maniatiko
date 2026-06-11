@@ -70,11 +70,16 @@
 
     // Normaliza items que vienen como string ("foo") o como object con un field
     // de texto (Decap CMS list widget guarda con .item, .lane, etc).
-    const asText = (it, keys = ["item", "text", "value", "lane", "name"]) => {
+    //
+    // Sin parámetros adicionales para que `arr.map(asText)` no rompa: map pasa
+    // (value, index, array) — si tuviéramos `keys` como 2do param, recibiría el
+    // índice numérico y el `for...of` rompería con TypeError.
+    const ASTEXT_KEYS = ["item", "text", "value", "lane", "name"];
+    const asText = (it) => {
       if (it == null) return "";
       if (typeof it === "string") return it;
       if (typeof it === "object") {
-        for (const k of keys) if (typeof it[k] === "string") return it[k];
+        for (const k of ASTEXT_KEYS) if (typeof it[k] === "string") return it[k];
       }
       return "";
     };
