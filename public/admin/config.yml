@@ -170,8 +170,10 @@ collections:
                 widget: "object"
                 required: false
                 fields:
-                  - { label: "Español", name: "es", widget: "string" }
-                  - { label: "English", name: "en", widget: "string" }
+                  # Sub-fields opcionales porque el parent también lo es (sino
+                  # validan PRESENCE aunque el object esté vacío como esperamos)
+                  - { label: "Español", name: "es", widget: "string", required: false }
+                  - { label: "English", name: "en", widget: "string", required: false }
               - { label: "Email destino", name: "email", widget: "string" }
               - label: "Label del email (bilingüe)"
                 name: "emailLabel"
@@ -203,9 +205,11 @@ collections:
                   - label: "Label (bilingüe — ej. O DM / Or DM)"
                     name: "label"
                     widget: "object"
+                    required: false
                     fields:
-                      - { label: "Español", name: "es", widget: "string", default: "O DM" }
-                      - { label: "English", name: "en", widget: "string", default: "Or DM" }
+                      # Parent (alt) es required: false → sub-fields también
+                      - { label: "Español", name: "es", widget: "string", default: "O DM", required: false }
+                      - { label: "English", name: "en", widget: "string", default: "Or DM", required: false }
                   - { label: "Handle (ej. @maniatiko.dj)", name: "handle", widget: "string" }
                   - { label: "URL completa", name: "url", widget: "string" }
 
@@ -229,8 +233,9 @@ collections:
                 widget: "object"
                 required: false
                 fields:
-                  - { label: "Español", name: "es", widget: "string" }
-                  - { label: "English", name: "en", widget: "string" }
+                  # Parent es required: false → sub-fields también
+                  - { label: "Español", name: "es", widget: "string", required: false }
+                  - { label: "English", name: "en", widget: "string", required: false }
               - label: "Credit"
                 name: "credit"
                 widget: "object"
@@ -241,9 +246,11 @@ collections:
                   - label: "Prefijo (bilingüe — ej. Hecho con amor por / Made with love by)"
                     name: "prefix"
                     widget: "object"
+                    required: false
                     fields:
-                      - { label: "Español", name: "es", widget: "string" }
-                      - { label: "English", name: "en", widget: "string" }
+                      # Parent credit es required: false → sub-fields también
+                      - { label: "Español", name: "es", widget: "string", required: false }
+                      - { label: "English", name: "en", widget: "string", required: false }
 
           # Campos avanzados (escondidos por default — no tocar a menos que sepas)
           - label: "Nav (avanzado, vacío = auto)"
@@ -289,15 +296,17 @@ collections:
                 widget: "object"
                 required: false
                 fields:
-                  - { label: "Español", name: "es", widget: "string" }
-                  - { label: "English", name: "en", widget: "string" }
+                  # Parent es required: false (el marquee no tiene title) →
+                  # sub-fields también para no disparar PRESENCE en items vacíos
+                  - { label: "Español", name: "es", widget: "string", required: false }
+                  - { label: "English", name: "en", widget: "string", required: false }
               - label: "Subtítulo (bilingüe)"
                 name: "subtitle"
                 widget: "object"
                 required: false
                 fields:
-                  - { label: "Español", name: "es", widget: "string" }
-                  - { label: "English", name: "en", widget: "string" }
+                  - { label: "Español", name: "es", widget: "string", required: false }
+                  - { label: "English", name: "en", widget: "string", required: false }
               - { label: "Source (nombre del bloque en data.json)", name: "source", widget: "string", required: false }
 
           # === Colecciones top-level del data.json ===
