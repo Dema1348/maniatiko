@@ -11,6 +11,11 @@ site_url: https://maniatiko.cl
 display_url: https://maniatiko.cl
 logo_url: https://maniatiko.cl/img/og-share.jpg
 
+# Desactivar el "View Preview" del editor toolbar — con Git Gateway no hay
+# deploy preview real, y Decap CMS tira TypeError en loadDeployPreview cuando
+# intenta llamar backend.getDeploy() porque devuelve undefined.
+show_preview_links: false
+
 # Modo de publicación: simple = cambios pasan directo a main (más rápido)
 # editorial_workflow sería con drafts/review, requiere más setup
 publish_mode: simple
