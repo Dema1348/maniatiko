@@ -126,7 +126,11 @@
         {
           "@type": "MusicEvent",
           "name": "Maniatiko at Club 808",
-          "startDate": "2026-06-20",
+          "description": "Set en vivo de Maniatiko en Club 808, Santiago — techno industrial hipnótico, Neo Bochka, 150–170 BPM.",
+          "image": "https://maniatiko.cl/img/og-share.jpg",
+          "url": "https://maniatiko.cl/#gigs",
+          "startDate": "2026-06-20T23:00:00-04:00",
+          "endDate": "2026-06-21T05:00:00-04:00",
           "eventStatus": "https://schema.org/EventScheduled",
           "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
           "location": {
@@ -135,11 +139,24 @@
             "address": {
               "@type": "PostalAddress",
               "addressLocality": "Santiago",
+              "addressRegion": "Región Metropolitana",
               "addressCountry": "CL"
             }
           },
           "performer": { "@id": "https://maniatiko.cl/#artist" },
-          "organizer": { "@type": "Organization", "name": "Club 808" }
+          "organizer": {
+            "@type": "Organization",
+            "name": "Club 808",
+            "url": "https://maniatiko.cl/#gigs"
+          },
+          "offers": {
+            "@type": "Offer",
+            "availability": "https://schema.org/InStock",
+            "url": "https://maniatiko.cl/#booking",
+            "price": "0",
+            "priceCurrency": "CLP",
+            "validFrom": "2026-06-12T00:00:00-04:00"
+          }
         }
       ]
     }
