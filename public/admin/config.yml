@@ -23,7 +23,24 @@ commit_messages:
   uploadMedia: "CMS: subir media `{{path}}`"
   deleteMedia: "CMS: borrar media `{{path}}`"
 
-# Colecciones — todas operan sobre el mismo data.json
+# ============================================================
+# i18n — campos bilingües ES + EN
+# ============================================================
+# Cada string traducible es un object {es, en}. En el CMS se muestran
+# como un widget "object" con dos sub-inputs (Español + English) lado a lado.
+# Los strings que NO se traducen (nombres propios, fechas, URLs, etc.)
+# quedan como widget: string normal.
+#
+# Para agregar un field traducible nuevo, usá este patrón:
+#   - label: "Mi field"
+#     name: "myField"
+#     widget: "object"
+#     fields:
+#       - { label: "Español", name: "es", widget: "string" }
+#       - { label: "English", name: "en", widget: "string" }
+# (cambiá widget a "text" para campos multi-línea)
+# ============================================================
+
 collections:
   - name: site
     label: "Sitio"
@@ -38,11 +55,22 @@ collections:
             widget: "object"
             collapsed: true
             fields:
-              - { label: "Nombre", name: "name", widget: "string" }
-              - { label: "Tagline corta", name: "tagline", widget: "string" }
-              - { label: "Descripción (meta)", name: "description", widget: "text", hint: "Aparece en Google y en redes sociales al compartir" }
+              - { label: "Nombre del artista", name: "name", widget: "string", hint: "No se traduce — es el nombre propio" }
+              - label: "Tagline corta (bilingüe)"
+                name: "tagline"
+                widget: "object"
+                hint: "Frase corta que sale como subtítulo del título principal en Google y redes"
+                fields:
+                  - { label: "Español", name: "es", widget: "string" }
+                  - { label: "English", name: "en", widget: "string" }
+              - label: "Descripción (meta — bilingüe)"
+                name: "description"
+                widget: "object"
+                hint: "Aparece en Google y en preview cards al compartir. ~160 caracteres"
+                fields:
+                  - { label: "Español", name: "es", widget: "text" }
+                  - { label: "English", name: "en", widget: "text" }
               - { label: "URL del sitio", name: "url", widget: "string", default: "https://maniatiko.cl/" }
-              - { label: "Locale", name: "locale", widget: "string", default: "en_US" }
               - { label: "OG image (preview en redes)", name: "ogImage", widget: "string", default: "img/og-share.jpg", hint: "Path relativo. La imagen ideal es 1200×630px" }
               - { label: "Theme color", name: "themeColor", widget: "string", default: "#050505" }
 
@@ -51,22 +79,37 @@ collections:
             widget: "object"
             collapsed: false
             fields:
-              - { label: "Título principal", name: "title", widget: "string", default: "Maniatiko" }
-              - { label: "Rol / sub-línea", name: "role", widget: "string", default: "Producer & DJ" }
+              - { label: "Título principal", name: "title", widget: "string", default: "Maniatiko", hint: "Nombre del artista, no se traduce" }
+              - label: "Rol / sub-línea (bilingüe)"
+                name: "role"
+                widget: "object"
+                fields:
+                  - { label: "Español", name: "es", widget: "string", default: "Productor & DJ" }
+                  - { label: "English", name: "en", widget: "string", default: "Producer & DJ" }
               - { label: "BPM (número)", name: "bpm", widget: "number", value_type: "int", min: 1, max: 999, default: 170 }
-              - label: "Botón Engage"
+              - label: "Botón Engage (bilingüe)"
                 name: "engage"
                 widget: "object"
                 fields:
-                  - { label: "Texto cuando está apagado", name: "labelOff", widget: "string", default: "Engage ritual" }
-                  - { label: "Texto cuando está activo", name: "labelOn", widget: "string", default: "Disengage" }
+                  - label: "Texto cuando está apagado"
+                    name: "labelOff"
+                    widget: "object"
+                    fields:
+                      - { label: "Español", name: "es", widget: "string", default: "Iniciar ritual" }
+                      - { label: "English", name: "en", widget: "string", default: "Engage ritual" }
+                  - label: "Texto cuando está activo"
+                    name: "labelOn"
+                    widget: "object"
+                    fields:
+                      - { label: "Español", name: "es", widget: "string", default: "Detener" }
+                      - { label: "English", name: "en", widget: "string", default: "Disengage" }
 
           - label: "Marquee — palabras del mantra"
             name: "marquee"
             widget: "list"
             collapsed: false
             summary: "{{lane}}"
-            hint: "Las palabras que cruzan horizontalmente entre el hero y Origin. Recomendado 2 palabras (la 1ra va a la izquierda en tono apagado, la 2da a la derecha en accent diluido). Podés sumar más, alternarán direcciones."
+            hint: "Las palabras que cruzan horizontalmente entre el hero y Origin. Funcionan como tags universales — NO se traducen (igual en ambos idiomas). Recomendado 2 palabras."
             fields:
               - { label: "Palabra (mantra)", name: "lane", widget: "string" }
 
@@ -76,25 +119,40 @@ collections:
             collapsed: false
             hint: "La primera sección de la página: 3 párrafos de bio + tabla de datos del artista (Origin, Base, Sound, BPM, etc)."
             fields:
-              - label: "Bio (3 párrafos numerados I/II/III)"
+              - label: "Bio (3 párrafos numerados I/II/III, bilingüe c/u)"
                 name: "chapters"
                 widget: "list"
-                summary: "{{item}}"
+                hint: "Cada párrafo tiene su versión ES y EN. Se renderiza numerado I/II/III en orden."
                 fields:
-                  - { label: "Párrafo", name: "item", widget: "text" }
+                  - label: "Párrafo"
+                    name: "item"
+                    widget: "object"
+                    fields:
+                      - { label: "Español", name: "es", widget: "text" }
+                      - { label: "English", name: "en", widget: "text" }
               - label: "Dossier (tabla key/value)"
                 name: "dossier"
                 widget: "object"
                 collapsed: false
                 fields:
-                  - { label: "Título del dossier", name: "title", widget: "string", default: "† Artist Dossier" }
+                  - label: "Título del dossier (bilingüe)"
+                    name: "title"
+                    widget: "object"
+                    fields:
+                      - { label: "Español", name: "es", widget: "string", default: "† Dossier del artista" }
+                      - { label: "English", name: "en", widget: "string", default: "† Artist Dossier" }
                   - label: "Filas"
                     name: "rows"
                     widget: "list"
-                    summary: "{{key}} → {{value}}"
+                    summary: "{{key.es}} → {{value}}"
                     fields:
-                      - { label: "Clave (ej. Origin, Base, BPM)", name: "key", widget: "string" }
-                      - { label: "Valor", name: "value", widget: "string" }
+                      - label: "Clave (bilingüe — ej. Origen/Origin)"
+                        name: "key"
+                        widget: "object"
+                        fields:
+                          - { label: "Español", name: "es", widget: "string" }
+                          - { label: "English", name: "en", widget: "string" }
+                      - { label: "Valor (no se traduce — datos)", name: "value", widget: "string" }
 
           - label: "Booking — bloque de contacto al final"
             name: "booking"
@@ -102,22 +160,47 @@ collections:
             collapsed: false
             hint: "Datos del bloque destacado de Booking — el mailto se arma automáticamente con email + subject."
             fields:
-              - { label: "Intro (frase corta arriba)", name: "intro", widget: "string", required: false }
+              - label: "Intro (bilingüe — frase corta arriba)"
+                name: "intro"
+                widget: "object"
+                required: false
+                fields:
+                  - { label: "Español", name: "es", widget: "string" }
+                  - { label: "English", name: "en", widget: "string" }
               - { label: "Email destino", name: "email", widget: "string" }
-              - { label: "Label del email (ej. † Direct booking)", name: "emailLabel", widget: "string", default: "† Direct booking" }
-              - { label: "Subject del email (asunto)", name: "emailSubject", widget: "string", default: "[BOOKING] Event · Date · City" }
-              - label: "Brief — checklist que el promotor debe incluir"
+              - label: "Label del email (bilingüe)"
+                name: "emailLabel"
+                widget: "object"
+                fields:
+                  - { label: "Español", name: "es", widget: "string", default: "† Booking directo" }
+                  - { label: "English", name: "en", widget: "string", default: "† Direct booking" }
+              - label: "Subject del email (bilingüe — asunto)"
+                name: "emailSubject"
+                widget: "object"
+                fields:
+                  - { label: "Español", name: "es", widget: "string", default: "[BOOKING] Evento · Fecha · Ciudad" }
+                  - { label: "English", name: "en", widget: "string", default: "[BOOKING] Event · Date · City" }
+              - label: "Brief — checklist que el promotor debe incluir (bilingüe c/item)"
                 name: "brief"
                 widget: "list"
-                summary: "{{item}}"
                 fields:
-                  - { label: "Item", name: "item", widget: "string" }
+                  - label: "Item"
+                    name: "item"
+                    widget: "object"
+                    fields:
+                      - { label: "Español", name: "es", widget: "string" }
+                      - { label: "English", name: "en", widget: "string" }
               - label: "Alt — link a DM Instagram"
                 name: "alt"
                 widget: "object"
                 required: false
                 fields:
-                  - { label: "Label (ej. Or DM)", name: "label", widget: "string", default: "Or DM" }
+                  - label: "Label (bilingüe — ej. O DM / Or DM)"
+                    name: "label"
+                    widget: "object"
+                    fields:
+                      - { label: "Español", name: "es", widget: "string", default: "O DM" }
+                      - { label: "English", name: "en", widget: "string", default: "Or DM" }
                   - { label: "Handle (ej. @maniatiko.dj)", name: "handle", widget: "string" }
                   - { label: "URL completa", name: "url", widget: "string" }
 
@@ -126,6 +209,7 @@ collections:
             widget: "list"
             collapsed: false
             summary: "{{label}}"
+            hint: "Las labels son nombres de plataforma — no se traducen"
             fields:
               - { label: "Plataforma", name: "label", widget: "string", hint: "Bandcamp, Spotify, SoundCloud, YouTube, Instagram, TikTok, Facebook…" }
               - { label: "URL", name: "url", widget: "string" }
@@ -135,15 +219,26 @@ collections:
             widget: "object"
             collapsed: true
             fields:
-              - { label: "Epitafio (frase final)", name: "epitaph", widget: "string", required: false }
+              - label: "Epitafio (bilingüe — frase final)"
+                name: "epitaph"
+                widget: "object"
+                required: false
+                fields:
+                  - { label: "Español", name: "es", widget: "string" }
+                  - { label: "English", name: "en", widget: "string" }
               - label: "Credit"
                 name: "credit"
                 widget: "object"
                 required: false
                 fields:
-                  - { label: "Texto del crédito", name: "label", widget: "string" }
-                  - { label: "Link del crédito", name: "href", widget: "string" }
-                  - { label: "Prefijo (ej. 'Made by')", name: "prefix", widget: "string" }
+                  - { label: "Texto del crédito (handle, no se traduce)", name: "label", widget: "string" }
+                  - { label: "Link del crédito (URL)", name: "href", widget: "string" }
+                  - label: "Prefijo (bilingüe — ej. Hecho con amor por / Made with love by)"
+                    name: "prefix"
+                    widget: "object"
+                    fields:
+                      - { label: "Español", name: "es", widget: "string" }
+                      - { label: "English", name: "en", widget: "string" }
 
           # Campos avanzados (escondidos por default — no tocar a menos que sepas)
           - label: "Nav (avanzado, vacío = auto)"
@@ -179,14 +274,26 @@ collections:
             name: "sections"
             widget: "list"
             collapsed: true
-            hint: "No tocar a menos que sepas lo que hacés. Solo controla el orden, el tipo y los títulos de cada bloque — el CONTENIDO real de cada uno se edita en su field propio arriba (Marquee, Origin, Tracks, Gigs, etc.)."
+            hint: "No tocar a menos que sepas lo que hacés. Solo controla el orden, el tipo y los títulos de cada bloque — el CONTENIDO real de cada uno se edita en su field propio arriba (Marquee, Origin, Tracks, Gigs, etc.). Title y subtitle son bilingües."
             summary: "{{id}} — {{type}}"
             fields:
               - { label: "ID", name: "id", widget: "string" }
               - { label: "Tipo", name: "type", widget: "string", hint: "marquee | chapters | gigs | mixes | memories | press | featured | presskit | booking-card" }
-              - { label: "Título", name: "title", widget: "string", required: false }
-              - { label: "Subtítulo", name: "subtitle", widget: "string", required: false }
-              - { label: "Source (nombre del bloque en data.json — todos las secciones reales usan este)", name: "source", widget: "string", required: false }
+              - label: "Título (bilingüe)"
+                name: "title"
+                widget: "object"
+                required: false
+                fields:
+                  - { label: "Español", name: "es", widget: "string" }
+                  - { label: "English", name: "en", widget: "string" }
+              - label: "Subtítulo (bilingüe)"
+                name: "subtitle"
+                widget: "object"
+                required: false
+                fields:
+                  - { label: "Español", name: "es", widget: "string" }
+                  - { label: "English", name: "en", widget: "string" }
+              - { label: "Source (nombre del bloque en data.json)", name: "source", widget: "string", required: false }
 
           # === Colecciones top-level del data.json ===
           - label: "Gigs (fechas en vivo)"
@@ -194,6 +301,7 @@ collections:
             widget: "list"
             collapsed: false
             summary: "{{date}} — {{venue}}"
+            hint: "Fechas, venues y ciudades son datos — no se traducen"
             fields:
               - { label: "Fecha", name: "date", widget: "string", hint: "Formato US: MM.DD.AAAA — ej. 06.20.2026", pattern: ['^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$', 'Formato esperado: MM.DD.AAAA'] }
               - { label: "Ciudad", name: "city", widget: "string", default: "Santiago, CL" }
@@ -206,10 +314,16 @@ collections:
             widget: "list"
             collapsed: false
             summary: "{{title}}"
+            hint: "Los títulos de los tracks son nombres propios — NO se traducen. Solo la descripción es bilingüe."
             fields:
               - { label: "Plataforma", name: "platform", widget: "string", default: "SoundCloud · Original" }
-              - { label: "Título", name: "title", widget: "string" }
-              - { label: "Descripción corta", name: "description", widget: "text" }
+              - { label: "Título (no traducir)", name: "title", widget: "string" }
+              - label: "Descripción corta (bilingüe)"
+                name: "description"
+                widget: "object"
+                fields:
+                  - { label: "Español", name: "es", widget: "text" }
+                  - { label: "English", name: "en", widget: "text" }
               - { label: "URL del track en SoundCloud", name: "url", widget: "string" }
 
           - label: "Memorias (Aftermath — set + foto + anécdota)"
@@ -219,9 +333,14 @@ collections:
             summary: "{{venue}}"
             fields:
               - { label: "Fecha", name: "date", widget: "string", required: false, default: "—" }
-              - { label: "Venue", name: "venue", widget: "string" }
+              - { label: "Venue (no traducir)", name: "venue", widget: "string" }
               - { label: "Ciudad", name: "city", widget: "string" }
-              - { label: "Anécdota", name: "anecdote", widget: "text" }
+              - label: "Anécdota (bilingüe)"
+                name: "anecdote"
+                widget: "object"
+                fields:
+                  - { label: "Español", name: "es", widget: "text" }
+                  - { label: "English", name: "en", widget: "text" }
               - { label: "Foto", name: "image", widget: "image", required: false }
 
           - label: "Press (Reverb — quotes)"
@@ -230,14 +349,20 @@ collections:
             collapsed: false
             summary: "{{source}}"
             fields:
-              - { label: "Quote", name: "quote", widget: "text" }
-              - { label: "Fuente", name: "source", widget: "string" }
+              - label: "Quote (bilingüe)"
+                name: "quote"
+                widget: "object"
+                fields:
+                  - { label: "Español", name: "es", widget: "text" }
+                  - { label: "English", name: "en", widget: "text" }
+              - { label: "Fuente (atribución — no traducir)", name: "source", widget: "string" }
 
           - label: "Hosted by (venues/crews que lo hostearon)"
             name: "featured"
             widget: "list"
             collapsed: false
             summary: "{{name}}"
+            hint: "Nombres propios de crews/venues — no se traducen"
             fields:
               - { label: "Nombre", name: "name", widget: "string" }
               - { label: "Link (opcional)", name: "link", widget: "string", required: false }
@@ -246,11 +371,31 @@ collections:
             name: "presskit"
             widget: "list"
             collapsed: true
-            summary: "{{title}}"
+            summary: "{{title.es}}"
             fields:
-              - { label: "Tipo", name: "kind", widget: "string", hint: "Brand Assets / Text Document / Image Asset / Video Asset / Technical Document" }
-              - { label: "Título", name: "title", widget: "string" }
-              - { label: "Descripción", name: "description", widget: "text" }
-              - { label: "Texto del CTA", name: "cta", widget: "string" }
+              - label: "Tipo (bilingüe)"
+                name: "kind"
+                widget: "object"
+                hint: "Ej. Recursos de marca / Brand Assets, Documento de texto / Text Document, etc."
+                fields:
+                  - { label: "Español", name: "es", widget: "string" }
+                  - { label: "English", name: "en", widget: "string" }
+              - label: "Título (bilingüe)"
+                name: "title"
+                widget: "object"
+                fields:
+                  - { label: "Español", name: "es", widget: "string" }
+                  - { label: "English", name: "en", widget: "string" }
+              - label: "Descripción (bilingüe)"
+                name: "description"
+                widget: "object"
+                fields:
+                  - { label: "Español", name: "es", widget: "text" }
+                  - { label: "English", name: "en", widget: "text" }
+              - label: "Texto del CTA (bilingüe)"
+                name: "cta"
+                widget: "object"
+                fields:
+                  - { label: "Español", name: "es", widget: "string" }
+                  - { label: "English", name: "en", widget: "string" }
               - { label: "URL de descarga", name: "url", widget: "string", default: "#" }
-
