@@ -2112,12 +2112,28 @@ body.ritual-engaged::after {
   box-shadow:
     0 -8px 32px rgba(0, 0, 0, 0.6),
     0 0 24px rgba(var(--accent-rgb), 0.12);
+  /* Oculto por default. visibility + opacity además del transform evitan que
+     mobile pinte el elemento durante scroll rápido (algunos browsers no
+     aplican translateY a tiempo y se ve un flash del card vacío). */
+  visibility: hidden;
+  opacity: 0;
   transform: translateY(100%);
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease 0.05s,
+    visibility 0s linear 0.5s; /* delay = duración del slide-out → visibility flip al final */
   pointer-events: none;
+  will-change: transform, opacity;
 }
 .mini-player.is-open {
+  visibility: visible;
+  opacity: 1;
   transform: translateY(0);
+  /* Al abrir: visibility cambia inmediatamente (delay 0s), después slide-in */
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease,
+    visibility 0s linear 0s;
   pointer-events: auto;
 }
 .mini-player iframe {
