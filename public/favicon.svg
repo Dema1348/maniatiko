@@ -1,5 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" fill="#0a0a0a"/>
-  <text x="50%" y="50%" dy=".35em" text-anchor="middle"
-        font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="32" fill="#f0f0f0">M</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <!-- Maniatiko favicon — daga † minimal, paleta Hypnotic Neon Decay.
+       Fondo negro profundo (#050505), daga rojo accent (#f20100).
+       Cross arm cerca del top, eje vertical full-length. -->
+  <rect width="32" height="32" fill="#050505"/>
+  <g fill="#f20100">
+    <rect x="14" y="4" width="4" height="24"/>
+    <rect x="8" y="8" width="16" height="3"/>
+  </g>
 </svg>
