@@ -1,4 +1,85 @@
 {
+  "marquee": [
+    {
+      "lane": "HYPNOTIC"
+    },
+    {
+      "lane": "INDUSTRIAL"
+    }
+  ],
+  "press": [
+    {
+      "quote": {
+        "es": "Propulsión constante, oscura, inmersiva. No toca: empuja.",
+        "en": "Constant, dark, immersive propulsion. He doesn't play: he pushes."
+      },
+      "source": "Underground CL"
+    },
+    {
+      "quote": {
+        "es": "Presión del Bochka llevada al límite. Hipnosis prolongada como territorio físico.",
+        "en": "Bochka pressure pushed to the limit. Prolonged hypnosis as physical territory."
+      },
+      "source": "Hollenraum"
+    },
+    {
+      "quote": {
+        "es": "Parte de la nueva generación redibujando el techno chileno.",
+        "en": "Part of the new generation redrawing Chilean techno."
+      },
+      "source": "Radikals Sessions"
+    },
+    {
+      "quote": {
+        "es": "No necesita una intro larga; los sonidos atrapan tu mente de inmediato.",
+        "en": "It doesn't need a lengthy intro; the sounds trap your mind right away"
+      },
+      "source": "Edson"
+    }
+  ],
+  "nav": [],
+  "socials": [
+    {
+      "label": "Bandcamp",
+      "url": "https://maniatiko1.bandcamp.com"
+    },
+    {
+      "label": "Spotify",
+      "url": "https://open.spotify.com/intl-es/artist/50KNp3KIPhqS0AVe8BKUbG"
+    },
+    {
+      "label": "SoundCloud",
+      "url": "https://soundcloud.com/maniatikx"
+    },
+    {
+      "label": "Instagram",
+      "url": "https://www.instagram.com/maniatiko.dj"
+    },
+    {
+      "label": "YouTube",
+      "url": "https://www.youtube.com/@maniatikx"
+    },
+    {
+      "label": "TikTok",
+      "url": "https://www.tiktok.com/@maniatiko.dj"
+    },
+    {
+      "label": "Facebook",
+      "url": "https://www.facebook.com/profile.php?id=61590419833191"
+    }
+  ],
+  "analytics": {
+    "enabled": true,
+    "firebase": {
+      "apiKey": "AIzaSyDsPmr27S75Hiux1qssHHQNcNjgd8Rk0a4",
+      "authDomain": "maniatiko-dj.firebaseapp.com",
+      "projectId": "maniatiko-dj",
+      "storageBucket": "maniatiko-dj.firebasestorage.app",
+      "messagingSenderId": "152754205763",
+      "appId": "1:152754205763:web:850a57001640658d8890f6",
+      "measurementId": "G-5CXDNBQMN6"
+    }
+  },
   "site": {
     "name": "Maniatiko",
     "tagline": {
@@ -13,45 +94,6 @@
     "ogImage": "img/og-share.jpg",
     "themeColor": "#050505"
   },
-  "analytics": {
-    "enabled": true,
-    "firebase": {
-      "apiKey": "AIzaSyDsPmr27S75Hiux1qssHHQNcNjgd8Rk0a4",
-      "authDomain": "maniatiko-dj.firebaseapp.com",
-      "projectId": "maniatiko-dj",
-      "storageBucket": "maniatiko-dj.firebasestorage.app",
-      "messagingSenderId": "152754205763",
-      "appId": "1:152754205763:web:850a57001640658d8890f6",
-      "measurementId": "G-5CXDNBQMN6"
-    }
-  },
-  "nav": [],
-  "hero": {
-    "title": "Maniatiko",
-    "role": {
-      "es": "Productor & DJ",
-      "en": "Producer & DJ"
-    },
-    "bpm": 170,
-    "engage": {
-      "labelOff": {
-        "es": "Iniciar ritual",
-        "en": "Engage ritual"
-      },
-      "labelOn": {
-        "es": "Detener",
-        "en": "Disengage"
-      }
-    }
-  },
-  "marquee": [
-    {
-      "lane": "HYPNOTIC"
-    },
-    {
-      "lane": "INDUSTRIAL"
-    }
-  ],
   "bio": {
     "chapters": [
       {
@@ -138,6 +180,112 @@
       ]
     }
   },
+  "mixes": [
+    {
+      "platform": "SoundCloud · Original",
+      "title": "MANTRA",
+      "description": {
+        "es": "Hipnosis prolongada. Presión del Bochka como mantra repetido.",
+        "en": "Prolonged hypnosis. Bochka pressure as repeated mantra."
+      },
+      "url": "https://soundcloud.com/maniatikx/mantra"
+    },
+    {
+      "platform": "SoundCloud · Original",
+      "title": "SINFONIA DEL MAL ETERNO",
+      "description": {
+        "es": "Distorsión, percusión abrasiva, atmósfera densa.",
+        "en": "Distortion, abrasive percussion, dense atmosphere."
+      },
+      "url": "https://soundcloud.com/maniatikx/symphony-of-eternal-evil"
+    },
+    {
+      "platform": "SoundCloud · Original",
+      "title": "LAMENTOS",
+      "description": {
+        "es": "Memoria emocional transfigurada en materia sonora.",
+        "en": "Emotional memory transfigured into sonic matter."
+      },
+      "url": "https://soundcloud.com/maniatikx/maniatiko-lamentos"
+    },
+    {
+      "platform": "SoundCloud · Original",
+      "title": "ALMA DISTORSIONADA",
+      "description": {
+        "es": "Texturas distorsionadas. Estructura repetitiva que te arrastra.",
+        "en": "Distorted textures. Repetitive structure that drags you in."
+      },
+      "url": "https://soundcloud.com/maniatikx/46fd1481-88a7-45e1-8dec-eaece79798c1"
+    },
+    {
+      "platform": "SoundCloud · Original",
+      "title": "LA MELODÍA DE LA DESESPERACIÓN",
+      "description": {
+        "es": "Tensión mental como territorio. Propulsión constante.",
+        "en": "Mental tension as territory. Constant propulsion."
+      },
+      "url": "https://soundcloud.com/maniatikx/6b8454c8-a636-4e0a-a8ff-4fb13ee44cf2"
+    },
+    {
+      "platform": "SoundCloud · Original",
+      "title": "VIOLENCIA INTRAFAMILIAR",
+      "description": {
+        "es": "Intensidad física. Kicks duros. Sin contemplación.",
+        "en": "Physical intensity. Hard kicks. No contemplation."
+      },
+      "url": "https://soundcloud.com/maniatikx/7c928bc8-230a-426c-9542-cdde60682f31"
+    }
+  ],
+  "featured": [
+    {
+      "name": "Radikals Techno",
+      "link": "https://instagram.com/radikalstechno"
+    },
+    {
+      "name": "Höllenraum",
+      "link": ""
+    },
+    {
+      "name": "Vërrückt",
+      "link": ""
+    },
+    {
+      "name": "Requiem",
+      "link": ""
+    },
+    {
+      "name": "Club 808",
+      "link": ""
+    },
+    {
+      "name": "Metalurgia Tekno",
+      "link": ""
+    },
+    {
+      "name": "Pater Noster",
+      "link": ""
+    },
+    {
+      "name": "Inmortal Techno",
+      "link": ""
+    },
+    {
+      "name": "Teknokratas",
+      "link": "https://www.instagram.com/teknokratascl"
+    },
+    {
+      "name": "Galpón Technokikazo",
+      "link": ""
+    },
+    {
+      "name": "Verminous",
+      "link": ""
+    },
+    {
+      "name": "Club Roxbury",
+      "link": ""
+    }
+  ],
   "gigs": [
     {
       "date": "06.20.2026",
@@ -200,172 +348,115 @@
       "venue": "Radikals Techno"
     }
   ],
-  "mixes": [
+  "sections": [
     {
-      "platform": "SoundCloud · Original",
-      "title": "MANTRA",
-      "description": {
-        "es": "Hipnosis prolongada. Presión del Bochka como mantra repetido.",
-        "en": "Prolonged hypnosis. Bochka pressure as repeated mantra."
+      "id": "marquee",
+      "type": "marquee",
+      "source": "marquee"
+    },
+    {
+      "id": "bio",
+      "type": "chapters",
+      "title": {
+        "es": "Origen",
+        "en": "Origin"
       },
-      "url": "https://soundcloud.com/maniatikx/mantra"
-    },
-    {
-      "platform": "SoundCloud · Original",
-      "title": "SINFONIA DEL MAL ETERNO",
-      "description": {
-        "es": "Distorsión, percusión abrasiva, atmósfera densa.",
-        "en": "Distortion, abrasive percussion, dense atmosphere."
+      "subtitle": {
+        "es": "Arquitectura de la tensión mental",
+        "en": "Architecture of mental tension"
       },
-      "url": "https://soundcloud.com/maniatikx/symphony-of-eternal-evil"
+      "source": "bio"
     },
     {
-      "platform": "SoundCloud · Original",
-      "title": "LAMENTOS",
-      "description": {
-        "es": "Memoria emocional transfigurada en materia sonora.",
-        "en": "Emotional memory transfigured into sonic matter."
+      "id": "gigs",
+      "type": "gigs",
+      "title": {
+        "es": "En vivo",
+        "en": "Live"
       },
-      "url": "https://soundcloud.com/maniatikx/maniatiko-lamentos"
-    },
-    {
-      "platform": "SoundCloud · Original",
-      "title": "ALMA DISTORSIONADA",
-      "description": {
-        "es": "Texturas distorsionadas. Estructura repetitiva que te arrastra.",
-        "en": "Distorted textures. Repetitive structure that drags you in."
+      "subtitle": {
+        "es": "Donde el ritual continúa",
+        "en": "Where the ritual continues"
       },
-      "url": "https://soundcloud.com/maniatikx/46fd1481-88a7-45e1-8dec-eaece79798c1"
+      "source": "gigs"
     },
     {
-      "platform": "SoundCloud · Original",
-      "title": "LA MELODÍA DE LA DESESPERACIÓN",
-      "description": {
-        "es": "Tensión mental como territorio. Propulsión constante.",
-        "en": "Mental tension as territory. Constant propulsion."
+      "id": "mixes",
+      "type": "mixes",
+      "title": {
+        "es": "Producciones",
+        "en": "Productions"
       },
-      "url": "https://soundcloud.com/maniatikx/6b8454c8-a636-4e0a-a8ff-4fb13ee44cf2"
-    },
-    {
-      "platform": "SoundCloud · Original",
-      "title": "VIOLENCIA INTRAFAMILIAR",
-      "description": {
-        "es": "Intensidad física. Kicks duros. Sin contemplación.",
-        "en": "Physical intensity. Hard kicks. No contemplation."
+      "subtitle": {
+        "es": "Originales · SoundCloud",
+        "en": "Originals · SoundCloud"
       },
-      "url": "https://soundcloud.com/maniatikx/7c928bc8-230a-426c-9542-cdde60682f31"
-    }
-  ],
-  "memories": [
+      "source": "mixes"
+    },
     {
-      "date": "—",
-      "venue": "BLACKOUT × RADIKALS",
-      "city": "Santiago, CL",
-      "anecdote": {
-        "es": "El amanecer nos encontró todavía empujando. El kick no se detenía.",
-        "en": "Sunrise found us still pushing. The kick wouldn't stop."
+      "id": "memories",
+      "type": "memories",
+      "title": {
+        "es": "Después del ritual",
+        "en": "Aftermath"
       },
-      "image": "img/dj1.jpg"
-    },
-    {
-      "date": "—",
-      "venue": "HOLLENRAUM",
-      "city": "Santiago, CL",
-      "anecdote": {
-        "es": "La sala contuvo el aliento hasta el drop. Después nada fue igual.",
-        "en": "The room held its breath until the drop. Then nothing was the same."
+      "subtitle": {
+        "es": "Lo que quedó",
+        "en": "What remained"
       },
-      "image": "img/dj2.jpeg"
+      "source": "memories"
     },
     {
-      "date": "—",
-      "venue": "CIRCUITO INTEGRADO",
-      "city": "Valparaíso, CL",
-      "anecdote": {
-        "es": "Pidieron una hora más. Les dimos tres.",
-        "en": "They asked for one more hour. We gave them three."
+      "id": "press",
+      "type": "press",
+      "title": {
+        "es": "Reverberación",
+        "en": "Reverb"
       },
-      "image": "img/dj3.jpeg"
-    }
-  ],
-  "press": [
-    {
-      "quote": {
-        "es": "Propulsión constante, oscura, inmersiva. No toca: empuja.",
-        "en": "Constant, dark, immersive propulsion. He doesn't play: he pushes."
+      "subtitle": {
+        "es": "Lo que persiste",
+        "en": "What lingers"
       },
-      "source": "Underground CL"
+      "source": "press"
     },
     {
-      "quote": {
-        "es": "Presión del Bochka llevada al límite. Hipnosis prolongada como territorio físico.",
-        "en": "Bochka pressure pushed to the limit. Prolonged hypnosis as physical territory."
+      "id": "featured",
+      "type": "featured",
+      "title": {
+        "es": "Anfitrionado por",
+        "en": "Hosted by"
       },
-      "source": "Hollenraum"
-    },
-    {
-      "quote": {
-        "es": "Parte de la nueva generación redibujando el techno chileno.",
-        "en": "Part of the new generation redrawing Chilean techno."
+      "subtitle": {
+        "es": "Crews, venues y colectivos que han invocado el ritual",
+        "en": "Crews, venues & collectives that have summoned the ritual"
       },
-      "source": "Radikals Sessions"
+      "source": "featured"
     },
     {
-      "quote": {
-        "es": "No necesita una intro larga; los sonidos atrapan tu mente de inmediato.",
-        "en": "It doesn't need a lengthy intro; the sounds trap your mind right away"
+      "id": "presskit",
+      "type": "presskit",
+      "title": {
+        "es": "Press Kit",
+        "en": "Press Kit"
       },
-      "source": "Edson"
-    }
-  ],
-  "featured": [
-    {
-      "name": "Radikals Techno",
-      "link": "https://instagram.com/radikalstechno"
+      "subtitle": {
+        "es": "Recursos y dossier para prensa, promotores y editorial",
+        "en": "Assets & dossier for press, promoters and editorial"
+      },
+      "source": "presskit"
     },
     {
-      "name": "Höllenraum",
-      "link": ""
-    },
-    {
-      "name": "Vërrückt",
-      "link": ""
-    },
-    {
-      "name": "Requiem",
-      "link": ""
-    },
-    {
-      "name": "Club 808",
-      "link": ""
-    },
-    {
-      "name": "Metalurgia Tekno",
-      "link": ""
-    },
-    {
-      "name": "Pater Noster",
-      "link": ""
-    },
-    {
-      "name": "Inmortal Techno",
-      "link": ""
-    },
-    {
-      "name": "Teknokratas",
-      "link": "https://www.instagram.com/teknokratascl"
-    },
-    {
-      "name": "Galpón Technokikazo",
-      "link": ""
-    },
-    {
-      "name": "Verminous",
-      "link": ""
-    },
-    {
-      "name": "Club Roxbury",
-      "link": ""
+      "id": "booking",
+      "type": "booking-card",
+      "title": {
+        "es": "Booking",
+        "en": "Booking"
+      },
+      "subtitle": {
+        "es": "Para organizadores de eventos, promotores y residencias",
+        "en": "For event organisers, promoters & residencies"
+      },
+      "source": "booking"
     }
   ],
   "presskit": [
@@ -526,6 +617,24 @@
       "url": "https://www.instagram.com/maniatiko.dj"
     }
   },
+  "hero": {
+    "title": "Maniatiko",
+    "role": {
+      "es": "Productor Y DJ",
+      "en": "Producer & DJ"
+    },
+    "bpm": 170,
+    "engage": {
+      "labelOff": {
+        "es": "Iniciar ritual",
+        "en": "Engage ritual"
+      },
+      "labelOn": {
+        "es": "Detener",
+        "en": "Disengage"
+      }
+    }
+  },
   "footer": {
     "epitaph": {
       "es": "† El ritual no termina. Solo cambia de forma †",
@@ -540,145 +649,36 @@
       }
     }
   },
-  "sections": [
+  "memories": [
     {
-      "id": "marquee",
-      "type": "marquee",
-      "source": "marquee"
+      "date": "—",
+      "venue": "BLACKOUT × RADIKALS",
+      "city": "Santiago, CL",
+      "anecdote": {
+        "es": "El amanecer nos encontró todavía empujando. El kick no se detenía.",
+        "en": "Sunrise found us still pushing. The kick wouldn't stop."
+      },
+      "image": "img/dj1.jpg"
     },
     {
-      "id": "bio",
-      "type": "chapters",
-      "title": {
-        "es": "Origen",
-        "en": "Origin"
+      "date": "—",
+      "venue": "HOLLENRAUM",
+      "city": "Santiago, CL",
+      "anecdote": {
+        "es": "La sala contuvo el aliento hasta el drop. Después nada fue igual.",
+        "en": "The room held its breath until the drop. Then nothing was the same."
       },
-      "subtitle": {
-        "es": "Arquitectura de la tensión mental",
-        "en": "Architecture of mental tension"
-      },
-      "source": "bio"
+      "image": "img/dj2.jpeg"
     },
     {
-      "id": "gigs",
-      "type": "gigs",
-      "title": {
-        "es": "En vivo",
-        "en": "Live"
+      "date": "—",
+      "venue": "CIRCUITO INTEGRADO",
+      "city": "Valparaíso, CL",
+      "anecdote": {
+        "es": "Pidieron una hora más. Les dimos tres.",
+        "en": "They asked for one more hour. We gave them three."
       },
-      "subtitle": {
-        "es": "Donde el ritual continúa",
-        "en": "Where the ritual continues"
-      },
-      "source": "gigs"
-    },
-    {
-      "id": "mixes",
-      "type": "mixes",
-      "title": {
-        "es": "Producciones",
-        "en": "Productions"
-      },
-      "subtitle": {
-        "es": "Originales · SoundCloud",
-        "en": "Originals · SoundCloud"
-      },
-      "source": "mixes"
-    },
-    {
-      "id": "memories",
-      "type": "memories",
-      "title": {
-        "es": "Después del ritual",
-        "en": "Aftermath"
-      },
-      "subtitle": {
-        "es": "Lo que quedó",
-        "en": "What remained"
-      },
-      "source": "memories"
-    },
-    {
-      "id": "press",
-      "type": "press",
-      "title": {
-        "es": "Reverberación",
-        "en": "Reverb"
-      },
-      "subtitle": {
-        "es": "Lo que persiste",
-        "en": "What lingers"
-      },
-      "source": "press"
-    },
-    {
-      "id": "featured",
-      "type": "featured",
-      "title": {
-        "es": "Anfitrionado por",
-        "en": "Hosted by"
-      },
-      "subtitle": {
-        "es": "Crews, venues y colectivos que han invocado el ritual",
-        "en": "Crews, venues & collectives that have summoned the ritual"
-      },
-      "source": "featured"
-    },
-    {
-      "id": "presskit",
-      "type": "presskit",
-      "title": {
-        "es": "Press Kit",
-        "en": "Press Kit"
-      },
-      "subtitle": {
-        "es": "Recursos y dossier para prensa, promotores y editorial",
-        "en": "Assets & dossier for press, promoters and editorial"
-      },
-      "source": "presskit"
-    },
-    {
-      "id": "booking",
-      "type": "booking-card",
-      "title": {
-        "es": "Booking",
-        "en": "Booking"
-      },
-      "subtitle": {
-        "es": "Para organizadores de eventos, promotores y residencias",
-        "en": "For event organisers, promoters & residencies"
-      },
-      "source": "booking"
-    }
-  ],
-  "socials": [
-    {
-      "label": "Bandcamp",
-      "url": "https://maniatiko1.bandcamp.com"
-    },
-    {
-      "label": "Spotify",
-      "url": "https://open.spotify.com/intl-es/artist/50KNp3KIPhqS0AVe8BKUbG"
-    },
-    {
-      "label": "SoundCloud",
-      "url": "https://soundcloud.com/maniatikx"
-    },
-    {
-      "label": "Instagram",
-      "url": "https://www.instagram.com/maniatiko.dj"
-    },
-    {
-      "label": "YouTube",
-      "url": "https://www.youtube.com/@maniatikx"
-    },
-    {
-      "label": "TikTok",
-      "url": "https://www.tiktok.com/@maniatiko.dj"
-    },
-    {
-      "label": "Facebook",
-      "url": "https://www.facebook.com/profile.php?id=61590419833191"
+      "image": "img/dj3.jpeg"
     }
   ]
 }
