@@ -102,9 +102,16 @@
             c.group(TAG + " 🎯 Promise.reject(empty) caller stack");
             var stack = new Error("reject was called here").stack || "";
             c.log(stack);
-            // Si viene de persistEntry, escanear el DOM por fields con error visible
+            // Si viene de persistEntry, leer el store de Redux para mostrar
+            // exactamente qué fieldsErrors disparó el reject.
             if (stack.indexOf("handlePersistEntry") >= 0 || stack.indexOf("persistEntry") >= 0) {
-              c.warn(TAG + " ⚠️ Validation rechazó persistEntry. Escaneando DOM por errores...");
+              c.warn(TAG + " ⚠️ Validation rechazó persistEntry. Leyendo Redux store...");
+              try {
+                if (typeof window.cmsInspect === "function") window.cmsInspect();
+              } catch (e) {
+                c.warn(TAG + " cmsInspect falló:", e);
+              }
+              c.warn(TAG + " ⚠️ Escaneando DOM por errores...");
               try {
                 var invalidEls = document.querySelectorAll(
                   '[aria-invalid="true"], [class*="error"], [class*="Error"], [data-testid*="error"]'
@@ -156,7 +163,90 @@
           }
         };
 
-        c.log(TAG + " activo. Para desactivar: localStorage.cms_debug = 'off' + recargar");
+        // 6. Acceso al store de Redux de Decap CMS via React fiber.
+        // Permite leer el state.entryDraft.fieldsErrors directamente para
+        // identificar exactamente qué validación falló.
+        function findReduxStore() {
+          // Probar múltiples candidatos de root
+          var roots = [
+            document.getElementById("nc-root"),
+            document.querySelector("[data-reactroot]"),
+            document.body && document.body.firstElementChild,
+            document.body,
+          ].filter(Boolean);
+          for (var i = 0; i < roots.length; i++) {
+            var el = roots[i];
+            // React 18+ guarda el container en __reactContainer$xxx
+            var keys = Object.keys(el).concat(Object.keys(el.__proto__ || {}));
+            for (var k = 0; k < keys.length; k++) {
+              var key = keys[k];
+              if (key.indexOf("__reactContainer$") === 0 || key === "_reactRootContainer") {
+                var container = el[key];
+                var fiber = container && (container.stateNode ? container.stateNode.current : container.current);
+                if (!fiber && container && container._internalRoot) fiber = container._internalRoot.current;
+                if (!fiber) fiber = container;
+                // Walk hasta encontrar el Provider
+                var found = walkFiber(fiber, 25);
+                if (found) return found;
+              }
+            }
+          }
+          return null;
+        }
+        function walkFiber(node, maxDepth) {
+          if (!node || maxDepth <= 0) return null;
+          // El Provider de react-redux guarda el store en memoizedProps.value.store
+          // o en memoizedProps.store dependiendo de la versión.
+          var props = node.memoizedProps || node.pendingProps;
+          if (props) {
+            if (props.store && typeof props.store.getState === "function") return props.store;
+            if (props.value && props.value.store && typeof props.value.store.getState === "function") return props.value.store;
+          }
+          return walkFiber(node.child, maxDepth - 1) || walkFiber(node.sibling, maxDepth - 1);
+        }
+
+        // Función expuesta a window para inspección manual desde DevTools.
+        window.cmsInspect = function () {
+          var store = findReduxStore();
+          if (!store) {
+            c.warn(TAG + " no encontré el Redux store de Decap. ¿Estás en /admin/?");
+            return null;
+          }
+          var state = store.getState();
+          c.log(TAG + " 🔍 Estado completo del Redux store:");
+          var snapshot = {};
+          // El state es un Immutable Record/Map — convertir a JS plain
+          try {
+            var keys = state && state.toJS ? Object.keys(state.toJS()) : Object.keys(state);
+            keys.forEach(function (k) {
+              try {
+                var val = state.get ? state.get(k) : state[k];
+                snapshot[k] = val && val.toJS ? val.toJS() : val;
+              } catch (e) { snapshot[k] = "(error)"; }
+            });
+          } catch (e) {
+            c.warn("error iterando state:", e);
+          }
+          c.log("  state keys:", Object.keys(snapshot));
+
+          // Específicamente: fieldsErrors del entryDraft
+          if (snapshot.entryDraft) {
+            var fe = snapshot.entryDraft.fieldsErrors;
+            c.log(TAG + " 🎯 entryDraft.fieldsErrors:", fe);
+            if (fe && Object.keys(fe).length > 0) {
+              c.warn(TAG + " ⚠️ HAY ERRORES DE VALIDACIÓN:");
+              Object.keys(fe).forEach(function (fieldId) {
+                c.warn("    field:", fieldId, "→", fe[fieldId]);
+              });
+            } else {
+              c.log(TAG + " fieldsErrors está vacío");
+            }
+            c.log(TAG + " 🎯 entryDraft.entry:", snapshot.entryDraft.entry);
+          }
+          return snapshot;
+        };
+
+        c.log(TAG + " activo. Funciones: window.cmsInspect() — para desactivar: localStorage.cms_debug = 'off' + recargar");
       })();
     </script>
   </head>
