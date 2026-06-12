@@ -289,6 +289,7 @@ El CMS tiene un **preview pane en vivo a la derecha del form** — el editor edi
 
 - ❌ **NO** correr `firebase deploy --only hosting` desde local — duplica deploys y deja el repo desincronizado de producción.
 - ❌ **NO** editar el sitio directamente desde Netlify dashboard — Netlify solo provee auth, no edita contenido.
+- ❌ **NO reintroducir Lenis** (ni 1.x ni superiores) para smooth scroll. Su `onClick` handler global rompe con `querySelector(SyntaxError)` cuando hay anchors con ids no-CSS-syntáctico. Usar siempre el scroll nativo del browser: CSS `scroll-behavior: smooth` + `window.scrollTo({behavior:"smooth"})` para anchor links validados. Si en algún momento se necesita un feel inertia-based, evaluar GSAP ScrollSmoother (ya está GSAP cargado), pero después de testear bien que no introduzca bugs similares.
 - ✅ Para verificar deploy: `https://github.com/Dema1348/maniatiko/actions` (los runs verdes son los exitosos).
 - ✅ Para rollback rápido: `git revert <sha>` + push → el workflow corre el revert y deploya el estado anterior.
 
