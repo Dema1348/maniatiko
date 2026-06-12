@@ -97,6 +97,26 @@
       }
       return "";
     };
+    // Escape HTML básico para mdInline (espejo del de main.js).
+    const escapeHtmlMd = (s) =>
+      String(s == null ? "" : s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+    // Mini-parser markdown inline: **bold** y *italic*. Espejo de main.js.
+    const mdInline = (s) => {
+      if (s == null) return "";
+      let html = escapeHtmlMd(String(s));
+      html = html.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+      html = html.replace(/\*([^*\n]+)\*/g, "<em>$1</em>");
+      html = html.replace(/_([^_\n]+)_/g, "<em>$1</em>");
+      return html;
+    };
+    // Helper para inyectar HTML markdown en React preview (cero risk porque el
+    // input pasó por escapeHtmlMd antes; los únicos tags son <strong>/<em>).
+    const md = (text) => ({ dangerouslySetInnerHTML: { __html: mdInline(text) } });
+
     // Mantengo asText como alias — extrae texto desde strings, i18n directo,
     // list widget shape, o list widget + i18n anidado ({item: {es, en}}).
     const asText = (it) => {
@@ -177,7 +197,7 @@
           items.map((text, i) =>
             h("article", { key: i, className: `chapter chapter--${i % 2 === 0 ? "left" : "right"}` },
               h("span", { className: "chapter-num" }, roman(i + 1)),
-              h("p", { className: "chapter-text" }, text)
+              h("p", Object.assign({ className: "chapter-text" }, md(text)))
             )
           )
         ),
@@ -277,7 +297,7 @@
               ),
               h("div", { className: "setlist-meta" },
                 h("h3", { className: "setlist-title" }, m.title || ""),
-                m.description && h("p", { className: "setlist-desc" }, t(m.description))
+                m.description && h("p", Object.assign({ className: "setlist-desc" }, md(t(m.description))))
               )
             )
           )
@@ -302,7 +322,7 @@
               h("div", { className: "memory-body" },
                 h("h3", { className: "memory-venue" }, m.venue || ""),
                 m.city && h("p", { className: "memory-city" }, m.city),
-                m.anecdote && h("p", { className: "memory-anecdote" }, `"${t(m.anecdote)}"`)
+                m.anecdote && h("p", Object.assign({ className: "memory-anecdote" }, { dangerouslySetInnerHTML: { __html: `"${mdInline(t(m.anecdote))}"` } }))
               )
             )
           )
@@ -317,7 +337,7 @@
         h("div", { className: "reverb" },
           items.map((p, i) =>
             h("blockquote", { key: i, className: "reverb-card" },
-              h("p", { className: "reverb-quote" }, `"${t(p.quote)}"`),
+              h("p", Object.assign({ className: "reverb-quote" }, { dangerouslySetInnerHTML: { __html: `"${mdInline(t(p.quote))}"` } })),
               h("div", { className: "reverb-source" }, `— ${p.source || ""}`)
             )
           )
@@ -346,7 +366,7 @@
             h("article", { key: i, className: "presskit-card" },
               h("span", { className: "presskit-kind" }, t(it.kind)),
               h("h3", { className: "presskit-title" }, t(it.title)),
-              it.description && h("p", { className: "presskit-desc" }, t(it.description)),
+              it.description && h("p", Object.assign({ className: "presskit-desc" }, md(t(it.description)))),
               h("span", { className: "presskit-cta" }, `${t(it.cta) || "Download"} →`)
             )
           )

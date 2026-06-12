@@ -1217,7 +1217,7 @@ function renderMemories(items) {
           <div class="memory-body">
             <h3 class="memory-venue">${escapeHtml(m.venue || "")}</h3>
             ${m.city ? `<p class="memory-city">${escapeHtml(m.city)}</p>` : ""}
-            ${m.anecdote ? `<p class="memory-anecdote">"${escapeHtml(t(m.anecdote))}"</p>` : ""}
+            ${m.anecdote ? `<p class="memory-anecdote">"${mdInline(t(m.anecdote))}"</p>` : ""}
           </div>
         </article>`,
         )
@@ -1356,7 +1356,7 @@ function renderChapters(items, dossier) {
             (raw, i) => `
         <article class="chapter chapter--${i % 2 === 0 ? "left" : "right"}">
           <span class="chapter-num">${roman(i + 1)}</span>
-          <p class="chapter-text">${escapeHtml(asText(raw))}</p>
+          <p class="chapter-text">${mdInline(asText(raw))}</p>
         </article>`,
           )
           .join("")}
@@ -1545,7 +1545,7 @@ function renderMixes(items) {
           </div>
           <div class="setlist-meta">
             <h3 class="setlist-title">${escapeHtml(m.title || "")}</h3>
-            ${m.description ? `<p class="setlist-desc">${escapeHtml(t(m.description))}</p>` : ""}
+            ${m.description ? `<p class="setlist-desc">${mdInline(t(m.description))}</p>` : ""}
             <canvas class="setlist-wave" data-wave-index="${i}" aria-hidden="true"></canvas>
           </div>
           ${m.url ? `<a class="setlist-action" href="${m.url}" target="_blank" rel="noopener">↗ SoundCloud</a>` : ""}
@@ -1566,7 +1566,7 @@ function renderPresskit(items) {
         <article class="presskit-card">
           <span class="presskit-kind">${escapeHtml(t(it.kind))}</span>
           <h3 class="presskit-title">${escapeHtml(t(it.title))}</h3>
-          ${it.description ? `<p class="presskit-desc">${escapeHtml(t(it.description))}</p>` : ""}
+          ${it.description ? `<p class="presskit-desc">${mdInline(t(it.description))}</p>` : ""}
           <a class="presskit-cta" href="${it.url || "#"}" ${it.url && it.url.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${escapeHtml(t(it.cta) || "Download")} →</a>
         </article>`,
         )
@@ -1583,7 +1583,7 @@ function renderPress(items) {
         .map(
           (p) => `
         <blockquote class="reverb-card">
-          <p class="reverb-quote">"${escapeHtml(t(p.quote))}"</p>
+          <p class="reverb-quote">"${mdInline(t(p.quote))}"</p>
           <div class="reverb-source">— ${escapeHtml(p.source || "")}</div>
         </blockquote>`,
         )
@@ -1865,6 +1865,21 @@ function t(v) {
     if (typeof v.en === "string") return v.en;
   }
   return "";
+}
+
+// Mini-parser de markdown inline para campos editoriales (bio, descripciones,
+// anécdotas, quotes, presskit descs). Soporta **negrita** y *cursiva* / _cursiva_.
+// XSS-safe: escapa HTML primero, después aplica los reemplazos sobre el output
+// ya escapado (los <strong>/<em> insertados son los únicos tags válidos).
+function mdInline(s) {
+  if (s == null) return "";
+  var html = escapeHtml(String(s));
+  // **bold** PRIMERO para que los ** no se confundan con * simples.
+  html = html.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+  // *italic* o _italic_
+  html = html.replace(/\*([^*\n]+)\*/g, "<em>$1</em>");
+  html = html.replace(/_([^_\n]+)_/g, "<em>$1</em>");
+  return html;
 }
 
 function escapeHtml(s) {

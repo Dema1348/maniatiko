@@ -127,14 +127,14 @@ collections:
               - label: "Bio (3 párrafos numerados I/II/III, bilingüe c/u)"
                 name: "chapters"
                 widget: "list"
-                hint: "Cada párrafo tiene su versión ES y EN. Se renderiza numerado I/II/III en orden."
+                hint: "Cada párrafo tiene su versión ES y EN. Se renderiza numerado I/II/III en orden. Podés usar **negrita** y *cursiva* (botones B / I del editor)."
                 fields:
                   - label: "Párrafo"
                     name: "item"
                     widget: "object"
                     fields:
-                      - { label: "Español", name: "es", widget: "text" }
-                      - { label: "English", name: "en", widget: "text" }
+                      - { label: "Español", name: "es", widget: "markdown", buttons: ["bold", "italic"], editor_components: [], minimal: true }
+                      - { label: "English", name: "en", widget: "markdown", buttons: ["bold", "italic"], editor_components: [], minimal: true }
               - label: "Dossier (tabla key/value)"
                 name: "dossier"
                 widget: "object"
@@ -332,12 +332,12 @@ collections:
             fields:
               - { label: "Plataforma", name: "platform", widget: "string", default: "SoundCloud · Original" }
               - { label: "Título (no traducir)", name: "title", widget: "string" }
-              - label: "Descripción corta (bilingüe)"
+              - label: "Descripción corta (bilingüe — soporta **negrita** / *cursiva*)"
                 name: "description"
                 widget: "object"
                 fields:
-                  - { label: "Español", name: "es", widget: "text" }
-                  - { label: "English", name: "en", widget: "text" }
+                  - { label: "Español", name: "es", widget: "markdown", buttons: ["bold", "italic"], editor_components: [], minimal: true }
+                  - { label: "English", name: "en", widget: "markdown", buttons: ["bold", "italic"], editor_components: [], minimal: true }
               - { label: "URL del track en SoundCloud", name: "url", widget: "string" }
 
           - label: "Memorias (Aftermath — set + foto + anécdota)"
@@ -349,12 +349,12 @@ collections:
               - { label: "Fecha", name: "date", widget: "string", required: false, default: "—" }
               - { label: "Venue (no traducir)", name: "venue", widget: "string" }
               - { label: "Ciudad", name: "city", widget: "string" }
-              - label: "Anécdota (bilingüe)"
+              - label: "Anécdota (bilingüe — soporta **negrita** / *cursiva*)"
                 name: "anecdote"
                 widget: "object"
                 fields:
-                  - { label: "Español", name: "es", widget: "text" }
-                  - { label: "English", name: "en", widget: "text" }
+                  - { label: "Español", name: "es", widget: "markdown", buttons: ["bold", "italic"], editor_components: [], minimal: true }
+                  - { label: "English", name: "en", widget: "markdown", buttons: ["bold", "italic"], editor_components: [], minimal: true }
               - { label: "Foto", name: "image", widget: "image", required: false }
 
           - label: "Press (Reverb — quotes)"
@@ -363,12 +363,12 @@ collections:
             collapsed: false
             summary: "{{source}}"
             fields:
-              - label: "Quote (bilingüe)"
+              - label: "Quote (bilingüe — soporta **negrita** / *cursiva*)"
                 name: "quote"
                 widget: "object"
                 fields:
-                  - { label: "Español", name: "es", widget: "text" }
-                  - { label: "English", name: "en", widget: "text" }
+                  - { label: "Español", name: "es", widget: "markdown", buttons: ["bold", "italic"], editor_components: [], minimal: true }
+                  - { label: "English", name: "en", widget: "markdown", buttons: ["bold", "italic"], editor_components: [], minimal: true }
               - { label: "Fuente (atribución — no traducir)", name: "source", widget: "string" }
 
           - label: "Hosted by (venues/crews que lo hostearon)"
@@ -400,12 +400,12 @@ collections:
                 fields:
                   - { label: "Español", name: "es", widget: "string" }
                   - { label: "English", name: "en", widget: "string" }
-              - label: "Descripción (bilingüe)"
+              - label: "Descripción (bilingüe — soporta **negrita** / *cursiva*)"
                 name: "description"
                 widget: "object"
                 fields:
-                  - { label: "Español", name: "es", widget: "text" }
-                  - { label: "English", name: "en", widget: "text" }
+                  - { label: "Español", name: "es", widget: "markdown", buttons: ["bold", "italic"], editor_components: [], minimal: true }
+                  - { label: "English", name: "en", widget: "markdown", buttons: ["bold", "italic"], editor_components: [], minimal: true }
               - label: "Texto del CTA (bilingüe)"
                 name: "cta"
                 widget: "object"
