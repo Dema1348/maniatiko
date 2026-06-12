@@ -8,6 +8,93 @@
 
     <!-- Netlify Identity (autenticación) -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+    <!-- ============================================================
+         Diagnostic logs — solo activos en /admin/ (no en el sitio real).
+         Capturan unhandled promise rejections (los errores "Uncaught
+         (in promise) undefined" de Decap CMS) y wrappean fetch para
+         mostrar requests al Git Gateway con status + body de la response.
+         Toggle con localStorage.cms_debug = "off" si molesta.
+         ============================================================ -->
+    <script>
+      (function () {
+        if (localStorage.cms_debug === "off") return;
+        var TAG = "[cms-debug]";
+        var c = console;
+
+        // 1. Capturar TODAS las promise rejections no manejadas.
+        // Decap a veces hace `Promise.reject(undefined)` y se pierde el
+        // contexto del error. Acá lo expandimos.
+        window.addEventListener("unhandledrejection", function (event) {
+          var reason = event.reason;
+          c.group(TAG + " ⚠️ Unhandled promise rejection");
+          c.log("reason:", reason);
+          if (reason && typeof reason === "object") {
+            c.log("  type:", reason.constructor && reason.constructor.name);
+            c.log("  message:", reason.message);
+            c.log("  status:", reason.status);
+            c.log("  statusText:", reason.statusText);
+            c.log("  response:", reason.response);
+            if (reason.stack) c.log("  stack:", reason.stack);
+            try { c.log("  json:", JSON.stringify(reason, Object.getOwnPropertyNames(reason))); } catch (e) {}
+          } else if (reason === undefined) {
+            c.warn("  rejection con reason=undefined (típico cuando un backend devuelve respuesta sin body)");
+          }
+          c.log("  event:", event);
+          c.groupEnd();
+        });
+
+        // 2. Capturar errores globales (sintaxis, runtime, etc.)
+        window.addEventListener("error", function (event) {
+          c.group(TAG + " ❌ Window error");
+          c.log("message:", event.message);
+          c.log("source:", event.filename + ":" + event.lineno + ":" + event.colno);
+          c.log("error:", event.error);
+          c.groupEnd();
+        });
+
+        // 3. Wrappear fetch para loggear requests al Git Gateway, Netlify
+        // Identity y GitHub. Útil para ver auth + status del commit.
+        var origFetch = window.fetch;
+        window.fetch = function (input, init) {
+          var url = typeof input === "string" ? input : (input && input.url) || "";
+          var isInteresting =
+            url.indexOf("/.netlify/") >= 0 ||
+            url.indexOf("git-gateway") >= 0 ||
+            url.indexOf("api.github.com") >= 0 ||
+            url.indexOf("identity") >= 0;
+          if (!isInteresting) return origFetch.apply(this, arguments);
+
+          var method = (init && init.method) || "GET";
+          var reqId = Math.random().toString(36).slice(2, 7);
+          c.log(TAG + " → " + method + " " + url + " [" + reqId + "]");
+
+          return origFetch.apply(this, arguments).then(
+            function (res) {
+              var status = res.status;
+              var icon = status >= 200 && status < 300 ? "✓" : "✗";
+              c.log(TAG + " " + icon + " " + status + " " + url + " [" + reqId + "]");
+              if (status >= 400) {
+                // Clonar para no consumir el body original
+                res.clone().text().then(function (body) {
+                  c.group(TAG + " ⚠️ Error response [" + reqId + "]");
+                  c.log("status:", status, res.statusText);
+                  c.log("body:", body);
+                  c.groupEnd();
+                }).catch(function () {});
+              }
+              return res;
+            },
+            function (err) {
+              c.error(TAG + " ✗ network error " + url + " [" + reqId + "]", err);
+              throw err;
+            }
+          );
+        };
+
+        c.log(TAG + " activo. Para desactivar: localStorage.cms_debug = 'off' + recargar");
+      })();
+    </script>
   </head>
   <body>
     <!-- Decap CMS (formerly Netlify CMS) -->
