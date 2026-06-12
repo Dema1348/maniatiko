@@ -94,12 +94,49 @@
 
         // 4. Wrappear Promise.reject para capturar stack trace de rejects vacíos.
         // Decap CMS hace Promise.reject(undefined) en varios lugares — esto nos
-        // dice EXACTAMENTE quién lo llamó.
+        // dice EXACTAMENTE quién lo llamó. PLUS: escanea el DOM por fields
+        // marcados como inválidos para identificar qué validación falló.
         var origReject = Promise.reject.bind(Promise);
         Promise.reject = function (reason) {
           if (reason === undefined || reason === null) {
             c.group(TAG + " 🎯 Promise.reject(empty) caller stack");
-            c.log(new Error("reject was called here").stack);
+            var stack = new Error("reject was called here").stack || "";
+            c.log(stack);
+            // Si viene de persistEntry, escanear el DOM por fields con error visible
+            if (stack.indexOf("handlePersistEntry") >= 0 || stack.indexOf("persistEntry") >= 0) {
+              c.warn(TAG + " ⚠️ Validation rechazó persistEntry. Escaneando DOM por errores...");
+              try {
+                var invalidEls = document.querySelectorAll(
+                  '[aria-invalid="true"], [class*="error"], [class*="Error"], [data-testid*="error"]'
+                );
+                if (invalidEls.length === 0) {
+                  c.log(TAG + " (no DOM marcado con aria-invalid o class error)");
+                }
+                invalidEls.forEach(function (el, i) {
+                  if (i > 20) return;
+                  // Buscar el label más cercano para identificar el field
+                  var ctx = el;
+                  for (var depth = 0; depth < 8 && ctx; depth++) {
+                    var label = ctx.querySelector && (ctx.querySelector("label") || ctx.querySelector("[class*='label' i]"));
+                    if (label && label.textContent) {
+                      c.log(TAG + " ⚠️ field con error → label='" + label.textContent.trim().slice(0, 80) + "', el=", el);
+                      return;
+                    }
+                    ctx = ctx.parentElement;
+                  }
+                  c.log(TAG + " ⚠️ field con error (sin label cercano):", el);
+                });
+                // También buscar los notification toasts que Decap mostró
+                var toasts = document.querySelectorAll("[class*='Notification'], [class*='Toast'], [role='alert']");
+                toasts.forEach(function (t) {
+                  if (t.textContent && t.textContent.trim()) {
+                    c.log(TAG + " 🔔 Toast/Notification:", t.textContent.trim());
+                  }
+                });
+              } catch (e) {
+                c.log(TAG + " error escaneando DOM:", e);
+              }
+            }
             c.groupEnd();
           }
           return origReject(reason);
