@@ -98,7 +98,7 @@
     "chapters": [
       {
         "item": {
-          "es": "Productor y DJ nacido en Santiago, Chile, enfocado en desarrollar su propia visión dentro del techno industrial. Su trabajo emerge de una búsqueda profundamente personal — construida sobre sus experiencias, oído, madurez artística y crecimiento interno — dando forma a un nuevo lenguaje sonoro: una colisión entre la presión del Bochka, grooves hipnóticos, energía tectónica y una propulsión constante, oscura, inmersiva y destructiva en su impacto.",
+          "es": "Productor & DJ nacido en Santiago, Chile, enfocado en desarrollar su propia visión dentro del techno industrial. Su trabajo emerge de una búsqueda profundamente personal — construida sobre sus experiencias, oído, madurez artística y crecimiento interno — dando forma a un nuevo lenguaje sonoro: una colisión entre la presión del Bochka, grooves hipnóticos, energía tectónica y una propulsión constante, oscura, inmersiva y destructiva en su impacto.",
           "en": "Producer and DJ born in Santiago, Chile, focused on developing his own vision within industrial techno. His work emerges from a deeply personal quest — built upon his experiences, ear, artistic maturity and inner growth — shaping a new sonic language: a collision between Bochka pressure, hypnotic grooves, tectonic energy and a constant, dark, immersive and destructive propulsion in its impact."
         }
       },
@@ -620,7 +620,7 @@
   "hero": {
     "title": "Maniatiko",
     "role": {
-      "es": "Productor Y DJ",
+      "es": "Productor & DJ",
       "en": "Producer & DJ"
     },
     "bpm": 170,
@@ -644,7 +644,7 @@
       "label": "@_dema1348",
       "href": "https://www.instagram.com/_dema1348/",
       "prefix": {
-        "es": "Hecho con amor por",
+        "es": "Hecho con cariño por",
         "en": "Made with love by"
       }
     }
