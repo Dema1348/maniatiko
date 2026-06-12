@@ -92,6 +92,33 @@
           );
         };
 
+        // 4. Wrappear Promise.reject para capturar stack trace de rejects vacíos.
+        // Decap CMS hace Promise.reject(undefined) en varios lugares — esto nos
+        // dice EXACTAMENTE quién lo llamó.
+        var origReject = Promise.reject.bind(Promise);
+        Promise.reject = function (reason) {
+          if (reason === undefined || reason === null) {
+            c.group(TAG + " 🎯 Promise.reject(empty) caller stack");
+            c.log(new Error("reject was called here").stack);
+            c.groupEnd();
+          }
+          return origReject(reason);
+        };
+
+        // 5. Capturar errors en JSON.parse — si Decap intenta parsear un
+        // blob binario (imagen) como JSON, falla.
+        var origParse = JSON.parse;
+        JSON.parse = function (text, reviver) {
+          try {
+            return origParse(text, reviver);
+          } catch (e) {
+            // Truncamos input por si es grande
+            var preview = typeof text === "string" ? text.slice(0, 80) : String(text).slice(0, 80);
+            c.warn(TAG + " ⚠️ JSON.parse failed on input:", preview, "→ err:", e.message);
+            throw e;
+          }
+        };
+
         c.log(TAG + " activo. Para desactivar: localStorage.cms_debug = 'off' + recargar");
       })();
     </script>
