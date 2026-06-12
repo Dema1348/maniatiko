@@ -6,6 +6,35 @@
 
 const DATA_URL = "/data.json";
 
+// ============================================================
+// Labels de UI bilingües — hardcoded en JS (no en data.json) para que
+// el CMS no muestre "Map { es, en }" en campos sin declarar.
+// Si querés que el editor pueda cambiar estos textos en el futuro,
+// hay que sumarlos como field en admin/config.yml y mover acá la
+// extracción desde data.i18n.labels.
+// ============================================================
+const UI_LABELS = {
+  epkStats: {
+    rituals:     { es: "Rituales tocados", en: "Rituals played" },
+    productions: { es: "Producciones",     en: "Productions" },
+    platforms:   { es: "Plataformas",      en: "Platforms" },
+    bpmPeak:     { es: "BPM pico",         en: "BPM peak" },
+  },
+  onSale:       { es: "EN VENTA",           en: "ON SALE" },
+  archive:      { es: "† Archivo",          en: "† Archive" },
+  archiveCols: {
+    date:  { es: "Fecha",  en: "Date" },
+    venue: { es: "Venue",  en: "Venue" },
+    city:  { es: "Ciudad", en: "City" },
+  },
+  briefHeading: { es: "† Incluí en tu brief", en: "† Include in your brief" },
+  nextRitual:   { es: "Próximo ritual",       en: "Next ritual" },
+  switcher: {
+    es: { label: "ES", title: "Español" },
+    en: { label: "EN", title: "English" },
+  },
+};
+
 // --------------------------------------------------------------
 // Boot
 // --------------------------------------------------------------
@@ -684,10 +713,7 @@ function renderNav(data) {
 // Switcher ES / EN — links full-reload preservando el hash actual.
 // Idioma activo en accent, inactivo en text-dim.
 function renderLangSwitcher(data) {
-  const sw = data?.i18n?.labels?.switcher || {
-    es: { label: "ES", title: "Español" },
-    en: { label: "EN", title: "English" },
-  };
+  const sw = UI_LABELS.switcher;
   const hash = location.hash || "";
   // Path equivalente en el otro idioma (sin slash final para clean URLs)
   const currentPath = location.pathname.replace(/\/$/, "") || "/";
@@ -1125,7 +1151,7 @@ function renderSectionBody(type, items, sec, data) {
     case "booking":
       return renderBooking(sec);
     case "booking-card":
-      return renderBookingCard(sec, data);
+      return renderBookingCard(sec);
     default:
       return `<pre data-reveal>${escapeHtml(JSON.stringify(items, null, 2))}</pre>`;
   }
@@ -1361,7 +1387,7 @@ function renderEpkStats(data) {
   const gigs = (data.gigs || []).length;
   const tracks = (data.mixes || []).length;
   const platforms = (data.socials || []).length;
-  const L = data?.i18n?.labels?.epkStats || {};
+  const L = UI_LABELS.epkStats;
   const stats = [
     { num: String(gigs).padStart(2, "0"),     label: t(L.rituals)     || "Rituals played" },
     { num: String(tracks).padStart(2, "0"),   label: t(L.productions) || "Productions" },
@@ -1397,7 +1423,7 @@ function renderGigs(items, data) {
   const nextGig = upcoming
     .slice()
     .sort((a, b) => gigDateValue(a.date) - gigDateValue(b.date))[0];
-  const nextRitualLabel = t(data?.i18n?.labels?.nextRitual) || "Next ritual";
+  const nextRitualLabel = t(UI_LABELS.nextRitual);
   const countdownHtml = nextGig
     ? `<div class="next-ritual" data-reveal data-target="${nextGig.date}">
          <span class="next-ritual-label">† ${escapeHtml(nextRitualLabel)}</span>
@@ -1425,7 +1451,7 @@ function renderGigs(items, data) {
               ${g.lineup ? `<p class="ritual-lineup">${escapeHtml(g.lineup.join(" · "))}</p>` : ""}
             </div>
             <div class="ritual-action">
-              <span class="ritual-status">${escapeHtml(t(data?.i18n?.labels?.onSale) || "ON SALE")}</span>
+              <span class="ritual-status">${escapeHtml(t(UI_LABELS.onSale))}</span>
               ${g.tickets ? `<a class="ritual-tickets" href="${g.tickets}" target="_blank" rel="noopener">Tickets ↗</a>` : ""}
             </div>
           </article>`;
@@ -1434,13 +1460,13 @@ function renderGigs(items, data) {
       </div>`
     : "";
 
-  const archCols = data?.i18n?.labels?.archiveCols || {};
+  const archCols = UI_LABELS.archiveCols;
   const archiveHtml = past.length
     ? `<div class="archive" data-reveal>
-        <h3 class="archive-title">${escapeHtml(t(data?.i18n?.labels?.archive) || "† Archive")}</h3>
+        <h3 class="archive-title">${escapeHtml(t(UI_LABELS.archive))}</h3>
         <table class="archive-table">
           <thead>
-            <tr><th>${escapeHtml(t(archCols.date) || "Date")}</th><th>${escapeHtml(t(archCols.venue) || "Venue")}</th><th>${escapeHtml(t(archCols.city) || "City")}</th></tr>
+            <tr><th>${escapeHtml(t(archCols.date))}</th><th>${escapeHtml(t(archCols.venue))}</th><th>${escapeHtml(t(archCols.city))}</th></tr>
           </thead>
           <tbody>
             ${past
@@ -1582,7 +1608,7 @@ function renderFeatured(items) {
   `;
 }
 
-function renderBookingCard(sec, data) {
+function renderBookingCard(sec) {
   // sec puede traer las keys directas (vía source="booking") o anidadas en sec.card (legacy inline)
   const c = sec.card || sec;
   if (!c.email) return "";
@@ -1590,7 +1616,7 @@ function renderBookingCard(sec, data) {
   const intro = t(c.intro);
   const emailLabel = t(c.emailLabel) || "† Direct booking";
   const briefItems = Array.isArray(c.brief) ? c.brief.map(asText).filter(Boolean) : [];
-  const briefHeading = t(data?.i18n?.labels?.briefHeading) || "† Include in your brief";
+  const briefHeading = t(UI_LABELS.briefHeading);
   const briefHtml = briefItems.length
     ? `<div class="booking-card-brief">
          <span class="booking-card-brief-label">${escapeHtml(briefHeading)}</span>

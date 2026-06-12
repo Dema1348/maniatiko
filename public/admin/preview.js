@@ -400,8 +400,25 @@
       );
     }
 
-    // Global con los labels i18n del data — seteado por SitePreview antes de los renders.
-    let I18N_LABELS = {};
+    // Labels de UI bilingües — hardcoded para que el CMS no muestre "Map { ... }"
+    // (espejo del UI_LABELS de main.js). Si cambia uno, sincronizar ambos.
+    const I18N_LABELS = {
+      epkStats: {
+        rituals:     { es: "Rituales tocados", en: "Rituals played" },
+        productions: { es: "Producciones",     en: "Productions" },
+        platforms:   { es: "Plataformas",      en: "Platforms" },
+        bpmPeak:     { es: "BPM pico",         en: "BPM peak" },
+      },
+      onSale:       { es: "EN VENTA",           en: "ON SALE" },
+      archive:      { es: "† Archivo",          en: "† Archive" },
+      archiveCols: {
+        date:  { es: "Fecha",  en: "Date" },
+        venue: { es: "Venue",  en: "Venue" },
+        city:  { es: "Ciudad", en: "City" },
+      },
+      briefHeading: { es: "† Incluí en tu brief", en: "† Include in your brief" },
+      nextRitual:   { es: "Próximo ritual",       en: "Next ritual" },
+    };
 
     // Banner del preview con toggle ES/EN. Click → cambia localStorage + reload del iframe.
     function PreviewBanner() {
@@ -435,9 +452,6 @@
       const sections = data.sections || [];
       const footer = data.footer || {};
       const socials = data.socials || [];
-
-      // Set global labels para que los blocks puedan leer sin pasarlos por props
-      I18N_LABELS = data?.i18n?.labels || {};
 
       // Resolución homologa de source (espejo de main.js renderSections):
       //   - data[source] array → se inyecta como sec.items (acceso uniforme en los renderers)
